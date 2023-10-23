@@ -1401,10 +1401,6 @@ z-index: 999!important;
   width: 80px;
   z-index: 1;
 }
-:root .profileCustomizationSection-53kreU .baseLayout-1_9QRm .profileCustomizationPreview-3zZw6E .avatarUploader-qEFQS2 foreignObject {
-    mask: none;
-    border-radius: 20px !important;
-  }
 :root .profileCustomizationSection-53kreU .baseLayout-1_9QRm .profileCustomizationPreview-3zZw6E .avatarUploader-qEFQS2 .avatarHint-k7pYop {
   border-radius: var(--border-radius);
 }
