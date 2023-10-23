@@ -2034,12 +2034,15 @@ z-index: 999!important;
     background-color: rgb(163, 0, 0);
     border-radius: 7px;
 }
+
+/**
+* ? BETTER DISCORD
+*/
 :root {
     --bdAddonMini-bg-checked: var(--background-tertiary);
     --bdAddonMini-bg-unchecked: var(--background-secondary);
     --bdAddonMini-bg-unchecked-hover: var(--background-modifier-hover);
 }
-
 .bd-addon-list.bd-grid-view {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 }
@@ -2074,7 +2077,6 @@ z-index: 999!important;
 .bd-addon-card .bd-title .bd-meta a {
     z-index: 2;
 }
-/* footer */
 .bd-addon-list .bd-addon-card .bd-footer {
     position: absolute;
     padding: 0 16px 0 8px;
@@ -2114,7 +2116,6 @@ z-index: 999!important;
 .bd-addon-card .bd-addon-button.bd-button-color-red:not(:hover) svg {
     fill: var(--info-danger-foreground);
 }
-/* description */
 .bd-addon-list .bd-addon-card .bd-description-wrap {
     transform: scale(1);
     transition: transform .2s;
@@ -2165,7 +2166,6 @@ z-index: 999!important;
 .bd-addon-list.bd-grid-view .bd-description {
     padding-top: calc(8px + 26px);
 }
-/* banner */
 .bd-addon-card .bd-description-wrap {
     flex-direction: column;
 }
@@ -2202,7 +2202,6 @@ z-index: 999!important;
     z-index: 1;
     transform: translateX(16px);
 }
-/* background */
 .bd-addon-card {
     background: var(--bdAddonMini-bg-unchecked);
 }
@@ -2233,6 +2232,7 @@ z-index: 999!important;
     --symbol1path: path('M7.89561 14.8538L6.30462 13.2629L14.3099 5.25755L15.9009 6.84854L7.89561 14.8538Z');
     --symbol2path: path('M4.08643 11.0903L5.67742 9.49929L9.4485 13.2704L7.85751 14.8614L4.08643 11.0903Z');
 }
+/* END */
 .modalContent-2y3sGW:has(.qualitySettingsContainer-2LjkfM) .lookFilled-GPyucw.select-Zz0IcO {
     border: 0px !important;
     background: black;
