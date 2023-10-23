@@ -65,6 +65,7 @@
 .container-1CH86i .svg-1G_H_8 > :is(svg,.pointerEvents-2KjWnj) {
   display: none;
 }
+
 .container-1CH86i .svg-1G_H_8,
 .container-1CH86i .svg-1G_H_8 > foreignObject {
   mask: none !important;
@@ -1482,7 +1483,7 @@ z-index: 999!important;
     background-color: var(--background-primary) !important;
     border-color: rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-    border: 1px solid;
+    border: 1px solid rgba(255, 255, 255, 0.11);
 }
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N::before{
     font-size: 18px;
@@ -2254,4 +2255,50 @@ z-index: 999!important;
 .numberBadge-37OJ3S{
     background-color: rgb(175, 0, 0) !important;
     box-shadow: 0px 0px 4px 0.6px rgb(0, 0, 0) inset !important;
+}
+.appliedBoostContainer-1b4KCm{
+    border-radius: 20px;
+}
+.guildContainer-o60hpj {
+    border-radius: 12px !important;
+    background-color: rgb(33, 38, 44) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-secondary) inset,0px 0px 10px 3px var(--background-secondary)!important;
+}
+.faq-29l_f8{
+    background-color: #000;
+    border-radius: 20px;
+}
+.wrapper-SdcMKg {
+    border-radius: 15px !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.212) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+.option-1QI4c9 {
+    width: 28%;
+    height: 28%;
+    margin: 23px;
+    border-radius: 23px;
+    opacity: .4;
+    background-color: var(--primary-400);
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+.selected-18Wszc.option-1QI4c9{
+    background-color: rgb(28, 52, 96);
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    transition: 200ms !important;
+}
+.option-1QI4c9:hover{
+    background-color: rgb(34, 73, 146);
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    transition: 200ms !important;
+}
+.disabledIcon-1rpL82:hover{
+    color: rgb(173, 0, 0)!important;
+    transition: 200ms;
+}
+.disabledIcon-1rpL82{
+    color: rgb(205, 235, 235);
+    transition: 200ms;
 }
