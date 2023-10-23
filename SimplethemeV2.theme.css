@@ -1,4 +1,10 @@
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
+/**
+*! FONTS
+*/
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merienda:wght@500&display=swap');
+
 
 /* Folders Size */
 :root {
@@ -1159,7 +1165,7 @@ z-index: 999!important;
     background-color: var(--background-secondary) !important;
     border-color: transparent !important;
 }
-.speaking-3K28iH {
+.speaking-1Q5elM {
     box-shadow: inset 0 0 0 2px green,inset 0 0 0 3px green;
 }
 .spoilerContainer-1Dl06W.hidden-2lQZ5q{
@@ -1463,7 +1469,7 @@ z-index: 999!important;
 .changePasswordButton-3j5UVD::before{
     content: "Replace phone number";
     font-size: 18px !important;
-    font-family: "Caveat";
+    font-family: "Merienda";
     color: white !important;
 }
 .changePasswordButton-3j5UVD:hover{
@@ -1483,7 +1489,7 @@ z-index: 999!important;
 }
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N::before{
     font-size: 18px;
-    font-family: "Caveat";
+    font-family: "Merienda";
     content: "View backup";
 }
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N:hover{
@@ -1504,7 +1510,7 @@ z-index: 999!important;
     content: "Remove 2FA";
     color: azure !important;
     font-size: 22px !important;
-    font-family: "Caveat";
+    font-family: "Merienda";
 }
 .lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]:hover{
     background-color: rgb(153, 0, 0) !important;
@@ -1526,7 +1532,7 @@ z-index: 999!important;
 [class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
   content: "Remove SmS";
   font-size: 19px !important;
-  font-family: "Caveat";
+  font-family: "Merienda";
 }
 [class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
     background-color: rgb(153, 0, 0) !important;
@@ -1548,7 +1554,7 @@ z-index: 999!important;
 .disableButton-3BR0Vj::before{
     content: "✖️〢Deactivation";
     font-size: 15px !important;
-    font-family: arial;
+    font-family: 'Playpen Sans' !important;
 }
 .disableButton-3BR0Vj:hover{
     background-color: rgb(153, 0, 0) !important;
@@ -1570,7 +1576,7 @@ z-index: 999!important;
 [class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
     content: "⚠️〢Delete";
     font-size: 18px !important;
-    font-family: "Caveat";
+    font-family: 'Playpen Sans' !important;
 }
 [class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
     background-color: rgb(153, 0, 0) !important;
