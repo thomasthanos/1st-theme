@@ -1,12 +1,4 @@
-/**
- * @name SimplethemeV2
- * @description Simple discord theme with apple emojis (special thanks to theme develepors on bedder discord server)
- * @author Pepponis
- * @version 1.4
- * @authorId 706932839907852389
-*/
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
-
 
 /* Folders Size */
 :root {
@@ -90,7 +82,6 @@
   border-radius: 16px;
   background-color: var(--brand-experiment);
   color: white !important;
-
 }
 .container-1CH86i > .flex-2S1XBF {
   gap: 7px;
@@ -2178,17 +2169,14 @@ z-index: 999!important;
 .bd-addon-card .bd-switch {
     order: -1;
     position: static;
-
 }
 .bd-addon-card .bd-switch input {
     top: 0;
-    
 }
 .bd-addon-card .bd-switch .bd-switch-body {
     pointer-events: none;
     z-index: 1;
     transform: translateX(16px);
-    
 }
 /* background */
 .bd-addon-card {
@@ -2226,7 +2214,6 @@ z-index: 999!important;
     background: black;
     border-radius: 11px;
 }
-
 .popout-15UxD6{
     background-color: antiquewhite;
     border-radius: 10px 10px 20px 20px;
