@@ -1810,25 +1810,7 @@ z-index: 999!important;
     top: 26px;
     left: 32px !important;
 }
-/* Delete */
-.lookOutlined-3RTC7c.colorRed-2VFhM4 {
-    border-radius: 8px;
-    transition: 200ms;
-    font-size: 0;
-    background-color: var(--background-primary);
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-}
-.lookOutlined-3RTC7c.colorRed-2VFhM4::before{
-    content: "Delete";
-    color: azure !important;
-    font-size: 22px !important;
-    font-family: "Caveat";
-}
-.lookOutlined-3RTC7c.colorRed-2VFhM4:hover{
-    background-color: rgb(206, 0, 0) !important;
-}
-/* END */
+
 /* PIN MESSAGE */
 .messagesPopoutWrap-3zryHW{
     border-radius: 20px 5px 20px 20px;
