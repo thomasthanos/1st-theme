@@ -1471,12 +1471,26 @@ z-index: 999!important;
     transition: 100ms !important;
 }
 /*END*/
+/* view backup */
+.userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N{
+    font-size: 0;
+    background-color: rgb(37, 37, 37) !important;
+    box-shadow: 1px 3px 10px 5px rgba(69, 77, 87, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+.userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N::before{
+    font-size: 18px;
+    font-family: "Caveat";
+    content: "View backup";
+}
+.userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+/* END */
 .marginBottom20-315RVT {
     margin-bottom: 10px !important;
-}
-.contents-3NembX:has(.lookFilled-1H2Jvj.colorBrand-2M3O3N[aria-label="Προβολή εφεδρικών κωδικών"]){
-    background-color: aquamarine !important;
-    color: blue !important;
 }
 .divider-q3P9HC{
     background-color: rgb(145, 0, 0);
@@ -1750,9 +1764,6 @@ z-index: 999!important;
     -webkit-box-shadow: inset 0 0 0 2px var(--brand-experiment);
     box-shadow: inset 0 0 0 2px white;
     transition: 200ms !important;
-}
-.lookFilled-1H2Jvj.colorBrand-2M3O3N:disabled, .lookFilled-1H2Jvj.colorBrand-2M3O3N[aria-disabled=true]{
-    background-color: rgb(33, 57, 165);
 }
 .profileBadges-2pItdR, .badgeList-2aoHPw, .badgeList-2hF9ig{
     background-color: var(--background-tertiary);
