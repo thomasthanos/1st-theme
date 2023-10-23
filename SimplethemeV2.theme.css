@@ -1453,30 +1453,36 @@ z-index: 999!important;
 .constrainedRow-3y91Xf:has(.lookLink-13iF2K.colorLink-34zig_[aria-label="Εμφάνιση αριθμού τηλεφώνου"]) {
   filter: blur(6px);
 }
-/*κινητο*/
+/* Replace phone number */
 .changePasswordButton-3j5UVD{
-    font-size: 0;
-    background-color: rgb(37, 37, 37) !important;
-    box-shadow: 1px 3px 10px 5px rgba(69, 77, 87, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
-    transition: 100ms !important;
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid;
 }
 .changePasswordButton-3j5UVD::before{
     content: "Replace phone number";
     font-size: 18px !important;
     font-family: "Caveat";
+    color: white !important;
 }
 .changePasswordButton-3j5UVD:hover{
     background-color: #484b57 !important;
     box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
     transition: 100ms !important;
 }
-/*END*/
-/* view backup */
+/* VIEW BACKUP */
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N{
-    font-size: 0;
-    background-color: rgb(37, 37, 37) !important;
-    box-shadow: 1px 3px 10px 5px rgba(69, 77, 87, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
-    transition: 100ms !important;
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid;
 }
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N::before{
     font-size: 18px;
@@ -1487,6 +1493,94 @@ z-index: 999!important;
     background-color: #484b57 !important;
     box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
     transition: 100ms !important;
+}
+/* REMOVE 2FA */
+.lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"] {
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+.lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]::before{
+    content: "Remove 2FA";
+    color: azure !important;
+    font-size: 22px !important;
+    font-family: "Caveat";
+}
+.lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]:hover{
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
+}
+/* REMOVE SMS */
+[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4 {
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid;
+}
+[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
+  content: "Remove SmS";
+  font-size: 19px !important;
+  font-family: "Caveat";
+}
+[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+}
+/* ✖️〢Deactivation */
+.disableButton-3BR0Vj{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+}
+.disableButton-3BR0Vj::before{
+    content: "✖️〢Deactivation";
+    font-size: 15px !important;
+    font-family: arial;
+}
+.disableButton-3BR0Vj:hover{
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
+}
+/* For Delete Account button */
+[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4 {
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+}
+[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
+    content: "⚠️〢Delete";
+    font-size: 18px !important;
+    font-family: "Caveat";
+}
+[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
 }
 /* END */
 .marginBottom20-315RVT {
@@ -1533,69 +1627,6 @@ z-index: 999!important;
 .radioBar-1XgZqD[style*="var(--red-400);"] {
     border-left: 3px solid rgb(146, 0, 0) !important;
 }
-  /* For Delete Account button */
-[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4 {
-    font-size: 0;
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(156, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 10px;
-    border: #484b57 !important;
-}
-[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
-    content: "⚠️〢Delete";
-    font-size: 18px !important;
-    font-family: "Caveat";
-}
-[class*="userSettingsSecurity-2kODPN"] ~ .marginTop40-Q4o1tS:has(h2.h5-2feg8J) .children-2C96Ex .buttonContainer-cmXa0P .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 8px;
-  border: #484b57 !important;
-}
-/* For SMS button */
-[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4 {
-    font-size: 0;
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(156, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 10px;
-  border: #484b57 !important;
-}
-[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
-  content: "Remove SmS";
-  font-size: 19px !important;
-  font-family: "Caveat";
-}
-[class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 8px;
-  border: #484b57 !important;
-}
-
-/*disable*/
-.disableButton-3BR0Vj{
-    font-size: 0;
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(156, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 10px;
-}
-.disableButton-3BR0Vj::before{
-    content: "✖️〢Disable";
-    font-size: 17px !important;
-    font-family: "Caveat";
-}
-.disableButton-3BR0Vj:hover{
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 8px;
-}
-/*END*/
 .userProfileOuterUnthemed-11rPfA {
     box-shadow: 0 0 0 4px lavender; /* Choose outline color of choice because that's how the nitro profiles look like */
 }
