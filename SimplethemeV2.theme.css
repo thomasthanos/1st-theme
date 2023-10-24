@@ -1346,10 +1346,13 @@ z-index: 999!important;
   top: 5px;
 }
 :root .accountProfileCard-lbN7n- .bannerSVGWrapper-2CLfzN {
-  position: absolute;
-  -webkit-mask-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
-  min-width: 900px !important;
-  height: 160px;
+    position: absolute;
+    -webkit-mask-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
+    min-width: 900px !important;
+    height: 160px;
+    transform: scale(0.9);
+    left: -90px;
+    bottom: 297px;
 }
 :root .accountProfileCard-lbN7n- .bannerSVGWrapper-2CLfzN mask {
   display: none;
