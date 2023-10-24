@@ -2326,3 +2326,12 @@ z-index: 999!important;
     background-size: cover !important;
     background: url("https://share.creavite.co/ymLwZ90mI4LSqpFM.gif");
 }
+.ephemeral-2nDdnn:before{
+    background: transparent !important;
+    background-image: -webkit-linear-gradient(-43deg, #4b5080 43%, #7a72b3 100%) !important;
+}
+.ephemeral-2nDdnn{
+    background: transparent !important;
+    background-image: -webkit-linear-gradient(-43deg, #4b508045 43%, #7a72b395 100%) !important;
+    border-radius: 0 20px 20px 0!important;
+}
