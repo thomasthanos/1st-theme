@@ -470,12 +470,6 @@ button.button-12Fmur{
     transition: 200ms;
     font-family: "yellowtail";
 }
-.textContainer-36wgKK pre,
-.hljs {
-    background-color: var(--background-tertiary);
-    border: transparent !important;
-    border-radius: 5px;
-}
 #app-mount .guilds-2JjMmN .unreadMentionsIndicatorBottom-3RJMnQ {
     bottom: calc(var(--user-area) + 10px);
 }
