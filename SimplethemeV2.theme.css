@@ -1349,7 +1349,7 @@ z-index: 999!important;
   position: absolute;
   -webkit-mask-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
   min-width: 900px !important;
-  height: 110px;
+  height: 160px;
 }
 :root .accountProfileCard-lbN7n- .bannerSVGWrapper-2CLfzN mask {
   display: none;
@@ -1637,18 +1637,19 @@ z-index: 999!important;
     box-shadow: 0 0 0 4px lavender; /* Choose outline color of choice because that's how the nitro profiles look like */
 }
 .userProfileInnerThemedNonPremium-2AJg-H.userPopoutInner-nv9Y92 .banner-1YaD3N:not(.popoutBannerPremium-3i5EEI) {
-    width: calc(100% - 0px);
-    height: 200px;
+    width: calc(103% - 0px);
+    height: 96px;
     border-radius: 4px 4px 3px 3px !important;
+    transform: scale(1.4);
     background-repeat: no-repeat;
     background-position: center !important;
     background-size: cover !important;
     background: url("https://share.creavite.co/ymLwZ90mI4LSqpFM.gif");
 }
 .userProfileInnerThemedNonPremium-2AJg-H.userPopoutInner-nv9Y92 .bannerSVGWrapper-2CLfzN {
-    min-height: 200px !important;
-    transform: translateY(-80px);
-    margin-bottom: -74px;
+    min-height: 100px !important;
+    transform: translateY(13px);
+    margin-bottom: 18px;
     margin-top: -34px;
 }
 .userProfileInnerThemedNonPremium-2AJg-H.userPopoutInner-nv9Y92 .bannerSVGWrapper-2CLfzN foreignObject {
@@ -2309,4 +2310,19 @@ z-index: 999!important;
 }
 .speaking-1Q5elM {
     box-shadow: inset 0 0 0 2px rgb(94, 182, 194),inset 0 0 0 3px rgb(70, 186, 201);
+}
+.avatarUploaderNormal-2m2hFm{
+    transform: scale(1.5);
+    left: 120px !important;
+    top: 27px !important;
+}
+.bannerNormal-2jf-df{
+    width: calc(103% - 0px);
+    height: 96px;
+    border-radius: 4px 4px 3px 3px !important;
+    transform: scale(1.4);
+    background-repeat: no-repeat;
+    background-position: center !important;
+    background-size: cover !important;
+    background: url("https://share.creavite.co/ymLwZ90mI4LSqpFM.gif");
 }
