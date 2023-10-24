@@ -204,6 +204,9 @@ rect[fill="#34008f"] {
 .theme-dark.custom-theme-background .container-2NLBJg{
     background: transparent !important;
 }
+.container-2NLBJg{
+    background: transparent !important;
+}
 /* END */
 
 .scrollableContainer-15eg7h {
@@ -1468,7 +1471,7 @@ z-index: 999!important;
 }
 .changePasswordButton-3j5UVD::before{
     content: "Replace phone number";
-    font-size: 18px !important;
+    font-size: 15px !important;
     font-family: "Merienda";
     color: white !important;
 }
@@ -1488,7 +1491,7 @@ z-index: 999!important;
     border: 1px solid rgba(255, 255, 255, 0.11);
 }
 .userSettingsSecurity-2kODPN .children-2C96Ex > div.flex-2S1XBF .h5-2feg8J.defaultMarginh5-3THN2O  ~ .flex-2S1XBF .lookFilled-1H2Jvj.colorBrand-2M3O3N::before{
-    font-size: 18px;
+    font-size: 15px;
     font-family: "Merienda";
     content: "View backup";
 }
@@ -1509,7 +1512,7 @@ z-index: 999!important;
 .lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]::before{
     content: "Remove 2FA";
     color: azure !important;
-    font-size: 22px !important;
+    font-size: 16px !important;
     font-family: "Merienda";
 }
 .lookOutlined-3RTC7c.colorRed-2VFhM4[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]:hover{
@@ -1531,7 +1534,7 @@ z-index: 999!important;
 }
 [class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4::before {
   content: "Remove SmS";
-  font-size: 19px !important;
+  font-size: 16px !important;
   font-family: "Merienda";
 }
 [class*="userSettingsSecurity-2kODPN"] .marginTop40-Q4o1tS:has(h3.h5-2feg8J) .children-2C96Ex .modeDefault-3Warim + .flex-2S1XBF  .lookOutlined-3RTC7c.colorRed-2VFhM4:hover {
@@ -1553,7 +1556,7 @@ z-index: 999!important;
 }
 .disableButton-3BR0Vj::before{
     content: "✖️〢Deactivation";
-    font-size: 15px !important;
+    font-size: 16px !important;
     font-family: 'Playpen Sans' !important;
 }
 .disableButton-3BR0Vj:hover{
@@ -2303,4 +2306,7 @@ z-index: 999!important;
 .disabledIcon-1rpL82{
     color: rgb(205, 235, 235);
     transition: 200ms;
+}
+.speaking-1Q5elM {
+    box-shadow: inset 0 0 0 2px rgb(94, 182, 194),inset 0 0 0 3px rgb(70, 186, 201);
 }
