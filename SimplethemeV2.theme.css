@@ -548,13 +548,6 @@ a>.iconWrapper_af9215[aria-label="Βοήθεια"] {
     border-radius: 9px;
     color: white;
 }
-.lookOutlined__46d54.colorBrand_b2253e {
-    color: black;
-    border-color:30px rgb(50, 50, 177) !important;
-    background-color: #d89219;
-    font-weight: 700;
-    transition: 400ms;
-}
 .voiceUser__0470a .usernameSpeaking__78095 {
     color: cyan !important
 }
@@ -855,14 +848,6 @@ a>.iconWrapper_af9215[aria-label="Βοήθεια"] {
     background-color: white;
     color: black;
     font-weight: 600;
-}
-.lookOutlined__46d54.colorBrand_b2253e {
-    color: black;
-    border: 2.4px solid rgb(255, 255, 255);
-    background-color: #2cb872;
-    font-weight: 700;
-    transition: 400ms;
-    border-radius: 10px;
 }
 .theme-dark .container-30qY7E {
     background-color: #000;
@@ -2467,6 +2452,25 @@ z-index: 999!important;
     color: black;
     font-weight: 800 !important;
 }
-
-
-
+/**  Αιτηση δεδομενων */
+.lookOutlined__46d54.colorBrand_b2253e{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+.lookOutlined__46d54.colorBrand_b2253e::before{
+    content: "Αίτηση δεδομένων";
+    color: azure !important;
+    font-size: 13px !important;
+    font-family: "Merienda";
+}
+.lookOutlined__46d54.colorBrand_b2253e:hover{
+    background-color: rgb(141, 68, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(89, 43, 0) inset,0px 0px 4px 1px rgb(89, 43, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(208, 100, 0) !important;
+}
