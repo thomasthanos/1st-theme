@@ -2,8 +2,6 @@
 /**
 *! FONTS
 */
-@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Merienda:wght@500&display=swap');
 
 
 /* Folders Size */
@@ -460,7 +458,7 @@ button.button__4f306{
     background-image: -webkit-linear-gradient(-43deg, #4b508071 43%, #7a72b3 100%) !important;
     transition: 250ms;
 }
-.message__1a4b9 strong, #app-mount .wrapper__2d9b1 {
+.message__1a4b9 strong, #app-mount .wrapper_f46140 {
     background-color: rgb(16, 104, 99);
     color: white;
     border-radius: 4px;
@@ -1238,7 +1236,7 @@ z-index: 999!important;
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .button_afdfd9 {
     position: absolute;
     top: 53px;
-    right: 743.5px;
+    right: 677.6px;
     width: 76px;
     height: 76px;
     min-width: unset;
@@ -1427,11 +1425,6 @@ z-index: 999!important;
     border-radius: 10px !important;
     transition: 200ms;
 }
-.theme-dark .lookLink__93965.colorPrimary__6ed40{
-    background-color: transparent !important;
-    font-size: 11px;
-    color: red !important;
-}
 .lookFilled__19298.colorPrimary__6ed40{
     border-radius: 10px !important;
     transition: 150ms !important;
@@ -1453,6 +1446,103 @@ z-index: 999!important;
 .constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση αριθμού τηλεφώνου"]) {
   filter: blur(6px);
 }
+/**
+* ? 1st EDIT 
+*/
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]::before{
+    font-size: 13px;
+    font-family: "Merienda";
+    content: "Edit";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+/* 2st EDIT */
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]:before{
+    font-size: 13px;
+    font-family: "Merienda";
+    content: "Edit";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+/* 3st EDIT */
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]:before{
+    font-size: 13px;
+    font-family: "Merienda";
+    content: "Edit";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+/* remove */
+.theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]{
+    transition: 200ms !important;
+    font-size: 0 !important;
+}
+.theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]::before{
+    font-size: 13px;
+    font-family: "Merienda";
+    content: "Edit";
+}
+.theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]:hover{
+    transition: 100ms !important;
+    color: #900000 !important;
+}
+/* 4st EDIT */
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]:before{
+    font-size: 13px;
+    font-family: "Merienda";
+    content: "Edit";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+/** END */
 /* Replace phone number */
 .changePasswordButton__91e39{
     border-radius: 8px !important;
@@ -1494,8 +1584,8 @@ z-index: 999!important;
     box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
     transition: 100ms !important;
 }
-/* REMOVE 2FA */
-.lookOutlined__46d54.colorRed_d6b062[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"] {
+/* Remove 2FA */
+.userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookOutlined__46d54.colorRed_d6b062{
     border-radius: 8px;
     transition: 200ms;
     font-size: 0;
@@ -1503,13 +1593,13 @@ z-index: 999!important;
     border-color: rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
 }
-.lookOutlined__46d54.colorRed_d6b062[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]::before{
+.userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookOutlined__46d54.colorRed_d6b062::before{
     content: "Remove 2FA";
     color: azure !important;
     font-size: 16px !important;
     font-family: "Merienda";
 }
-.lookOutlined__46d54.colorRed_d6b062[aria-label*="Απενεργοποιημένο για ιδιοκτήτες/διαχειριστές διακομιστών που έχουν δημοσιεύσει επίπεδα συνδρομής διακομιστή"]:hover{
+.userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookOutlined__46d54.colorRed_d6b062:hover{
     background-color: rgb(153, 0, 0) !important;
     box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
     transition: 200ms !important;
@@ -2371,3 +2461,11 @@ z-index: 999!important;
 .theme-light .folder__17546[aria-expanded="false"] {
     background-color: #747474;
 }
+.markup_a7e664 .inline{
+    background-color: white !important;
+    color: black;
+    font-weight: 800 !important;
+}
+
+
+
