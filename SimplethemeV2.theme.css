@@ -2329,3 +2329,45 @@ z-index: 999!important;
     background-image: -webkit-linear-gradient(-43deg, #4b508045 43%, #7a72b395 100%) !important;
     border-radius: 0 20px 20px 0!important;
 }
+.container__871ba .slider__41d94 > svg > path, .container__871ba .slider__41d94 > rect {
+    fill: white !important;
+}
+.container__871ba .slider__41d94 {
+    margin-top: -2px;
+    margin-left: -4px;
+}
+.container__871ba.checked__6bdb0 .slider__41d94 {
+    margin-left: 0;
+}
+.container__871ba.checked__6bdb0 .slider__41d94 > svg > path, .container__871ba.checked__6bdb0 .slider__41d94 > rect {
+    fill: white !important;
+}
+.container__871ba:has(.slider__41d94) {
+    height: 14px;
+    width: 28px !important;
+}
+.container__871ba.checked__6bdb0:has(.slider__41d94) {
+    background-color: rgb(0, 86, 185) !important;
+}
+.expandedFolderIconWrapper__458cf > svg:has(>path[d="M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7Z"]) {
+    scale: 10;
+}
+.expandedFolderIconWrapper__458cf::after,
+.closedFolderIconWrapper__7321f::after {
+    content: "";
+    background-color: #fff;
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    clip-path: path("M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7Z");
+}
+.closedFolderIconWrapper__7321f > .guildIcon__2e5ab {
+    opacity: .5;
+    filter: blur(2px);
+}
+.theme-dark .folder__17546[aria-expanded="false"] {
+    background-color: #474747;
+}
+.theme-light .folder__17546[aria-expanded="false"] {
+    background-color: #747474;
+}
