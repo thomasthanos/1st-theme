@@ -1424,7 +1424,7 @@ z-index: 999!important;
 }
 .theme-dark .previewImage__91c1c {
     background-image: url(https://i.postimg.cc/DyFxFpm9/dslr-camera-logo-design-png-removebg-preview.png) !important;
-}.card__4dc22:not(.outline_cb0aed){
+}.card__7756d:not(.outline_cb0aed){
     background-color: var(--background-tertiary);
 }
 .constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση διεύθυνσης email"]),
@@ -1862,13 +1862,13 @@ z-index: 999!important;
     border-radius: 12px !important;
 }
 /* κοινη χρηση οθονης */
-.sourceThumbnail-ERDcZE {
+.sourceThumbnail__21c87 {
     border-radius: 17px;
     background-position: 50%;
     background-color: var(--background-secondary-alt) !important;
     transition: 300ms !important;
 }
-.tile-3POX2m:hover .sourceThumbnail-ERDcZE {
+.tile__46960:hover .sourceThumbnail__21c87 {
     -webkit-box-shadow: inset 0 0 0 2px var(--brand-experiment);
     box-shadow: inset 0 0 0 2px white;
     transition: 200ms !important;
@@ -1992,7 +1992,7 @@ z-index: 999!important;
 .selectorText-LxivBc{
     color: white !important;
 }
-.card-m7VgZ8 {
+.card__7756d {
     border-radius: 12px;
     font-size: 26px;
     line-height: 29px;
@@ -2002,12 +2002,12 @@ z-index: 999!important;
     background-color: var(--background-secondary);
     font-family: "Caveat";
 }
-.qualitySettingsContainer-2LjkfM {
+.qualitySettingsContainer__5cacd {
     border: 1px solid var(--primary-800);
     border-radius: 8px;
     padding: 0 8px 8px;
 }
-.qualitySettingsContainer-2LjkfM {
+.qualitySettingsContainer__5cacd {
     border: 1px solid var(--background-secondary-alt);
     border-radius: 8px;
     padding: 0 8px 8px;
@@ -2310,7 +2310,7 @@ z-index: 999!important;
     --symbol2path: path('M4.08643 11.0903L5.67742 9.49929L9.4485 13.2704L7.85751 14.8614L4.08643 11.0903Z');
 }
 /* END */
-.modalContent-2y3sGW:has(.qualitySettingsContainer-2LjkfM) .lookFilled__3dba3.select__0eb48 {
+.modalContent-2y3sGW:has(.qualitySettingsContainer__5cacd) .lookFilled__3dba3.select__0eb48 {
     border: 0px !important;
     background: black;
     border-radius: 11px;
