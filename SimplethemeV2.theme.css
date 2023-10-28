@@ -475,8 +475,12 @@ button.button__4f306{
 .container__11d72 .iconWrapper_af9215[aria-label="Ρυθμίσεις ειδοποιήσεων"],
 .container__11d72 .iconWrapper_af9215[aria-label="Εισερχόμενα"],
 a>.iconWrapper_af9215[aria-label="Βοήθεια"] {
-    display: none;
-}
+    display: none;}
+.container__11d72 .iconWrapper_af9215[aria-label="Channel header"],
+.container__11d72 .iconWrapper_af9215[aria-label="Notification Settings"],
+.container__11d72 .iconWrapper_af9215[aria-label="Inbox"],
+a>.iconWrapper_af9215[aria-label="Help"] {
+    display: none;}
 .closeButton__34341 {
     color: rgb(153, 0, 0);
 }
@@ -2328,10 +2332,7 @@ z-index: 999!important;
     color: rgb(161, 0, 175) !important;
     font-weight: 600;
 }
-.numberBadge__50328{
-    background-color: rgb(175, 0, 0) !important;
-    box-shadow: 0px 0px 4px 0.6px rgb(0, 0, 0) inset !important;
-}
+
 .appliedBoostContainer_d3ed2e{
     border-radius: 20px;
 }
