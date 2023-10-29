@@ -2538,10 +2538,10 @@ z-index: 999!important;
 .theme-dark .artworkSpotifySessionEnded__8272a {
     background-image: url(https://i.postimg.cc/qMGhbvH9/ezgif.gif);
     background-color: transparent !important;
-    transform: scale(1.2) translate(-14px, -6px);
+    transform: scale(1.2) translate(-8px, -6px) !important;
 }
 .artwork__34afd {
-    width: 120px;
+    width: 150px !important;
 }
 .theme-dark .partyStatus__6a567, .theme-dark .name_b50cd9{
     color: rgb(255, 255, 255) !important;
