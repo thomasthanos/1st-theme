@@ -2617,4 +2617,27 @@ z-index: 999!important;
     background-color: transparent;
     transition: 150ms;
 }
+.theme-dark {
+    --button-positive-background: green !important;
+}
+:root {
+    --green-360: green !important;
+    --primary-400: rgba(255, 255, 255, 0.623);
+}
+[data-list-item-id*=private-channels-uid_3317___shop],[data-list-item-id=private-channels-uid_3317___nitro]{
+    display: none !important;
+}
+.iconWrapper_af9215[aria-label="Εμφάνιση προφίλ χρήστη"]{
+    display: none;
+}
+html, [data-popout-root] {
+    --brand-experiment: rgb(66, 112, 113);
+    --brand-experiment-560: rgb(40, 69, 69);
+}
+.disabledButtonOverlay__2a969{
+    border-radius: 8px;
+    transition: 200ms;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
+}
 /* END */
