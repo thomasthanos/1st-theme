@@ -355,8 +355,18 @@ button.button__4f306{
     background: transparent !important;
 }
 .emptyChannelIcon__1a1ba.locked_e10853 {
-    background-image: url(https://i.postimg.cc/dVK3xW40/ezgif-com-gif-maker-1.gif);
-    transform: scale(1.135);
+    background-image: url(https://i.postimg.cc/J7pL4sZr/ezgif-com-resize.gif);
+    transform: scale(1.065) translateX(10px) translateY(-15px);
+    width: 350px;
+    height: 260px;
+    background-color: transparent !important;
+}
+.emptyChannelIcon__1a1ba {
+    background-image: url(https://i.postimg.cc/J7pL4sZr/ezgif-com-resize.gif);
+    transform: scale(1.065) translateX(10px) translateY(-15px);
+    width: 350px;
+    height: 260px;
+    background-color: transparent !important;
 }
 .gifTag__9db5a {
     background-image: url(https://i.postimg.cc/59vpSQZw/gif-21.gif);
@@ -2574,4 +2584,14 @@ z-index: 999!important;
 .interactive_a868bc{
     border-radius: 50px;
     border: 0.1mm solid rgba(255, 255, 255, 0) !important;
+}
+.imageWrapper_fd6587{
+    border-radius: 20px !important;
+}
+.markup_a7e664 code {
+    font-size: .945rem;
+    line-height: 1.025rem;
+    background: var(--background-secondary);
+    border: 1.3px solid var(--background-tertiary);
+    border-radius: 7px;
 }
