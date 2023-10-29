@@ -2663,3 +2663,10 @@ html, [data-popout-root] {
     border-radius: 50px !important;
     box-shadow: 0px 0px 5px rgb(255, 255, 255);
 }
+.audioMetadata_e546a8:before {
+    width: 33.5px;
+    height: 37px;
+    content: "";
+    background-image: url(https://i.postimg.cc/mDSntr4j/pngwing-com.png) !important;
+    transform: scale(1.1);
+}
