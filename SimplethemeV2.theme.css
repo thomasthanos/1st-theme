@@ -2695,4 +2695,31 @@ html, [data-popout-root] {
     font-family: 'Courier Prime', monospace;
     font-size: 10.5px !important;
 }
+/* FILE SHARE */
+.upload_c98ecb {
+    background-color: var(--background-secondary-alt);
+    border-radius: 15px 15px 5px 5px;
+    margin: 0;
+    padding: 10px;
+}
+.icon_c2f643.audio__4fc0c {
+    background-image: url(https://i.postimg.cc/mDSntr4j/pngwing-com.png);
+    transform: scale(1.2);
+}
+.altTag__3fced,.tags_dbc7de{
+    background: var(--header-secondary);
+    margin-left: 29.5px !important;
+    margin-bottom: -19.5px !important;
+    font-size: 13px;
+    font-weight: 900;
+    padding: 5px;
+    border-radius: 7px;
+    filter: blur(0px) !important;
+}
+.tags_dbc7de{
+    background-color: transparent !important;
+}
+.filename__7ce23{
+    font-family: 'Poppins', sans-serif;
+}
 /* END */
