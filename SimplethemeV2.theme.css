@@ -2657,3 +2657,9 @@ html, [data-popout-root] {
 .labelDescriptor__6432e, .description__7af71{
     display: none;
 }
+.divider_a2339a{
+    background: rgb(185, 185, 185);
+    height: 2px !important;
+    border-radius: 50px !important;
+    box-shadow: 0px 0px 5px rgb(255, 255, 255);
+}
