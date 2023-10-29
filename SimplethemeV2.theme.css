@@ -2635,7 +2635,6 @@ html, [data-popout-root] {
     --brand-experiment-560: rgb(40, 69, 69);
 }
 .disabledButtonOverlay__2a969{
-    border-radius: 8px;
     transition: 120ms;
     box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
 }
