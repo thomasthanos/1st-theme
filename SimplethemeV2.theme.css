@@ -703,6 +703,9 @@ a>.iconWrapper_af9215[aria-label="Help"] {
 .wrapper__3a7a0 {
     border-radius: 20px !important;
 }
+.spoilerInnerContainer__9ef22{
+    background-color: var(--background-primary);
+}
 .wrapper-28eC3z {
     transform: rotate(360deg);
     transition: transform 0.5s;
@@ -2694,6 +2697,15 @@ html, [data-popout-root] {
     color: rgba(255, 255, 0, 0.391);
     font-family: 'Courier Prime', monospace;
     font-size: 10.5px !important;
+}
+.hoverButtonGroup__5b423{
+    opacity: 1;
+    border-radius: 50px;
+    top: 12px;
+    right: 12px;
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0) !important;
+    border: 0px solid white !important;
 }
 /* FILE SHARE */
 .upload_c98ecb {
