@@ -1454,7 +1454,7 @@ z-index: 999!important;
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]::before{
     font-size: 13px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "Edit";
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]:hover{
@@ -1474,7 +1474,7 @@ z-index: 999!important;
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]:before{
     font-size: 13px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "Edit";
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]:hover{
@@ -1494,7 +1494,7 @@ z-index: 999!important;
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]:before{
     font-size: 13px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "Edit";
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]:hover{
@@ -1510,7 +1510,7 @@ z-index: 999!important;
 }
 .theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]::before{
     font-size: 13px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "Edit";
 }
 .theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]:hover{
@@ -1529,7 +1529,7 @@ z-index: 999!important;
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]:before{
     font-size: 13px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "Edit";
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]:hover{
@@ -1551,7 +1551,7 @@ z-index: 999!important;
 .changePasswordButton__91e39::before{
     content: "Replace phone number";
     font-size: 15px !important;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     color: white !important;
 }
 .changePasswordButton__91e39:hover{
@@ -1571,7 +1571,7 @@ z-index: 999!important;
 }
 .userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookFilled__19298.colorBrand_b2253e::before{
     font-size: 15px;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     content: "View backup";
 }
 .userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookFilled__19298.colorBrand_b2253e:hover{
@@ -1592,7 +1592,7 @@ z-index: 999!important;
     content: "Remove 2FA";
     color: azure !important;
     font-size: 16px !important;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
 }
 .userSettingsSecurity__03e70 .children_b15c64 > div.flex_f5fbb7 .h5__884a2.defaultMarginh5__8514a  ~ .flex_f5fbb7 .lookOutlined__46d54.colorRed_d6b062:hover{
     background-color: rgb(153, 0, 0) !important;
@@ -1614,7 +1614,7 @@ z-index: 999!important;
 [class*="userSettingsSecurity__03e70"] .marginTop40__2b1fe:has(h3.h5__884a2) .children_b15c64 .modeDefault_c1162c + .flex_f5fbb7  .lookOutlined__46d54.colorRed_d6b062::before {
   content: "Remove SmS";
   font-size: 16px !important;
-  font-family: "Merienda";
+  font-family: 'Merienda', cursive;
 }
 [class*="userSettingsSecurity__03e70"] .marginTop40__2b1fe:has(h3.h5__884a2) .children_b15c64 .modeDefault_c1162c + .flex_f5fbb7  .lookOutlined__46d54.colorRed_d6b062:hover {
     background-color: rgb(153, 0, 0) !important;
@@ -1636,7 +1636,7 @@ z-index: 999!important;
 .disableButton__61514::before{
     content: "✖️〢Deactivation";
     font-size: 16px !important;
-    font-family: 'Playpen Sans' !important;
+    font-family: 'Playpen Sans', cursive !important;
 }
 .disableButton__61514:hover{
     background-color: rgb(153, 0, 0) !important;
@@ -1658,7 +1658,7 @@ z-index: 999!important;
 [class*="userSettingsSecurity__03e70"] ~ .marginTop40__2b1fe:has(h2.h5__884a2) .children_b15c64 .buttonContainer__0dac8 .lookOutlined__46d54.colorRed_d6b062::before {
     content: "⚠️〢Delete";
     font-size: 18px !important;
-    font-family: 'Playpen Sans' !important;
+    font-family: 'Playpen Sans', cursive !important;
 }
 [class*="userSettingsSecurity__03e70"] ~ .marginTop40__2b1fe:has(h2.h5__884a2) .children_b15c64 .buttonContainer__0dac8 .lookOutlined__46d54.colorRed_d6b062:hover {
     background-color: rgb(153, 0, 0) !important;
@@ -2475,7 +2475,7 @@ z-index: 999!important;
     content: "Αίτηση δεδομένων";
     color: azure !important;
     font-size: 13px !important;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
 }
 .lookOutlined__46d54.colorBrand_b2253e:hover{
     background-color: rgb(141, 68, 0) !important;
@@ -2507,12 +2507,12 @@ z-index: 999!important;
 }
 .header_aea860{
     color: yellow !important;
-    font-family: "Merienda";
+    font-family: 'Merienda', cursive;
     font-size: 10px;
 }
 .channelName_caf2ed,.channelIcon__3b121{
     color: rgb(255, 196, 0) !important;
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive !important;
     font-size: 11px;
 }
 .iconActiveLarge__8985a{
@@ -2523,11 +2523,11 @@ z-index: 999!important;
 }
 .inviteDestinationExpired__6cda2{
     color: rgb(195, 0, 0);
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive;
 }
 .guildDetail__0b882{
     color: rgb(255, 196, 0) !important;
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive;
     font-size: 11px;
 }
 .theme-dark .guildIconExpired__1d51f {
@@ -2545,7 +2545,7 @@ z-index: 999!important;
 }
 .theme-dark .partyStatus__6a567, .theme-dark .name_b50cd9{
     color: rgb(255, 255, 255) !important;
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive;
     font-size: 13px;
 }
 .theme-dark .header__8b673{
@@ -2562,10 +2562,10 @@ z-index: 999!important;
 }
 .content__72fdc a{
     color: white !important;
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive;
 }
 .markup_a7e664 a{
-    font-family: "Merienda" !important;
+    font-family: 'Merienda', cursive;
     color: cyan;
     font-size: 16.5px;
 }
