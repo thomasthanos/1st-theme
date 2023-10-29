@@ -2740,3 +2740,6 @@ html, [data-popout-root] {
     font-family: 'Poppins', sans-serif;
 }
 /* END */
+.card__4dc22:not(.outline_cb0aed){
+    border: transparent !important;
+}
