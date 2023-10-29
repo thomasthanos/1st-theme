@@ -2636,8 +2636,20 @@ html, [data-popout-root] {
 }
 .disabledButtonOverlay__2a969{
     border-radius: 8px;
-    transition: 200ms;
-    border-color: rgba(255, 255, 255, 0.11) !important;
+    transition: 120ms;
     box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
+}
+.disabledButtonOverlay__2a969:hover{
+    border-radius: 8px;
+    transition: 180ms !important;
+    box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
+}
+.item_f9d377{
+    background-color: cyan !important;
+    box-shadow: 0px 0px 7px -1px var(--background-tertiary)  inset!important;
+    transition: 120ms;
+}
+.theme-dark .textLink__47850, .theme-dark .message-group .textLink__47850{
+    font-family: 'Playpen Sans', cursive !important;
 }
 /* END */
