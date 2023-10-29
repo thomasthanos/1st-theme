@@ -2654,3 +2654,6 @@ html, [data-popout-root] {
     font-family: 'Playpen Sans', cursive !important;
 }
 /* END */
+.labelDescriptor__6432e, .description__7af71{
+    display: none;
+}
