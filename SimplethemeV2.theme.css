@@ -2641,7 +2641,6 @@ html, [data-popout-root] {
     box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
 }
 .disabledButtonOverlay__2a969:hover{
-    border-radius: 8px;
     transition: 180ms !important;
     box-shadow: 1px 3px 10px 1px var(--background-tertiary)  inset,0px 0px 10px -1px var(--background-tertiary)!important;
 }
