@@ -2662,6 +2662,7 @@ html, [data-popout-root] {
     border-radius: 50px !important;
     box-shadow: 0px 0px 5px rgb(255, 255, 255);
 }
+/* MP3 */
 .audioMetadata_e546a8:before {
     width: 33.5px;
     height: 37px;
@@ -2675,3 +2676,23 @@ html, [data-popout-root] {
 .buffer_e14781,.buffer_e14781:before, .buffer_e14781:after{
     background-color:rgb(135, 135, 135) !important;
 }
+.audioControls__9fbe9{
+    background-color: black;
+    border-radius: 50px;
+    padding: 2px;
+    padding-left: 10px !important;
+    width: 504px;
+}
+.theme-dark .wrapperAudio__555ce {
+    transition: 200ms;
+    background-color: var(--background-secondary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 15px 2px var(--background-tertiary)  inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    width: 550px !important;
+}
+.audioMetadata_e546a8 .metadataSize__42428{
+    color: rgba(255, 255, 0, 0.391);
+    font-family: 'Courier Prime', monospace;
+    font-size: 10.5px !important;
+}
+/* END */
