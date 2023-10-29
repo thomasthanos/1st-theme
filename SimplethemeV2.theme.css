@@ -1169,18 +1169,22 @@ z-index: 999!important;
     pointer-events: none;
 }
 .spoilerContainer_b653f1.hidden_f44e41:not(:focus){
-    filter: blur(9px) !important;
-    opacity: .4;
+    opacity: .5;
     transition: 200ms !important;
 }
 .spoilerContent__37bfa.hidden_f44e41:hover{
-    filter: blur(0px) !important;
     transition: 200ms !important;
     opacity: 1 !important;
 }
 .spoilerWarning_d02e2d {
     background-color: transparent !important;
     color: transparent !important;
+}
+.spoilerWarning_d02e2d::before{
+    content: "Spoiler Warning";
+    color: yellow !important;
+    font-family: 'Playpen Sans', cursive;
+    font-size: larger;
 }
 .bannerSVGWrapper__3e7b0 foreignObject {
     mask: none;
