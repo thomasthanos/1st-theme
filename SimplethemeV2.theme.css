@@ -1713,10 +1713,10 @@ z-index: 999!important;
 }
 /* Changing the border colors */
 .radioBar__40e1b[style*="var(--green-360);"] {
-    border-left: 3px solid #058d00 !important;
+    border-left: 3px solid green !important;
 }
 .radioBar__40e1b[style*="var(--yellow-360);"] {
-    border-left: 3px solid #d3a200 !important;
+    border-left: 3px solid var(--yellow-360) !important;
 }
 .radioBar__40e1b[style*="var(--red-400);"] {
     border-left: 3px solid rgb(146, 0, 0) !important;
@@ -2632,6 +2632,7 @@ z-index: 999!important;
 :root {
     --green-360: green !important;
     --primary-400: rgba(255, 255, 255, 0.623);
+    --red-400: rgb(146, 0, 0) !important;
 }
 [data-list-item-id*=private-channels-uid_3317___shop],[data-list-item-id=private-channels-uid_3317___nitro]{
     display: none !important;
