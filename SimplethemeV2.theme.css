@@ -1507,6 +1507,7 @@ z-index: 999!important;
     transition: 200ms !important;
     font-size: 0 !important;
     color: #de0000 !important;
+    background-color: transparent !important;
 }
 .theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]::before{
     font-size: 13px;
@@ -1516,6 +1517,7 @@ z-index: 999!important;
 .theme-dark .lookLink__93965.colorPrimary__6ed40[aria-label*="Αφαίρεση αριθμού τηλεφώνου"]:hover{
     transition: 100ms !important;
     color: #900000 !important;
+    background-color: transparent !important;
 }
 /* 4st EDIT */
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]{
