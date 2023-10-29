@@ -1,9 +1,4 @@
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
-/**
-*! FONTS
-*/
-
-
 /* Folders Size */
 :root {
     --server-size: 45px; /* Size of the server icons */
@@ -2595,3 +2590,31 @@ z-index: 999!important;
     border: 1.3px solid var(--background-tertiary);
     border-radius: 7px;
 }
+/* empty welcome channel */
+.header__4080b{
+    font-family: 'Merienda', cursive;
+    color: rgb(226, 176, 156);
+    font-weight: 400;
+}
+.text-md-normal__6a4eb,.text-md-normal__4afad{
+    font-family: 'Playpen Sans', cursive !important;
+}
+.description__57d03{
+    font-family: 'Playpen Sans', cursive;
+    color: rgba(255, 255, 255, 0.466);
+}
+.button_fb39e8 {
+    color: rgb(113, 166, 183);
+    margin-right: 8px;
+    padding: 6px;
+    border-radius: 7px;
+    border-bottom: 2px solid transparent;
+    background-color: transparent;
+    transition: 150ms
+}
+.button_fb39e8:hover{
+    border-bottom: 2px solid;
+    background-color: transparent;
+    transition: 150ms;
+}
+/* END */
