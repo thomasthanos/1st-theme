@@ -2669,3 +2669,9 @@ html, [data-popout-root] {
     background-image: url(https://i.postimg.cc/mDSntr4j/pngwing-com.png) !important;
     transform: scale(1.1);
 }
+.mediaBarWrapper_f312bd,.mediaBarWrapper_f312bd:before, .mediaBarWrapper_f312bd:after{
+    background-color: rgb(29, 36, 42);
+}
+.buffer_e14781,.buffer_e14781:before, .buffer_e14781:after{
+    background-color:rgb(135, 135, 135) !important;
+}
