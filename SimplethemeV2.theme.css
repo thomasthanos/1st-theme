@@ -350,14 +350,14 @@ button.button__4f306{
     background: transparent !important;
 }
 .emptyChannelIcon__1a1ba.locked_e10853 {
-    background-image: url(https://i.postimg.cc/J7pL4sZr/ezgif-com-resize.gif);
+    background-image: url(https://i.postimg.cc/s2Pc9zHg/ezgif-com-crop.gif) !important;
     transform: scale(1.065) translateX(10px) translateY(-15px);
     width: 350px;
     height: 260px;
     background-color: transparent !important;
 }
 .emptyChannelIcon__1a1ba {
-    background-image: url(https://i.postimg.cc/J7pL4sZr/ezgif-com-resize.gif);
+    background-image: url(https://i.postimg.cc/s2Pc9zHg/ezgif-com-crop.gif) !important;
     transform: scale(1.065) translateX(10px) translateY(-15px);
     width: 350px;
     height: 260px;
@@ -2550,15 +2550,15 @@ z-index: 999!important;
 }
 .theme-dark .header__8b673{
     color: yellow !important;
-    font-family: 'Playpen Sans' !important;
+    font-family: 'Playpen Sans', cursive !important;
     font-size: 11px;
 }
 .zalgo__39311.cozy_f5c119 .header__39b23{
-    font-family: 'Playpen Sans' !important;
+    font-family: 'Playpen Sans', cursive !important;
     font-size: 11px;
 }
 .content__72fdc{
-    font-family: 'Playpen Sans' !important;
+    font-family: 'Playpen Sans', cursive !important;
 }
 .content__72fdc a{
     color: white !important;
