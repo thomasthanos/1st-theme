@@ -1166,7 +1166,7 @@ z-index: 999!important;
     pointer-events: none;
 }
 .spoilerContainer_b653f1.hidden_f44e41:not(:focus){
-    filter: blur(14px) !important;
+    filter: blur(9px) !important;
     opacity: .4;
     transition: 200ms !important;
 }
