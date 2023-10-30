@@ -2759,3 +2759,66 @@ html, [data-popout-root] {
     transition: 120ms !important;
     border: 1px solid rgba(255, 255, 0, 0.295);
 }
+[data-list-item-id*=people___713947624335474738] {
+    border-top: 1px solid var(--background-modifier-accent);
+}
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]::before{
+    content: "Remove authorization";
+    color: azure !important;
+    font-size: 13px !important;
+    font-family: 'Merienda', cursive;
+}
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]:hover{
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
+}
+[class="text-sm-normal_e612c7 toolsTitle__1c200"]{
+    color: rgb(207, 0, 0) !important;
+    font-weight: 600;
+}
+[class="logOutAllButton__88677 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+[class="logOutAllButton__88677 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]:before{
+    content: "Remove all devices";
+    color: azure !important;
+    font-size: 13px !important;
+    font-family: 'Merienda', cursive;
+}
+[class="logOutAllButton__88677 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]:hover{
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
+}
+[class="checkbox_c7f690 box__66058 checked__24ad6"]{
+    background-color: rgba(0, 0, 255, 0.397) !important;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.568) inset;
+    border-color: rgba(1, 0, 7, 0.432) !important;
+}
+[class="button_afdfd9 lookFilled__19298 colorBrandNew_fd170a sizeMedium_c6fa98 grow__4c8a4"]{
+    background-color: rgb(0, 0, 170) !important;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.89) inset;
+    border-radius: 10px;
+}
+[class="inputSensitivityBar_ed89f2 sliderBar_ec36bb speaking__112c7"]{
+    background-color: red !important;
+    transition: 230ms;
+}
