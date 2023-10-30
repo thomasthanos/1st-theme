@@ -3136,3 +3136,23 @@ html, [data-popout-root] {
     -webkit-box-shadow: var(--dark-elevation-border),var(--dark-elevation-high);
     box-shadow: var(--dark-elevation-border),var(--dark-elevation-high);
 }
+.container__73245 {
+    border-radius: 8px;
+    transition: 200ms;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 15px 2px var(--background-tertiary)  inset!important;
+}
+.avatarSpeaking__61fb1 {
+    box-shadow: inset 0 0 0 2px cyan,inset 0 0 4px 4px black;
+    transition: 200ms;
+    border-radius: 8px !important;
+}
+.container_ca50b9 .avatarWrapper_ba5175 .svg_f5b652 .avatar__991e2 {
+    border-radius: 8px !important;
+    transition: .2s !important;
+}
+.container_ca50b9 .avatarWrapper_ba5175:hover .svg_f5b652 .avatar__991e2 {
+    border-radius: 8px !important;
+    transition: .2s !important;
+}
