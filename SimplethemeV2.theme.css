@@ -2337,20 +2337,6 @@ z-index: 999!important;
     background: black;
     border-radius: 11px;
 }
-.popout_a6e77f{
-    background-color: antiquewhite;
-    border-radius: 10px 10px 20px 20px;
-}
-.option_be8b2e.focused_a2f507, .option_be8b2e:focus, .option_be8b2e:hover{
-    color: white !important;
-    background-color: rgba(0, 0, 0, 0.685);
-    border-radius: 0px 50px 50px 0px;
-}
-.option_be8b2e{
-    color: rgb(161, 0, 175) !important;
-    font-weight: 600;
-}
-
 .appliedBoostContainer_d3ed2e{
     border-radius: 20px;
 }
