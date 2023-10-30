@@ -2743,3 +2743,19 @@ html, [data-popout-root] {
 .card__4dc22:not(.outline_cb0aed){
     border: transparent !important;
 }
+.button_Jt-tIg {
+    border-radius: 7px;
+    height: 20px;
+    padding-top: 2px;
+    font-size: 11px;
+    background-color: black;
+    font-family: 'Roboto', sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.308);
+    transition: 120ms !important;
+}
+.button_Jt-tIg:hover{
+    background-color: black !important;
+    color: yellow !important;
+    transition: 120ms !important;
+    border: 1px solid rgba(255, 255, 0, 0.295);
+}
