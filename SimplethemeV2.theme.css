@@ -332,7 +332,8 @@ button.button__4f306{
     color: red !important;
 }
 .accountProfilePopoutWrapper_af829a{
-    left: 0px !important; 
+    left: 59px !important; 
+    top: 62.5px;
 }
 ::-webkit-scrollbar-thumb {
     border: none !important;
