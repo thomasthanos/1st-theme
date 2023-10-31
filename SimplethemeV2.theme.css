@@ -3137,3 +3137,24 @@ html, [data-popout-root] {
     border-radius: 8px !important;
     transition: .2s !important;
 }
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]::before{
+    content: "Remove authorization";
+    color: azure !important;
+    font-size: 13px !important;
+    font-family: 'Merienda', cursive;
+}
+[class="deleteApp__18070 button_afdfd9 lookOutlined__46d54 colorRed_d6b062 sizeSmall__71a98 grow__4c8a4"]:hover{
+    background-color: rgb(153, 0, 0) !important;
+    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
+    transition: 200ms !important;
+    border-radius: 8px;
+    border: 1px solid rgb(255, 0, 0) !important;
+}
