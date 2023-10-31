@@ -878,24 +878,6 @@ a>.iconWrapper_af9215[aria-label="Help"] {
         transform: rotate(0deg);
     }
 }
-.reactionMe_bf6909 {
-    border-radius: 50px !important;
-    background: var(--accentcolorV1) !important;
-    border: 1px solid transparent !important;
-}
-
-.theme-dark .reaction_b90ab0 {
-    border-radius: 50px !important;
-    background: rgba(0, 0, 0, 0.3);
-}
-.reactionInner__00d5f {
-    background-color: #000;
-    border-radius: 50px;
-}
-.theme-dark .reaction_b90ab0 {
-    background-color: #000;
-    border-radius: 50px;
-}
 .message__80c10,
 .mentioned__58017 {
     border-radius: 8px !important;
