@@ -3160,3 +3160,20 @@ html, [data-popout-root] {
     border: 1px solid rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
 }
+/* END */
+.reaction_fef95b {
+    border-radius: 0.5rem;
+    transition: none .1s ease !important;
+    transition-property: background-color,border-color;
+    background: black !important; 
+    border: 0.0625rem solid rgba(255, 255, 255, 0.507) !important;
+}
+
+[class="defaultColor__77578 text-xs-medium__30cbe statusText_e0f90b"]{
+    font-size: 0 !important;
+}
+[class="defaultColor__77578 text-xs-medium__30cbe statusText_e0f90b"]::before{
+    content: "󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠" !important;
+    color: red !important;
+    font-family: 'Poppins', sans-serif;
+}
