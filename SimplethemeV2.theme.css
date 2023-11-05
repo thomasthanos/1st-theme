@@ -3137,14 +3137,6 @@ html, [data-popout-root] {
     border-radius: 8px;
     border: 1px solid rgb(255, 0, 0) !important;
 }
-[class="inputDefault__80165 input_d266e7"]{
-    border-radius: 8px;
-    transition: 200ms;
-    background-color: var(--background-primary);
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    border: 1px solid rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-}
 [placeholder="WUMP-AAAAA-BBBBB-CCCCC"]{
     background-color: black;
     border: 1px solid rgba(255, 255, 255, 0.37) !important;
