@@ -1,4 +1,6 @@
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
+@import "https://nyri4.github.io/Discolored/main.css";
+
 .theme-dark .theme-light:not(.userProfileOuter__46bb7) {
     --guild-header-text-shadow: 0 1px 1px hsl(var(--black-500-hsl)/0.4);
     --elevation-stroke: 0 0 0 1px hsl(var(--primary-900-hsl)/0.15);
@@ -3221,4 +3223,12 @@ html, [data-popout-root] {
     border-color: rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
     border: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
+.toast, .bd-toast {
+    border-radius: 8px;
+    transition: 200ms;
+    background-color: rgba(0, 0, 0, 0.274) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid;
 }
