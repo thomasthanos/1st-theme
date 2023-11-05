@@ -3196,3 +3196,29 @@ html, [data-popout-root] {
     border: 1px solid rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
 }
+.heading-xl-semibold__18cc2 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 17px;
+    line-height: 30px;
+    font-weight: 600;
+}
+.theme-dark .rootWithShadow__073a7, .theme-light .rootWithShadow__073a7{
+    border-radius: 8px;
+    transition: 200ms;
+    font-size: 0;
+    background-color: var(--background-secondary-alt) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+.footer__89240 {
+    border-radius: 0 0 5px 5px;
+    background-color: transparent;
+}
+.lookFilled__19298.colorBrand_b2253e{
+    border-radius: 8px;
+    transition: 200ms;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.13) !important;
+}
