@@ -1,6 +1,4 @@
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
-@import "https://nyri4.github.io/Discolored/main.css";
-
 .theme-dark .theme-light:not(.userProfileOuter__46bb7) {
     --guild-header-text-shadow: 0 1px 1px hsl(var(--black-500-hsl)/0.4);
     --elevation-stroke: 0 0 0 1px hsl(var(--primary-900-hsl)/0.15);
@@ -939,9 +937,7 @@ a>.iconWrapper_af9215[aria-label="Help"] {
 .wrapper__3a7a0 {
     border-radius: 20px !important;
 }
-.spoilerInnerContainer__9ef22{
-    background-color: var(--background-primary);
-}
+
 .wrapper-28eC3z {
     transform: rotate(360deg);
     transition: transform 0.5s;
@@ -2158,6 +2154,7 @@ z-index: 999!important;
     border-radius: 11px;
     box-shadow: 1px 2px 10px 5px rgba(0, 52, 82, 0.692)  inset,0px 0px 4px 1px rgb(0, 52, 82)!important;
 }
+
 /* END */
 .sidebarRegionScroller__1fa7e{
     box-shadow: -10px 11px 10px -10px var(--background-tertiary)  inset,10px 0px 10px -10px var(--background-tertiary)!important;
@@ -3139,6 +3136,14 @@ html, [data-popout-root] {
     border-radius: 8px;
     border: 1px solid rgb(255, 0, 0) !important;
 }
+[class="inputDefault__80165 input_d266e7"]{
+    border-radius: 8px;
+    transition: 200ms;
+    background-color: var(--background-primary);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
 [placeholder="WUMP-AAAAA-BBBBB-CCCCC"]{
     background-color: black;
     border: 1px solid rgba(255, 255, 255, 0.37) !important;
@@ -3167,68 +3172,4 @@ html, [data-popout-root] {
     content: "󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠󠀠 󠀠 󠀠 󠀠 󠀠 󠀠 󠀠" !important;
     color: red !important;
     font-family: 'Poppins', sans-serif;
-}
-[class="button_afdfd9 lookFilled__19298 colorBrand_b2253e sizeSmall__71a98 grow__4c8a4"]{
-    border-radius: 8px;
-    transition: 200ms;
-    background-color: var(--background-primary) !important;
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-    border: 1px solid;
-}
-[class="button_afdfd9 lookFilled__19298 colorBrand_b2253e sizeSmall__71a98 grow__4c8a4"]:hover{
-    background-color: rgb(153, 0, 0) !important;
-    box-shadow: 1px 3px 10px 5px rgb(82, 0, 0)  inset,0px 0px 4px 1px rgb(87, 0, 0)!important;
-    transition: 200ms !important;
-    border-radius: 8px;
-    border: 1px solid rgb(255, 0, 0) !important;
-}
-[class="credentialList_f9417e"]{
-    background-color: var(--background-secondary-alt) !important;
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-secondary)  inset,0px 0px 10px 3px var(--background-secondary)!important;
-    border: 1px solid;
-    border-radius: 10px;
-}
-[class="inputDefault__80165 input_d266e7"]{
-    border-radius: 8px;
-    transition: 200ms;
-    background-color: var(--background-secondary-alt) !important;
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    border: 1px solid rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-}
-.heading-xl-semibold__18cc2 {
-    font-family: 'Roboto', sans-serif;
-    font-size: 17px;
-    line-height: 30px;
-    font-weight: 600;
-}
-.theme-dark .rootWithShadow__073a7, .theme-light .rootWithShadow__073a7{
-    border-radius: 8px;
-    transition: 200ms;
-    font-size: 0;
-    background-color: var(--background-secondary-alt) !important;
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-}
-.footer__89240 {
-    border-radius: 0 0 5px 5px;
-    background-color: transparent;
-}
-.lookFilled__19298.colorBrand_b2253e{
-    border-radius: 8px;
-    transition: 200ms;
-    background-color: var(--background-primary);
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-    border: 1px solid rgba(255, 255, 255, 0.13) !important;
-}
-.toast, .bd-toast {
-    border-radius: 8px;
-    transition: 200ms;
-    background-color: rgba(0, 0, 0, 0.274) !important;
-    border-color: rgba(255, 255, 255, 0.11) !important;
-    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
-    border: 1px solid;
 }
