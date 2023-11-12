@@ -42,6 +42,7 @@ Table of Contents
     5.2 MP3
     5.3 Minified Search Bar
     5.4 Life is so much easier when you just take a time to chill
+    5.5 Better Jump To Present Button
 6. Settings
     6.1 my account
     6.2 Profile
@@ -240,7 +241,7 @@ Table of Contents
     border-radius: 8px;
     transition: 200ms;
     background-color: var(--background-secondary);
-    border-color: rgba(255, 255, 255, 0.11) !important;
+    border:1px solid rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 5px 3px var(--background-tertiary)  inset,0px 0px 6px 2px var(--background-tertiary)!important;
 }
 [class="button__8ec71 button_afdfd9 lookFilled__19298 colorGreen__5f181 buttonSize_b01b54 grow__4c8a4"]{
@@ -1439,6 +1440,49 @@ Table of Contents
 .side_b4b3f6 .themed_b957e8.item__48dda:hover:not(.disabled__85bca){
 background-color: #00000044;
 transition: 0.4s;
+}
+/* 5.5 Better Jump To Present Button */
+[class*="jumpToPresentBar"] {
+    display: contents;
+}
+[class*="jumpToPresentBar"] > button:first-child {
+    display: none;
+}
+[class*="jumpToPresentBar"] > button:last-child {
+    position: absolute;
+    z-index: 1;
+    bottom: 24px;
+    right: 22px;
+    padding: 8px !important;
+    height: auto;
+    background-color: #5865F2;
+    box-shadow: var(--elevation-high);
+    border-radius: 100px;
+    display: flex;
+    font-size: 0px;
+    color: transparent;
+    transition: font-size .2s .1s, color .2s, padding .4s .1s;
+}
+[class*="jumpToPresentBar"] > button svg {
+    order: -1;
+    margin: 0px;
+    height: 24px;
+    width: 24px;
+    top: auto;
+    margin-right: 0px;
+    margin-left: 0px;
+    color: #FFFFFF;
+    transition: margin .6s;
+}
+[class*="jumpToPresentBar"]:hover > button {
+    padding: 8px 18px !important;
+    font-size: 14px;
+    color: #FFFFFF;
+    transition: font-size .2s, color .2s .1s, padding .4s;
+}
+[class*="jumpToPresentBar"]:hover > button svg {
+    margin-right: 2px;
+    margin-left: -6px;
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
