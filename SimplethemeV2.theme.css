@@ -688,10 +688,6 @@ Table of Contents
     background-color: rgb(175, 0, 0) !important;
     box-shadow: 0px 0px 4px 0.6px rgb(0 0 0) inset !important;
 }
-[class="usernameFont__71dd5 username__73ce9"]{
-    color: var(--channel-unread);
-    text-shadow: 0 0 3px;
-}
 [class="defaultColor__77578 text-sm-normal_e612c7 tip__5f672"],[class="text-sm-bold__33e9d pro_db62e1"]{
     display: none;
 }
