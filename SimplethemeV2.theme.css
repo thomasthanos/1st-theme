@@ -17,7 +17,6 @@ font-family: 'Roboto', sans-serif;
 font-family: 'Signika Negative', sans-serif;
 font-family: 'Yellowtail', cursive;
 */
-
 /*
 Table of Contents
 1. Imports
@@ -244,9 +243,10 @@ Table of Contents
     border-color: rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 5px 3px var(--background-tertiary)  inset,0px 0px 6px 2px var(--background-tertiary)!important;
 }
-.lookFilled__19298.colorGreen__5f181{
+[class="button__8ec71 button_afdfd9 lookFilled__19298 colorGreen__5f181 buttonSize_b01b54 grow__4c8a4"]{
     border-radius: 10px !important;
     box-shadow: 1px 1px 5px 2px var(--background-tertiary)  inset!important;
+    border:1px solid rgba(255, 255, 255, 0.226) !important;
 }
 .inviteSplash_f4eb93 {
     position: relative;
@@ -686,6 +686,30 @@ Table of Contents
 .numberBadge__50328 {
     background-color: rgb(175, 0, 0) !important;
     box-shadow: 0px 0px 4px 0.6px rgb(0 0 0) inset !important;
+}
+[class="usernameFont__71dd5 username__73ce9"]{
+    color: var(--channel-unread);
+    text-shadow: 0 0 3px;
+}
+[class="defaultColor__77578 text-sm-normal_e612c7 tip__5f672"],[class="text-sm-bold__33e9d pro_db62e1"]{
+    display: none;
+}
+.footer_a3029c {
+    padding: -0px;
+    text-align: center;
+    height: 53px;
+    background-color: var(--background-tertiary);
+}
+.messagesPopoutWrap_b3b384 {
+    background-color: var(--background-secondary);
+    box-shadow: var(--elevation-stroke),var(--elevation-high);
+    border:1px solid rgba(255, 255, 255, 0.226) !important;
+    width: 420px;
+    min-height: 200px;
+    border-radius: 13px;
+}
+.body__13cde{
+    display: none;
 }
 /* 4.3 Server member view */
 .container_b2ce9c {
