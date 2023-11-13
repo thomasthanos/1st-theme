@@ -659,6 +659,16 @@ Table of Contents
     border-radius: 50px !important;
     box-shadow: 0px 0px 5px rgb(0, 184, 184);
 }
+.unreadPill__715fc {
+    background-color: rgb(72, 156, 128) !important;
+}
+.isUnread__6f880, .custom-theme-background .isUnread__6f880{
+    border-color: transparent !important;
+}
+.unreadPillCapStroke__12c0b {
+    color: rgb(72, 156, 128) !important;
+    fill: rgb(72, 156, 128) !important;
+}
 .content_d67847{
     color: rgb(219, 0, 0) !important;
     box-shadow: 0px 0px 5px rgb(0, 184, 184);
