@@ -192,6 +192,13 @@ Table of Contents
 .input_f4043f {
     color: yellow;
 }
+.input__848cd[aria-label="Quick Switcher"]{
+    padding: 0 12px;
+    font-size: 22px;
+    border-radius: 10px;
+    border: none;
+    height: 55px;
+}
 /* 3.3 DM VIEW */
 .header__4080b {
     font-family: 'Merienda', cursive;
@@ -330,6 +337,11 @@ Table of Contents
     border-radius: 7px;
 }
 /* 3.4 Dm Voice */
+.root__46d4f {
+    border-radius: 11px;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.486);
+}
 .sourceThumbnail__21c87 {
     border-radius: 17px;
     background-position: 50%;
