@@ -43,6 +43,7 @@ Table of Contents
     5.3 Minified Search Bar
     5.4 Life is so much easier when you just take a time to chill
     5.5 Better Jump To Present Button
+    5.6 upload button
 6. Settings
     6.1 my account
     6.2 Profile
@@ -337,6 +338,9 @@ Table of Contents
     border-radius: 7px;
 }
 /* 3.4 Dm Voice */
+[class="callContainer_cbde45"]{
+    background-image: url(https://i.postimg.cc/t4N8x75w/call.gif) !important;
+}
 .root__46d4f {
     border-radius: 11px;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
@@ -1497,6 +1501,17 @@ transition: 0.4s;
 [class*="jumpToPresentBar"]:hover > button svg {
     margin-right: 2px;
     margin-left: -6px;
+}
+/* 5.6 upload button */
+.menu__47253[aria-label="Ενέργειες καναλιού"]{
+    background-color: transparent;
+}
+[class="scroller__750f5 thin_b1c063 scrollerBase_dc3aa9"]{
+    background-color: black;
+    border-radius: 10px;
+}
+[class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 "]{
+    border-radius: 10px;
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
