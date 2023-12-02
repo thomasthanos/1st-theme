@@ -124,7 +124,6 @@ Table of Contents
     background-color: rgb(0, 70, 0);
     border:1px solid rgba(40, 255, 40, 0.315) !important;
 }
-
 .divider_c09b64 {
     background-color: rgb(255, 255, 255);
     filter: blur(3px) !important;
@@ -134,6 +133,54 @@ Table of Contents
 }
 .iconWrapper_af9215[aria-label="Νέα ομάδα άμεσων μηνυμάτων"]{
     display: none;
+}
+/* spotify */
+.wrapper__6e669 {
+    background-color: #383c44;
+    height: 70px;
+    transition: 0.5s;
+}
+.wrapper__6e669:hover{
+    background-color: rgb(69, 74, 87) !important; 
+    transition: 0.5s;
+}
+.section_efc22d:only-child,[class="body__83069 inset__0bfb3"]{
+    background-color: transparent !important;
+}
+[class="wrapper_edb6e0 headerAvatar__27d08"]{
+    transform: translateX(155px) translateY(-12px);
+
+}
+[class="defaultColor__77578 text-md-semibold__4cb23 textContent__45dd0"]{
+    justify-content: center !important;
+    display: flex !important;
+    font-size: 14px;
+    transform: translateY(15px) translateX(25px);
+}
+[class="defaultColor__77578 text-sm-semibold__41578 textContent__45dd0"]{
+    justify-content: center !important;
+    display: flex !important;
+    font-size: 12px;
+    transform: translateX(12px) translateY(-20px);
+    color: grey;
+}
+[class="defaultColor__77578 text-xs-normal__56c35 textContent__45dd0"]{
+    justify-content: center !important;
+    display: flex !important;
+    font-size: 14px;
+    transform: translateY(-25px) translateX(10px);
+    color: grey;
+}
+.text-sm-normal_e612c7{
+    display: none;
+}
+[class="headerIcon__5761b"]{
+    transform: translateX(7px) translateY(-15px);
+}
+[class="largeImage_f4707b borderRadius0_b7b155"]{
+    transform: scale(2.5) translateY(-16.5px) translateX(1.5px);
+    border-radius: 5px !important;
+    box-shadow: rgba(0, 0, 0, 0.411) 2px 2px 4px;
 }
 /* 3.2 Άμεσα μηνύματα */
 .interactiveSelected_ec846b {
