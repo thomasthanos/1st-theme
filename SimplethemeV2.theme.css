@@ -2306,3 +2306,22 @@ transition: 0.4s;
     border: 1px solid rgba(255, 255, 255, 0.349);
     border-radius: 10px;
 }
+.section_efc22d{
+    background-color: rgb(55, 58, 65);
+    transition: 0.3s; 
+}
+[class="separator_c2ecc6"]{
+    background-color: rgb(47, 50, 56) !important;
+}
+.itemCard__1f162{
+    background-color: rgb(60, 63, 70);
+}
+.headerSimple__627e2 {
+    grid-template-columns: 52px minmax(0px,auto) !important;
+}
+.customEmojiPlaceholder__16936 {
+    background-image: url(https://i.postimg.cc/FFcLKFkK/pngwing-com.png);
+    transform: scale(1.6) !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
