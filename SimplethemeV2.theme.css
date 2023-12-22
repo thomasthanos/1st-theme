@@ -637,6 +637,14 @@ Table of Contents
     color: rgb(0, 89, 255);
     font-weight: 600;
 }
+[class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 "] {
+    background-color: rgb(0, 47, 134) !important;
+    transition: 150ms !important;
+    color: var(--white-500);
+}
+[class="item__183e8 labelContainer_bc2861 colorDefault__0b482"]{
+    transition: 150ms !important;
+}
 /* 4.2 server channel view */
 .attachment_f3cf2c {
     border-color: white;
