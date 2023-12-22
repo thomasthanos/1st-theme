@@ -633,6 +633,10 @@ Table of Contents
     background-color: rgb(160, 0, 0);
     color: var(--white-500);
 }
+.colorBrand__471df{
+    color: rgb(0, 89, 255);
+    font-weight: 600;
+}
 /* 4.2 server channel view */
 .attachment_f3cf2c {
     border-color: white;
