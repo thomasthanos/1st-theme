@@ -754,6 +754,34 @@ Table of Contents
 .body__13cde{
     display: none;
 }
+
+.wrapper_c727b6 {
+    background-color: var(--background-tertiary);
+    box-shadow: 0 2px 5px -2px rgba(255, 255, 255, 0.61);
+    height: 32px;
+    border: 1px solid white;
+    border-radius: 10px;
+    transition: box-shadow.1s ease-out;
+    transition: 0.8s !important;
+
+}
+.full-motion .wrapper_c727b6:hover {
+    box-shadow: var(--elevation-stroke),var(--elevation-medium);
+    background-color: black !important;
+    transition: 0.8s !important;
+}
+.icon_d1ac81,.icon_bdb038{
+    color: rgb(0, 194, 228);
+}
+.button_d553e5:hover {
+    background-color: var(--background-primary);
+    transition: 0.8s !important;
+    border-radius: 0px;
+}
+.icon_d1ac81:hover,.icon_bdb038:hover{
+    color: rgb(0, 111, 185) !important;
+    transition: 0.8s !important;
+}
 /* 4.3 Server member view */
 .container_b2ce9c {
     box-shadow: 0px 0px 10px -2px black inset !important;
