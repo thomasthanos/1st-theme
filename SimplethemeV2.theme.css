@@ -895,6 +895,12 @@ Table of Contents
     border-radius: 10px;
     box-shadow: 2px 2px 4px white;
 }
+.botTagRegular_c89c9a {
+    background: var(--background-secondary-alt);
+    box-shadow: 0px 0px 2px white;
+    color: white;
+    margin-left: 8px;
+}
 /* 4.4 User Area Changes */
 .panels__58331 span {
     background: transparent !important;
@@ -2379,4 +2385,15 @@ transition: 0.4s;
     box-shadow: 0px 0px 3px 0px rgba(255, 255, 255, 0.315),0px 0px 10px 0px rgba(255, 255, 255, 0.288) inset;
     border: 1px solid rgba(255, 255, 255, 0.349);
     border-radius: 10px;
+}
+
+
+
+
+
+
+.icon_c1b424 {
+    border-radius: 12px 6px 6px 6px;
+    color: white;
+    background-color: gray !important;
 }
