@@ -598,6 +598,35 @@ Table of Contents
     color: red !important;
     font-family: 'Poppins', sans-serif;
 }
+[class="text-sm-bold__33e9d pro_db62e1"],[class="defaultColor__77578 text-sm-normal_e612c7 tip__5f672"]{
+    display: none !important;
+}
+.container__03857 {
+    width: 280px;
+    border-radius: 15px;
+    margin-left: 16px;
+    padding: 0 16px;
+    max-height: 360px;
+    box-shadow: var(--elevation-high);
+    background-color: rgb(33, 35, 39);
+}
+.assetsLargeImage_fd49b5 {
+    width: 64px;
+    height: 64px;
+    display: block;
+    -o-object-fit: cover;
+    object-fit: cover;
+    margin-right: 8px;
+    border-radius: 15px;
+    box-shadow: -2px 2px 3px white;
+}
+[class="button__9491f button_afdfd9 lookOutlined__46d54 button_b406e5 buttonSize_ee7672 fullWidth__7c3e8 grow__4c8a4"]{
+    border-radius: 10px !important;
+}
+
+[class="button__9491f iconButton__878e3 button_afdfd9 lookOutlined__46d54 button_b406e5 buttonSize_ee7672 iconButtonSize_ff6499 grow__4c8a4"]{
+    border-radius: 8px !important;
+}
 /* 4.2 server channel view */
 .attachment_f3cf2c {
     border-color: white;
