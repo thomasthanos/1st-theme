@@ -44,6 +44,7 @@ Table of Contents
     5.4 Life is so much easier when you just take a time to chill
     5.5 Better Jump To Present Button
     5.6 upload button
+    5.7 i don't know
 6. Settings
     6.1 my account
     6.2 Profile
@@ -134,7 +135,21 @@ Table of Contents
 .iconWrapper_af9215[aria-label="Νέα ομάδα άμεσων μηνυμάτων"]{
     display: none;
 }
-
+.section_efc22d{
+    background-color: rgb(55, 58, 65);
+    transition: 0.3s; 
+}
+[class="separator_c2ecc6"]{
+    background-color: rgb(47, 50, 56) !important;
+}
+.itemCard__1f162{
+    background-color: rgb(60, 63, 70);
+    transition: 300ms;
+}
+.theme-dark .outer_a41cf3.interactive__01cfa:hover, .theme-dark .outer_a41cf3.active__76f42{
+    background-color: rgb(65, 67, 75);
+    transition: 300ms;
+}
 /* 3.2 Άμεσα μηνύματα */
 .interactiveSelected_ec846b {
     background-color: var(--background-secondary-alt) ;
@@ -861,6 +876,10 @@ Table of Contents
     color: #ffffff;
     background: transparent;
 }
+[class="assetsLargeImageUserPopoutV2__01dc1 assetsLargeImage_b88a59 assetsLargeImageSpotify__06348"]{
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px white;
+}
 /* 4.4 User Area Changes */
 .panels__58331 span {
     background: transparent !important;
@@ -915,6 +934,15 @@ Table of Contents
     border: 2px solid rgb(255, 0, 0) !important;
     transition: background-color 0.5s ease-in;
     color: white !important;
+}
+[class="contents_fb6220 buttonContents__387ff"]{
+    transform: scale(1.4);
+} 
+.subtext__8f869{
+    color: yellow;
+    padding-top: 5px;
+    font-family: "Courier Prime";
+    font-size: 10px;
 }
 /*                  //////////////                  */
 /* 4.5 Avatar and Buttons Location  */
@@ -1002,6 +1030,12 @@ Table of Contents
     box-shadow: inset 0 0 0 2px cyan,inset 0 0 4px 4px black;
     transition: 200ms;
     border-radius: 8px !important;
+}
+.customEmojiPlaceholder__16936 {
+    background-image: url(https://i.postimg.cc/FFcLKFkK/pngwing-com.png);
+    transform: scale(1.6) !important;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 /* Βγαζει το μπροστινο background */
 .container_d667ff{
@@ -1501,6 +1535,31 @@ transition: 0.4s;
 }
 [class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 "]{
     border-radius: 10px;
+}
+/* 5.7 i don't know*/
+[class="defaultColor__77578 text-xs-normal__56c35"]{
+    display: none;
+}
+.container__56cd1{
+    border-radius: 15px;
+}
+.container__56cd1 {
+    background-color: rgb(60, 63, 70);
+}
+.headerDivider_ec8d1f{
+    background-color: rgba(255, 255, 255, 0.37);
+    box-shadow: 0px 0px 4px white;
+}
+
+[class="assetsLargeImageUserPopoutV2__01dc1 assetsLargeImage_b88a59 assetsLargeImageSpotify__06348"]{
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px white;
+}
+.icon__1d60c{
+    color: rgb(143, 0, 0);
+}
+.headerSimple__627e2 {
+    grid-template-columns: 52px minmax(0px,auto) !important;
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
