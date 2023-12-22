@@ -1018,6 +1018,10 @@ Table of Contents
     font-family: "Courier Prime";
     font-size: 10px;
 }
+.colorDefault__0b482.focused__27621[id="account-devmode-copy-id-969725198679023707"]{
+    background-color: var(--profile-body-background-hover) !important;
+    border-radius: 2px !important;
+}
 /*                  //////////////                  */
 /* 4.5 Avatar and Buttons Location  */
 .speaking_c1b30e {
