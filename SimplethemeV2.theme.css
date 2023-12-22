@@ -36,7 +36,7 @@ Table of Contents
     4.6 Emoji - Soundboard Recolor
     4.7 Unnitro Profile View
     4.8 Share Screen View (Server)
-        4.9 VOICE COLOR
+    4.9 VOICE COLOR
 5. All in One
     5.1 Read Only
     5.2 MP3
@@ -628,6 +628,10 @@ Table of Contents
 
 [class="button__9491f iconButton__878e3 button_afdfd9 lookOutlined__46d54 button_b406e5 buttonSize_ee7672 iconButtonSize_ff6499 grow__4c8a4"]{
     border-radius: 8px !important;
+}
+.colorDanger_eec36d.focused__27621 {
+    background-color: rgb(160, 0, 0);
+    color: var(--white-500);
 }
 /* 4.2 server channel view */
 .attachment_f3cf2c {
