@@ -1892,10 +1892,35 @@ transition: 0.4s;
     border-radius: 10px !important;
     transition: 200ms;
 }
-.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση διεύθυνσης email"]),
-.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση αριθμού τηλεφώνου"]) {
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση διεύθυνσης email"][aria-label="Reveal email address"]),
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση αριθμού τηλεφώνου"][aria-label="Reveal phone number"]) {
   filter: blur(6px);
 }
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Reveal email address"]),
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Reveal phone number"]) {
+  filter: blur(6px);
+}
+/* replacce text settings profile */
+.lookFilled__19298.colorPrimary__6ed40[aria-label="Edit display name"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit username"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit email address"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit phone number"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit display name"]::before,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit username"]:before,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit email address"]:before,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit phone number"]:before{
+    font-size: 13px;
+    font-family: 'Merienda', cursive;
+    content: "Edit";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit display name"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit username"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit email address"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Edit phone number"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+
 /* replacce text settings profile */
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"],.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]{
     border-radius: 8px !important;
