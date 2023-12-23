@@ -954,6 +954,9 @@ Table of Contents
     color: white;
     margin-left: 8px;
 }
+[class="containerWrapper_fa6aa6 animation_fb8933"]{
+    display: none;
+}
 /* 4.4 User Area Changes */
 .panels__58331 span {
     background: transparent !important;
