@@ -80,7 +80,7 @@ Table of Contents
 @import url(https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css);
 /* 2. Discord Values recolor */
 :root {
-    --server-size: 45px; /* Size of the server icons */
+    
     --red-400: rgb(182, 0, 0);
     --green-360: green !important;
     --primary-400: rgba(255, 255, 255, 0.623);
