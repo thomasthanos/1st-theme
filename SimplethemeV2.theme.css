@@ -87,6 +87,9 @@ Table of Contents
     --red-400: rgb(146, 0, 0) !important;
     --main-color: #2780e6;
 }
+.iconWrapper_af9215[aria-label="Help"],[aria-label="Threads"],[aria-label="Notification Settings"],[aria-label="Inbox"],[aria-label="Νήματα"],[aria-label="Notification settings"]{
+    display: none;
+}
 .iconWrapper_af9215[aria-label="Βοήθεια"],[aria-label="Εισερχόμενα"],[aria-label="Νήματα"],[aria-label="Ρυθμίσεις ειδοποιήσεων"],[aria-label="Βοήθεια"]{
     display: none;
 }
