@@ -47,6 +47,7 @@ Table of Contents
     5.7 i don't know
     5.8 user show
     5.9 ping tab
+    5.9.1 voice leave message 
 6. Settings
     6.1 my account
     6.2 Profile
@@ -1693,6 +1694,32 @@ transition: 0.4s;
     width: 25px;
     height: 25px;
     margin: -1px;
+}
+/* 5.9.1 voice leave message */ 
+.emojiSad__7d02b {
+    background-image: url(https://i.postimg.cc/wv4q891t/alien-41609-640.png);
+    background-size: 56px !important;
+}
+.emojiNeutral__82512 {
+    background-image: url(https://i.postimg.cc/43LknBsq/emoji-5872140-640.png);
+    background-size: 60px !important;
+}
+.emojiHappy__22cbb {
+    background-image: url(https://i.postimg.cc/QdSxkgjk/alien-41626-640.png);
+    background-size: 45px !important;
+    margin: 0 0 0 -9px;
+}
+.emoji_f7e035 {
+    transform: scale(1.4);
+}
+.root_a28985 {
+    border-radius: 14px !important;
+    transition: box-shadow.1s ease-out;
+    word-wrap: break-word;
+}
+.footer__89240 {
+    border-radius: 0 0 6px 6px;
+    background-color: var(--modal-footer-background);
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
