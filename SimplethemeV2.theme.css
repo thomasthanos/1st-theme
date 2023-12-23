@@ -1143,6 +1143,26 @@ Table of Contents
 .inspector__993e1 {
     background-color: var(--background-tertiary);
 }
+.theme-dark .tooltipBrand__13fbc, .theme-light .tooltipBrand__13fbc {
+    color: var(--white-500);
+    background-color: rgb(22, 88, 88);
+}
+.theme-dark .tooltipBrand__13fbc .tooltipPointer_a79354, .theme-light .tooltipBrand__13fbc .tooltipPointer_a79354 {
+    border-top-color: rgb(22, 88, 88);
+}
+[class="nitroWheel_aa56ce"]{
+    color: rgb(214, 97, 152) !important;
+}
+.labelChecked__9347e {
+    background: black;
+    box-shadow: none;
+}
+.theme-dark .sadImage_e4e5ab {
+    background-image: url(https://i.postimg.cc/KjHTG2gs/sad.png);
+    transform: scale(2);
+    margin-bottom: 20px;
+    margin-right: 13px;
+}
 /* 4.7 Unnitro Profile View */
 .radioBar__40e1b[style*="var(--green-360);"] {
     border-left: 3px solid green !important;
