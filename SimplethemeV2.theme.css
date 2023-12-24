@@ -1683,7 +1683,13 @@ transition: 0.4s;
 }
 [class="scroller__750f5 thin_b1c063 scrollerBase_dc3aa9"]{
     background-color: black;
-    border-radius: 10px;
+    border-radius: 20px;
+}
+.menu_dc52c6 {
+    max-height: calc(100vh - 32px);
+    box-shadow: var(--elevation-high);
+    background: #000;
+    border-radius: 15px;
 }
 [class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 "]{
     border-radius: 10px;
