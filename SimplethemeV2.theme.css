@@ -1045,6 +1045,9 @@ Table of Contents
     background-color: var(--profile-body-background-hover) !important;
     border-radius: 2px !important;
 }
+.avatarIconOverlay__61b77 {
+    color: rgb(212, 0, 0);
+}
 /*                  //////////////                  */
 /* 4.5 Avatar and Buttons Location  */
 .speaking_c1b30e {
