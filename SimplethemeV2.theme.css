@@ -826,6 +826,24 @@ Table of Contents
     color: rgb(0, 111, 185) !important;
     transition: 0.8s !important;
 }
+.newMessagesBar__8b6d7 {
+    height: 32px;
+    top: 0;
+    border-radius: 0 0 8px 8px;
+    background-color: rgb(58, 71, 100);
+    box-shadow: var(--elevation-low);
+}
+.span_a7874a{
+    color: yellow;
+    font-weight: 700;
+    font-family: 'Merienda', cursive;
+    align-self: center;
+    justify-content: center !important;
+    display: flex;
+}
+[class="barButtonAlt__4b48f barButtonBase__8fa46"]{
+    display: none;
+}
 /* 4.3 Server member view */
 .container_b2ce9c {
     box-shadow: 0px 0px 10px -2px black inset !important;
