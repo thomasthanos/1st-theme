@@ -685,6 +685,23 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
 .name__8d1ec {
     font-size: 15px;
 }
+.popout__24e32 {
+    background-color: black;
+    border-radius: 14px;
+}
+.avatar__0d465{
+    border-radius: 50px;
+    box-shadow: 0 0 5px 2px greenyellow;
+}
+.row__4daf2{
+    transition: 0.3s;
+}
+.row__4daf2:hover {
+    background-color: rgb(173, 0, 130);
+    color: white !important;
+    font-weight: 700 !important;
+    transition: 0.3s;
+}
 /* 4.2 server channel view */
 .attachment_f3cf2c {
     border-color: white;
