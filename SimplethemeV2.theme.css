@@ -682,6 +682,9 @@ Table of Contents
 path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"]{
     fill: white;
 }
+.name__8d1ec {
+    font-size: 15px;
+}
 /* 4.2 server channel view */
 .attachment_f3cf2c {
     border-color: white;
@@ -766,7 +769,6 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     background-color: transparent;
     transition: 150ms;
 }
-
 .embedFull__8dc21{
     -webkit-transition: background-color 2s ease-out;
     -moz-transition: background-color 2s ease-out;
@@ -856,6 +858,11 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
 }
 [class="barButtonAlt__4b48f barButtonBase__8fa46"]{
     display: none;
+}
+.topic__16ae3 {
+    font-weight: 500;
+    font-family: Comic Sans MS;
+    font-size: 13px;
 }
 /* 4.3 Server member view */
 .container_b2ce9c {
@@ -1691,7 +1698,6 @@ transition: 0.4s;
 .menu_dc52c6 {
     max-height: calc(100vh - 32px);
     box-shadow: var(--elevation-high);
-    background: #000;
     border-radius: 15px;
 }
 [class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 "]{
