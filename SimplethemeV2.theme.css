@@ -51,6 +51,7 @@ Table of Contents
     5.9.1 voice leave message 
     5.9.2 out of connection
     5.9.3 reaction popup
+    5.9.4 invite message |server|
 6. Settings
     6.1 my account
     6.2 Profile
@@ -1918,6 +1919,31 @@ transition: 0.4s;
     background: black;
     box-shadow: 0px 0px 4px white;
     border-radius: 15px;
+}
+/* 5.9.4 invite message |server| */
+[class="searchBar_b2ff4e container__7712a small_e73c65"]{
+    background-color: black;
+    border-radius: 8px;
+}
+[class="inviteRowButton__52da0 button_afdfd9 lookOutlined__46d54 colorGreen__5f181 sizeSmall__71a98 grow__4c8a4"]{
+    border: solid 1px white !important;
+    background-color: var(--background-tertiary);
+    border-radius: 8px;
+    transition: 150ms;
+}
+[class="inviteRowButton__52da0 button_afdfd9 lookOutlined__46d54 colorGreen__5f181 sizeSmall__71a98 grow__4c8a4"]:hover{
+    border: solid 1px white !important;
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    transition: 150ms;
+}
+[class="inviteRowButton__52da0 button_afdfd9 lookFilled__19298 colorGreen__5f181 sizeSmall__71a98 grow__4c8a4"]{
+    border: solid 1px white !important;
+    border-radius: 8px;
+    transition: 150ms;
+}
+.theme-dark .inviteRow_a25947:hover {
+    border-radius: 50px;
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
