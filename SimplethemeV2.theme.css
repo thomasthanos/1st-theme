@@ -674,9 +674,9 @@ Table of Contents
 }
 [class="joinButton_e760b6 button_afdfd9 lookFilled__19298 colorGreen__5f181 sizeSmall__71a98 fullWidth__7c3e8 grow__4c8a4"] {
     color: var(--white-500);
-    background-color: rgb(0, 114, 0);
+    background-color: rgb(0, 114, 0) !important;
     border-radius: 10px;
-    box-shadow: 1px 2px 2px white;
+    box-shadow: 1px 2px 2px rgba(255, 255, 255, 0.144), -1px -1px 8px 1px black inset;
 }
 [class="text-xs-bold_c1eb0a liveNowText_af6cd1"]{
     color: green !important;
