@@ -30,6 +30,7 @@ Table of Contents
 4. Server
     4.1 Server channels category
     4.2 server channel view
+    4.2.1 pinned messages
     4.3 Server member view
     4.4 User Area Changes
     4.5 Avatar and Buttons Location
@@ -890,6 +891,25 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     border-bottom: 2px solid rgb(65, 67, 75);
     border-bottom-left-radius: 10px;
     bottom: 29px;
+}
+.heading-md-semibold__574c7 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 400;
+}
+/* 4.2.1 pinned messages */
+[class="defaultColor__77578 heading-md-medium_dd6c29 defaultColor__87d87"]{
+    justify-content: center;
+    display: flex;
+    font-weight: 700;
+    font-family: Comic Sans MS;
+}
+.messageGroupWrapper_f8c6e9 {
+    position: relative;
+    background: rgba(65, 67, 75, 0.521);
+    border: 2px solid var(--background-tertiary);
+    border-radius: 12px;
 }
 /* 4.3 Server member view */
 .container_b2ce9c {
@@ -2652,4 +2672,7 @@ transition: 0.4s;
     border-radius: 12px 6px 6px 6px;
     color: white;
     background-color: gray !important;
+}
+.username_d30d99{
+    font-weight: 600;
 }
