@@ -1742,6 +1742,19 @@ transition: 0.4s;
     background-color: black;
     border-radius: 20px;
 }
+[id="user-context-mute"]:hover,[id="user-context-soundboard-sound-mute"]:hover,[id="user-context-disable-video"]:hover{
+    background-color: rgb(141, 0, 0) !important;
+    transition: 150ms !important;
+    border-radius: 10px;
+}
+[id="user-context-remove-friend"]:hover,[id="user-context-block"]:hover{
+    background: linear-gradient(185deg, rgb(163, 0, 0) 0%, rgba(20, 0, 0, 0.671) 100%) !important;
+    transition: 150ms !important;
+    border-radius: 10px;
+}
+.label__73cb9{
+    color: white;
+}
 .menu_dc52c6 {
     max-height: calc(100vh - 32px);
     box-shadow: var(--elevation-high);
