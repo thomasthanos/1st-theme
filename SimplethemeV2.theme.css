@@ -98,7 +98,11 @@ Table of Contents
     border: none !important;
     background-clip: content-box !important;
     background: transparent !important;
-    border-color: transparent !important;}
+    border-color: transparent !important;
+}
+.childWrapper__01b9c{
+    background-color: black;
+}
 /* 3.1 κατηγορία φίλων */
 .topPill__0cdf1 .themed_b957e8.selected__5711d.item__48dda{
     border-radius: 6.5px;
