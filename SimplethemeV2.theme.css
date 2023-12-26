@@ -49,6 +49,8 @@ Table of Contents
     5.8 user show
     5.9 ping tab
     5.9.1 voice leave message 
+    5.9.2 out of connection
+    5.9.3 reaction popup
 6. Settings
     6.1 my account
     6.2 Profile
@@ -92,6 +94,10 @@ Table of Contents
     display: none;
 }
 .iconWrapper_af9215[aria-label="Βοήθεια"],[aria-label="Εισερχόμενα"],[aria-label="Νήματα"],[aria-label="Ρυθμίσεις ειδοποιήσεων"],[aria-label="Βοήθεια"]{
+    display: none;
+}
+[class="button_afdfd9 lookBlank__7ca0a colorBrand_b2253e grow__4c8a4"][aria-label="Send a gift"],[aria-label="Στείλτε ένα δώρο"]
+,[aria-label="Άνοιγμα επιλογέα αυτοκόλλητων"],[aria-label="Open sticker picker"]{
     display: none;
 }
 ::-webkit-scrollbar-thumb,::-webkit-scrollbar,::-webkit-scrollbar-track,::-webkit-scrollbar-track-piece {
@@ -710,6 +716,13 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     color: white !important;
     font-weight: 700 !important;
     transition: 0.3s;
+}
+.modeMuted__0aeea .icon_eff5d4 path{ display: none; }
+.modeMuted__0aeea .iconContainer__3f9b0{ position: relative; }
+.modeMuted__0aeea .iconContainer__3f9b0:before{
+    content: '🔇';
+    position: absolute;
+    font-size: 20px; 
 }
 /* 4.2 server channel view */
 .attachment_f3cf2c {
@@ -1510,6 +1523,8 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     font-size: 13px;
     visibility: visible !important;
     text-decoration: underline;
+    display: flex;
+    justify-content: start;
 }
 
 .border_d9a17b.speaking__9b95a {        /* speaking μιλαω*/
@@ -1859,6 +1874,44 @@ transition: 0.4s;
 .footer__89240 {
     border-radius: 0 0 6px 6px;
     background-color: var(--modal-footer-background);
+}
+/* 5.9.2 out of connection */
+.container__4bde3 {
+    background: transparent;
+    pointer-events: none;
+}
+.container__4bde3 .anchor-1MIwyf { pointer-events: auto; }
+.container__4bde3 .content__0e954 .text__32559 {
+    display:none;
+}
+.container__4bde3 .ready__61f2f {
+    position: absolute;
+    bottom: 44px;
+    right: 244px;
+    z-index: 1;
+}
+
+.container__4bde3 img, .container__4bde3 video {
+    width: 32px;
+    height: 32px;
+}
+.container__4bde3 .problems__755eb {
+    padding: 8px 16px;
+    bottom: 18px;
+    left: unset;
+    right: 18px;
+    width:fit-content;
+    height:fit-content;
+    background-color: var(--background-floating);
+    border-radius: 8px;
+    -webkit-box-shadow: var(--elevation-stroke), var(--elevation-medium);
+    box-shadow: var(--elevation-stroke), var(--elevation-medium);
+}
+/* 5.9.3 reaction popup */
+.reactionTooltip__9384a {
+    background: black;
+    box-shadow: 0px 0px 4px white;
+    border-radius: 15px;
 }
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
