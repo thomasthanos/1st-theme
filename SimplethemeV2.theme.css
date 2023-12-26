@@ -647,6 +647,10 @@ Table of Contents
     transition: 150ms !important;
     color: var(--white-500);
 }
+.colorDanger_eec36d.focused__27621{
+    border-radius: 10px;
+    transition: 150ms;
+}
 [class="item__183e8 labelContainer_bc2861 colorDefault__0b482"]{
     transition: 150ms !important;
 }
