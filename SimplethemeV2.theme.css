@@ -657,6 +657,12 @@ Table of Contents
     transition: 150ms !important;
     color: var(--white-500);
 }
+[id="channel-context-invite-people"]:hover{
+    background-color: rgb(40, 80, 156) !important;
+    transition: 150ms !important;
+    color: var(--white-500);
+    border-radius: 10px;
+}
 .colorDanger_eec36d.focused__27621{
     border-radius: 10px;
     transition: 150ms;
