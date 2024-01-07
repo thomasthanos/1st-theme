@@ -1350,12 +1350,21 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     background-size: 70% !important;
     background: url("https://share.creavite.co/UN5GPd9vSJarGJvs.gif");
 }
+[class="banner__6d414 profileBanner__8414b roundedBanner__9fa0a"]{
+        min-height: 290px !important;
+    transform: translateY(-60px) scale(2);
+    margin-bottom: 40px;
+    margin-top: -20px;
+    margin-left: 270px !important;
+}
+/*
 .userProfileInnerThemedNonPremium__3d0a6.userProfileModalInner__7c87d .bannerSVGWrapper__3e7b0 {
     min-height: 200px !important;
     transform: translateY(-60px);
     margin-bottom: -54px;
     margin-top: -20px;
 }
+*/
 .userProfileInnerThemedNonPremium__3d0a6.userProfileModalInner__7c87d .bannerSVGWrapper__3e7b0 foreignObject {
     mask: none;
 }
