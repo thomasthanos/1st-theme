@@ -1404,6 +1404,15 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     left: 59px !important;
     top: 62.5px;
 }
+[class="bannerSVGWrapper__3e7b0"]{
+    border-radius: 10px !important;
+    box-shadow: 0px 4px 15px black;
+    transform: translateY(7px) scale(0.96);
+}
+.userProfileModalInner__7c87d:before{
+    border-radius: 14px !important;
+    transform: scale(0.99);
+}
 /* 5.1 Read Only */
 .button_Jt-tIg {
     border-radius: 7px;
