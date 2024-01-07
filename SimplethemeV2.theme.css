@@ -2087,10 +2087,10 @@ transition: 0.4s;
     -webkit-mask-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
     min-width: 900px !important;
     max-width: 1900px !important;
-    height: 160px;
+    height: 260px;
     transform: scale(.9);
     left: -90px;
-    bottom: 297px;
+    bottom: 257px;
 }
 :root .accountProfileCard__22589 .bannerSVGWrapper__3e7b0 foreignObject {
   mask: none;
