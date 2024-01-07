@@ -2082,6 +2082,7 @@ transition: 0.4s;
   left: 35px !important;
   top: 5px;
 }
+/*
 :root .accountProfileCard__22589 .bannerSVGWrapper__3e7b0 {
     position: absolute;
     -webkit-mask-image: linear-gradient(to bottom, #000000, rgba(0, 0, 0, 0));
@@ -2092,6 +2093,7 @@ transition: 0.4s;
     left: -90px;
     bottom: 297px;
 }
+*/
 :root .accountProfileCard__22589 .bannerSVGWrapper__3e7b0 foreignObject {
   mask: none;
   transform: translate(-130px);
