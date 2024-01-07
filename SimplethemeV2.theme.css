@@ -2013,13 +2013,13 @@ transition: 0.4s;
     left: calc(18% - 50px) !important;
 }
 /*custom user setting profile position*/
-.layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 {
+.layer__2efaa .accountProfileCard__22589 .userInfo__8f826 {
     align-items: center;
     justify-content: center;
-    width: calc(100% - 34px);
+    width: calc(100% - 134px) !important;
     margin-left: 17px;
     padding: 0;
-    padding-top: 65px !important;
+    padding-top: 5px !important;
     padding-bottom: 5px;
 }
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .userTag__4ca14 {
@@ -2103,7 +2103,7 @@ transition: 0.4s;
   min-width: 900px;
 }
 :root .accountProfileCard__22589 .userInfo__8f826 {
-  height: 100px;
+  height: 40px;
   align-items: center;
 }
 :root .accountProfileCard__22589 .userInfo__8f826 .avatar__6c108 {
