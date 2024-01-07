@@ -1970,13 +1970,13 @@ transition: 0.4s;
     top: 70px;
 }
 .userInfo__8f826 {
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 .avatar__6c108~div:not([class]) {
     position: absolute;
     left: 50%;
     transform: translateX(-48%);
-    margin-top: 75px !important;
+    margin-top: 22px !important;
 }
 .userSettingsSecurity__03e70 .isEnabled__08bc1{
     color: green !important;
@@ -2004,13 +2004,13 @@ transition: 0.4s;
 }
 .theme-dark .badgeList__243e0 {
     border-radius: 8px;
-    background-color: #333135;
+    background-color: #313235;
     margin-top: 5px;
     padding: 2px;
 }
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .avatar__6c108 {
-    top: 50px !important;
-    left: calc(18% - 50px) !important;
+    top: 95px !important;
+    left: calc(18% - 70px) !important;
 }
 /*custom user setting profile position*/
 .layer__2efaa .accountProfileCard__22589 .userInfo__8f826 {
@@ -2310,6 +2310,18 @@ transition: 0.4s;
     transform: scale(1.4);
     top: 26px;
     left: 32px !important;
+}
+.bannerNormal__24a0e {
+    height: 1260px;
+    background: rgb(45, 48, 95) !important;
+}
+.contentRegionScroller__86c79 {
+    height: 100%;
+    max-width: 1300px;
+    min-width: 200px;
+    display: flex;
+    overflow-x: hidden;
+    background-color: var(--background-primary);
 }
 /* 6.3 Privacy & Security */
 [aria-checked=true].item_b7fb7e .radioBar__40e1b {
