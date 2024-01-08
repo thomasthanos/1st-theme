@@ -2094,11 +2094,12 @@ transition: 0.4s;
   display: none;
 }
 :root .accountProfileCard__22589 {
-  background-color: var(--background-secondary-alt);
-  border-radius: 15px;
-  transform: scale(1.04);
-  left: 35px !important;
-  top: 5px;
+    background-color: var(--background-secondary-alt);
+    border-radius: 15px;
+    transform: scale(1.04);
+    left: 35px !important;
+    top: 5px;
+    width: 93%;
 }
 /*
 :root .accountProfileCard__22589 .bannerSVGWrapper__3e7b0 {
