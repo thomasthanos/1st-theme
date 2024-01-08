@@ -1964,6 +1964,7 @@ transition: 0.4s;
     border-radius: 50px;
 }
 /* 6.1 my account */
+/*
 .accountProfileCard__22589 .avatar__6c108 {
     transform: translateX(-50%) scale(1.43);
     left: 50%;
@@ -1978,6 +1979,7 @@ transition: 0.4s;
     transform: translateX(-48%);
     margin-top: 22px !important;
 }
+*/
 .userSettingsSecurity__03e70 .isEnabled__08bc1{
     color: green !important;
 }
@@ -2008,10 +2010,12 @@ transition: 0.4s;
     margin-top: 5px;
     padding: 2px;
 }
+/*
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .avatar__6c108 {
     top: 95px !important;
     left: calc(18% - 70px) !important;
 }
+*/
 /*custom user setting profile position*/
 .layer__2efaa .accountProfileCard__22589 .userInfo__8f826 {
     align-items: center;
@@ -2106,11 +2110,13 @@ transition: 0.4s;
   height: 40px;
   align-items: center;
 }
+/*
 :root .accountProfileCard__22589 .userInfo__8f826 .avatar__6c108 {
   top: 8px;
   border-color: transparent;
   background-color: rgba(0, 0, 0, 0);
 }
+*/
 :root .accountProfileCard__22589 .background_b61fcc {
   border-radius: 15px;
 }
