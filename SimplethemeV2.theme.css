@@ -1963,7 +1963,21 @@ transition: 0.4s;
 .theme-dark .inviteRow_a25947:hover {
     border-radius: 50px;
 }
+.userInfo__8f826 {
+    margin-bottom: 40px;
+}
+.avatar__6c108~div:not([class]) {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-48%);
+    margin-top: 22px !important;
+}
 /* 6.1 my account */
+.accountProfileCard__22589 .avatar__6c108 {
+    transform: translateX(-340%) scale(1.43);
+    left: 50%;
+    top: 60px;
+}
 /*
 .accountProfileCard__22589 .avatar__6c108 {
     transform: translateX(-50%) scale(1.43);
