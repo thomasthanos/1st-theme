@@ -2036,7 +2036,7 @@ transition: 0.4s;
     left: calc(18% - 70px) !important;
 }
 */
-/*custom user setting profile position*/
+/*custom user setting profile position
 .layer__2efaa .accountProfileCard__22589 .userInfo__8f826 {
     align-items: center;
     justify-content: center;
@@ -2080,6 +2080,7 @@ transition: 0.4s;
     background-repeat: no-repeat !important;
     transition: 150ms !important;
 }
+*/
 :root .standardSidebarView__1129a .sidebarRegion__60457 {
   flex: unset;
 }
