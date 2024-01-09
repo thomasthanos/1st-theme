@@ -2141,8 +2141,8 @@ transition: 0.4s;
     border-radius: 10px !important;
     transition: 200ms;
 }
-.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση διεύθυνσης email"][aria-label="Reveal email address"]),
-.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση αριθμού τηλεφώνου"][aria-label="Reveal phone number"]) {
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση διεύθυνσης email"],[aria-label="Reveal email address"]),
+.constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Εμφάνιση αριθμού τηλεφώνου"],[aria-label="Reveal phone number"]) {
   filter: blur(6px);
 }
 .constrainedRow_b9e8cf:has(.lookLink__93965.colorLink_b651e5[aria-label="Reveal email address"]),
