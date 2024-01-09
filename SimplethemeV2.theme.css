@@ -1977,6 +1977,11 @@ transition: 0.4s;
     position: absolute !important;
     transform: scale(1.40) translateX(25px); 
 }
+.theme-dark .badgeList__243e0{
+    justify-content: center;
+    margin-top: 2px;
+    padding: 3px;
+}
 .userSettingsSecurity__03e70 .isEnabled__08bc1{
     color: green !important;
 }
