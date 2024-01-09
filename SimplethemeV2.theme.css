@@ -2007,6 +2007,7 @@ transition: 0.4s;
     margin-top: 5px;
     padding: 2px;
 }
+/*
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .button_afdfd9 {
     position: absolute;
     top: 53px;
@@ -2033,6 +2034,7 @@ transition: 0.4s;
     background-repeat: no-repeat !important;
     transition: 150ms !important;
 }
+*/
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .button_afdfd9 {
     display: none;
 }
@@ -2074,7 +2076,6 @@ transition: 0.4s;
     left: -90px;
     bottom: 297px;
 }
-*/
 :root .accountProfileCard__22589 .bannerSVGWrapper__3e7b0 foreignObject {
   mask: none;
   transform: translate(-130px);
