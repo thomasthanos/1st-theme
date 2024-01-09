@@ -2030,31 +2030,6 @@ transition: 0.4s;
     margin-top: 5px;
     padding: 2px;
 }
-/*
-.layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .avatar__6c108 {
-    top: 95px !important;
-    left: calc(18% - 70px) !important;
-}
-*/
-/*custom user setting profile position
-.layer__2efaa .accountProfileCard__22589 .userInfo__8f826 {
-    align-items: center;
-    justify-content: center;
-    width: calc(100% - 134px) !important;
-    margin-left: 17px;
-    padding: 0;
-    padding-top: 5px !important;
-    padding-bottom: 5px;
-}
-.layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .userTag__4ca14 {
-    margin-bottom: 2px;
-}
-.layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .container__5bda1 {
-    justify-content: center;
-    width: 100%;
-    margin-bottom: -10px;
-}
-*/
 .layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .button_afdfd9 {
     position: absolute;
     top: 53px;
@@ -2080,6 +2055,9 @@ transition: 0.4s;
     background-position: center !important;
     background-repeat: no-repeat !important;
     transition: 150ms !important;
+}
+.layer__2efaa  .accountProfileCard__22589 .userInfo__8f826 .button_afdfd9 {
+    display: none;
 }
 :root .standardSidebarView__1129a .sidebarRegion__60457 {
   flex: unset;
