@@ -231,6 +231,9 @@ Table of Contents
     color: rgb(226, 176, 156);
     font-weight: 400;
 }
+[class="containerWrapper_fa6aa6 animation_fb8933 inSidebar__37db7"]{
+    display: none;
+}
 .description__57d03 {
     font-family: 'Playpen Sans', cursive;
     color: rgba(255, 255, 255, 0.466);
