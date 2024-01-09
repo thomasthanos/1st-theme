@@ -1971,11 +1971,13 @@ transition: 0.4s;
     margin-top: 22px !important;
 }
 /* 6.1 my account */
+/*
 .accountProfileCard__22589 .avatar__6c108 {
     transform: translateX(-340%) scale(1.43);
     left: 50%;
     top: 60px;
 }
+*/
 .userSettingsSecurity__03e70 .isEnabled__08bc1{
     color: green !important;
 }
