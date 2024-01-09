@@ -118,6 +118,9 @@ Table of Contents
     box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 0px var(--background-tertiary)!important;
     transition: background-color 0.7s ease-out;
 }
+[href="/store"],[href="/shop"]{
+    display: none;
+}
 .topPill__0cdf1:hover .themed_b957e8:hover.selected__5711d:hover.item__48dda:hover{
     background-color: #006d80;
     cursor: pointer;
@@ -2186,6 +2189,25 @@ transition: 0.4s;
     content: "Edit";
 }
 .lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία εμφανιζόμενου ονόματος"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία ονόματος χρήστη"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία διεύθυνσης email"]:hover,.lookFilled__19298.colorPrimary__6ed40[aria-label*="Επεξεργασία αριθμού τηλεφώνου"]:hover{
+    background-color: #484b57 !important;
+    box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
+    transition: 100ms !important;
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label="Add a phone number"],.lookFilled__19298.colorPrimary__6ed40[aria-label="Προσθήκη αριθμού τηλεφώνου"]{
+    border-radius: 8px !important;
+    transition: 200ms !important;
+    font-size: 0 !important;
+    background-color: var(--background-primary) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary)  inset,0px 0px 10px 3px var(--background-tertiary)!important;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Add a phone number"]::before,.lookFilled__19298.colorPrimary__6ed40[aria-label="Προσθήκη αριθμού τηλεφώνου"]::before{
+    font-size: 13px;
+    font-family: 'Merienda', cursive;
+    content: "Add";
+}
+.lookFilled__19298.colorPrimary__6ed40[aria-label*="Add a phone number"]::before,.lookFilled__19298.colorPrimary__6ed40[aria-label="Προσθήκη αριθμού τηλεφώνου"]::before{
     background-color: #484b57 !important;
     box-shadow: 1px 3px 10px 5px rgba(24, 27, 31, 0.753) inset,0px 0px 10px 1px var(--background-tertiary)!important;
     transition: 100ms !important;
