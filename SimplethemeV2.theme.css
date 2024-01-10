@@ -2780,6 +2780,15 @@ transition: 0.4s;
     border: 1px solid rgba(255, 255, 255, 0.349);
     border-radius: 10px;
 }
+#app-mount .wrapper__7bcde.modeSelected__487d6 .link__95dc0 {
+    background: rgb(var(--accent), 0.1);
+}
+.bd-toast {
+	background-color: rgb(36, 114, 75);
+}
+.bd-toast.toast-success {
+	background-color: rgb(25, 94, 11);
+}
 
 
 
