@@ -1861,13 +1861,6 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     box-shadow: -10px 11px 10px -10px var(--background-tertiary)  inset,10px 0px 10px -10px var(--background-tertiary)!important;
     border-radius: 0 30px 30px 0;
 }
-:root .standardSidebarView__1129a .sidebarRegion__60457 {
-    flex: unset;
-}
-:root .standardSidebarView__1129a .sidebarRegion__60457 .sidebar__9e3e2 {
-    width: 242px;
-    padding: 60px 10px;
-}
 .separator_fdbcfd {
     background: rgba(255, 255, 255, 0.205);
     height: 1.5px !important;
