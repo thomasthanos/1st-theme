@@ -1322,6 +1322,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
 }
 /*                  //////////////                  */
 /* 4.5 Avatar and Buttons Location  */
+/*
 .speaking_c1b30e {
     box-shadow: inset 0 0 0 2px rgb(94 182 194), inset 0 0 0 3px rgb(70 186 201);
 }
@@ -1412,11 +1413,13 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     transform: scale(1.6) !important;
     background-size: contain;
     background-repeat: no-repeat;
-}
+}*/
 /* Βγαζει το μπροστινο background */
+/*
 .container_d667ff{
     background: transparent !important;
 }
+/*
 /* 4.6 Emoji - Soundboard Recolor */
 .drawerSizingWrapper__30274 {
     height: 170%;
