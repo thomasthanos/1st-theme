@@ -182,6 +182,12 @@ Table of Contents
     background-color: rgb(65, 67, 75);
     transition: 300ms;
 }
+.nowPlayingColumn_f5023f {
+    flex: 0 1 29%;
+    min-width: 200px;
+    max-width: 320px;
+    background: var(--background-secondary);
+}
 /* 3.2 Άμεσα μηνύματα */
 .interactiveSelected_ec846b {
     background-color: var(--background-secondary-alt) ;
