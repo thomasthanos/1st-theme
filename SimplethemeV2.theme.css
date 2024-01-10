@@ -744,6 +744,32 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
 	padding: 1px 0 0 0;
 	margin: 0px;
 }
+.containerDefault__3187b.selected-37j_iU .modeSelected__487d6 .link__95dc0::before,
+.modeSelected__487d6 .link__95dc0::before,
+.modeSelected__487d6:hover .link__95dc0::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 0;
+    height: 100%;
+    width: 170px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(to bottom right, var(--themeColor1), var(--themeColor2));
+    -webkit-mask: linear-gradient(to right, #000, Transparent);
+    opacity: .5;
+    z-index: 0
+}
+.modeSelected__487d6 .link__95dc0::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 5px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(to bottom right, var(--themeColor1), var(--themeColor2));
+    z-index: 1
+}
 [class="unread__48cf4 unreadImportant_c775b3"] {
     content: "";
     position: absolute;
