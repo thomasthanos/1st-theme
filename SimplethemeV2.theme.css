@@ -90,6 +90,13 @@ Table of Contents
     --primary-400: rgba(255, 255, 255, 0.623);
     --red-400: rgb(146, 0, 0) !important;
     --main-color: #2780e6;
+
+    --themeColor1: rgb(33, 177, 177);
+    --themeColor2: #202020;
+    --unread: #d30000;
+    --unread2: #202020;
+    --unread3: #e9c5c5;
+    --unread4: #000000;
 }
 .iconWrapper_af9215[aria-label="Help"],[aria-label="Threads"],[aria-label="Notification Settings"],[aria-label="Inbox"],[aria-label="Νήματα"],[aria-label="Notification settings"]{
     display: none;
@@ -732,6 +739,35 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     content: '🔇';
     position: absolute;
     font-size: 20px; 
+}
+#app-mount .wrapper__7bcde {
+	padding: 1px 0 0 0;
+	margin: 0px;
+}
+[class="unread__48cf4 unreadImportant_c775b3"] {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 4.5px;
+    height: 100%;
+    width: 170px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(to bottom right, var(--unread), var(--unread2));
+    -webkit-mask: linear-gradient(to right, #000, Transparent);
+    opacity: .5;
+    z-index: 0;
+}
+[class="unread__48cf4 unreadImportant_c775b3"]::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 10px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(to bottom right, var(--unread3), var(--unread4));
+    -webkit-mask: linear-gradient(to right, #000, Transparent);
+    z-index: 1
 }
 /* 4.2 server channel view */
 .attachment_f3cf2c {
