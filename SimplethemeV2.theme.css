@@ -85,13 +85,12 @@ Table of Contents
 /* 2. Discord Values recolor */
 :root {
     --server-size: 45px; /* Size of the server icons */
-    --red-400: rgb(182, 0, 0);
     --green-360: green !important;
     --primary-400: rgba(255, 255, 255, 0.623);
     --red-400: rgb(146, 0, 0) !important;
     --main-color: #2780e6;
 
-    --themeColor1: rgb(33, 177, 177);
+    --themeColor1: rgb(33, 131, 177);
     --themeColor2: #202020;
     --unread: #d30000;
     --unread2: #202020;
