@@ -899,6 +899,13 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     background-color: var(--background-secondary);
     border-radius: 12px !important;
 }
+.lookFilled__3dba3.select__0eb48[aria-haspopup="listbox"]{
+    border-radius: 8px;
+    transition: 200ms;
+    color: yellow;
+    background-color: var(--background-secondary-alt);
+    border-color: rgba(255, 255, 255, 0.233) !important;
+}
 [title=archive].icon__30aa7 {
     background-image: url(https://clearvision.github.io/icons/file_archive.svg) !important;
 }
