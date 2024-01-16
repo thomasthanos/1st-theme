@@ -2969,3 +2969,15 @@ transition: 0.4s;
     font-family: Comic Sans MS;
     font-weight: 400;
 }
+.lookFilled__19298.colorRed_d6b062[type="submit"]{
+    background-color: rgb(177, 0, 0);
+    border-radius: 10px;
+    box-shadow: 0 0 6px black;
+    transition: 200ms;
+}
+.lookFilled__19298.colorRed_d6b062[type="submit"]:hover{
+    background-color: rgb(141, 42, 42);
+    border-radius: 10px;
+    box-shadow: 0 0 6px black;
+    transition: 200ms;
+}
