@@ -1095,6 +1095,16 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     line-height: 20px;
     font-weight: 400;
 }
+.lookFilled__19298.colorPrimary__6ed40[role="button"]{
+    background-color: black;
+    border: 0.5px solid rgba(255, 255, 255, 0.445);
+    border-radius: 7px !important;
+}
+.lookFilled__19298.colorGreen__5f181[role="button"]{
+    background-color: rgb(0, 0, 0);
+    border: 0.5px solid rgba(255, 255, 255, 0.445);
+    border-radius: 7px !important;
+}
 /* 4.2.1 pinned messages */
 [class="defaultColor__77578 heading-md-medium_dd6c29 defaultColor__87d87"]{
     justify-content: center;
