@@ -2632,6 +2632,33 @@ transition: 0.4s;
     color: aquamarine;
     font-family: 'Signika Negative', sans-serif;
 }
+:root {
+    --conntections-border-radius: 16px; 
+    --conntections-opacity: 0.1;
+    --connections-shadow: inset 0 0 10px currentcolor
+}
+:root {
+    --spotify-color: 29, 185, 84;
+    --battlenet-color: 0, 174, 255;
+    --github-color: 255, 255, 255;
+    --riotgames-color: 211, 41, 54;
+    --leagueoflegends-color: 225, 146, 5;
+    --steam-color: 0, 0, 255;
+    --twitch-color: 100, 65, 164;
+    --x-color: 0, 172, 238;
+    --xbox-color: 0, 128, 0;
+    --youtube-color: 255, 0, 0;
+    --domain-color: 91, 111, 117;
+    --paypal-color: 0, 112, 186;
+    --tiktok-color: 255, 0, 80;
+    --ebay-color: 229, 50, 56;
+    --crunchyroll-color: 255, 230, 0;
+    --playstation-color: 0, 55, 145;
+    --epicgames-color: 0, 44, 119;
+    --facebook-color: 66, 103, 178;
+    --instagram-color: 195, 42, 163;
+    --reddit-color: 255, 69, 0;
+}
 /* 6.8 Κλιπ */
 [class="container_e61cfb container__0c807 hasValue__3f56a"],[class="select__0eb48 selectControl_ff47fe lookFilled__3dba3"],[class="select__0eb48 selectControl_ff47fe open_cd27aa lookFilled__3dba3"]{
     border-radius: 8px;
