@@ -1115,6 +1115,26 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.349);
 }
+.mentioned__58017:before, .ephemeral_c26b64:before, .automodMessage__410f7:before, .replying_d7b6ad:before, .highlighted__5f454:before {
+    background-color: #ffffff;
+    border-radius: 100px 0 0 100px;
+    width: 5px;
+    transition: 250ms;
+}
+[class="message__80c10 cozyMessage__64ce7 ephemeral_c26b64 groupStart__56db5 wrapper__09ecc cozy_f5c119 zalgo__39311 hasReply_febd50"]{
+    background-image: -webkit-linear-gradient(-43deg, #393e6871 43%, #4f487e 100%) !important;
+    background: black;
+    transition: 250ms;
+}
+.message__80c10.ephemeral_c26b64.selected_fd9051, .mouse-mode.full-motion .ephemeral_c26b64:hover{
+    background-image: -webkit-linear-gradient(-43deg, #41467571 43%, #7166b8 100%) !important;
+    background: black;
+    transition: 250ms;
+}
+[class="ephemeralMessage__6a8ba"]{
+    color: #ffff00a1 !important;
+    font-family: 'Signika Negative', sans-serif;
+}
 /* 4.2.1 pinned messages */
 [class="defaultColor__77578 heading-md-medium_dd6c29 defaultColor__87d87"]{
     justify-content: center;
