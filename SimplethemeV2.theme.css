@@ -1498,7 +1498,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     text-shadow: 1px 1px 7px cyan;
     font-weight: 520;
 }
-[class="input_d266e7 input__7a226"]{
+[class="input_d266e7 input__7a226"],[class="input_d266e7 input__7a226 focused_db7916"]{
     border-radius: 8px;
     transition: 200ms;
     background-color: var(--background-secondary-alt);
@@ -1506,6 +1506,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     border: 1px solid rgba(255, 255, 255, 0.11) !important;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary) inset,0px 0px 10px 3px var(--background-tertiary)!important;
 }
+
 [class="qrCode_bef5bf"]{
     background: transparent !important;
     border-radius: 6px !important;
