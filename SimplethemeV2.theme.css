@@ -34,6 +34,9 @@ Table of Contents
     4.3 Server member view
     4.4 User Area Changes
     4.5 Avatar and Buttons Location
+    4.5.1 ACCOUNT LOGOUT REBUILD
+    4.5.2 switch account
+    4.5.3 manage account
     4.6 Emoji - Soundboard Recolor
     4.7 Unnitro Profile View
     4.8 Share Screen View (Server)
@@ -1469,6 +1472,80 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
 /* Βγαζει το μπροστινο background */
 .container_d667ff{
     background: transparent !important;
+}
+/* 4.5.1 ACCOUNT LOGOUT REBUILD */
+[class="wrapper__2d9b1"]{
+    background: url(https://i.postimg.cc/hv51hBC4/papers-co-vc16-paper-creased-dark-texture-35-3840x2160-4k-wallpaper.jpg);
+    opacity: 1;
+}
+.characterBackground__2820f .artwork__8fc92{
+    display: none;
+}
+[class="heading-xl-semibold__18cc2 defaultColor__87d87 title__0a681 marginBottom8_f4aae3"]{
+    font-family: Comic Sans MS;
+}
+[class="authBoxExpanded_e57789 authBox__7196a theme-dark"]{
+    background: rgba(0, 0, 0, 0.651);
+    border: solid 4px white;
+    border-radius: 16px;
+    box-shadow: 3px 3px 10px white;
+}
+[class="needAccount__65c41"]{
+    color: rgb(0, 255, 115);
+    text-shadow: 1px 1px 7px cyan;
+    font-weight: 520;
+}
+[class="input_d266e7 input__7a226"]{
+    border-radius: 8px;
+    transition: 200ms;
+    background-color: var(--background-secondary-alt);
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    border: 1px solid rgba(255, 255, 255, 0.11) !important;
+    box-shadow: 1px 3px 10px 2px var(--background-tertiary) inset,0px 0px 10px 3px var(--background-tertiary)!important;
+}
+[class="qrCode_bef5bf"]{
+    background: transparent !important;
+    border-radius: 6px !important;
+    box-shadow: 3px 3px 10px rgb(0, 163, 163);
+}
+
+[aria-label="Password"],[aria-label="Email or Phone Number"],
+[aria-label="Email ή αριθμός τηλεφώνου"],[aria-label="Κωδικός πρόσβασης"]{
+    color: red;
+    text-shadow: 1px 1px 8px black;
+    font-weight: 600;
+}
+[class="label__5447e eyebrow_b7df6b defaultColor_d757c2 defaultMarginlabel__42000"]{
+    color: cyan;
+    text-shadow: 1px 1px 3px cyan;
+    font-weight: 600;
+}
+[class="required__0baf3"]{
+    color: cyan;
+}
+/* 4.5.2 switch account */
+[class="item__183e8 labelContainer_bc2861 colorDefault__0b482 focused__27621 focused_f6efd9"]{
+    background-color: rgba(0, 96, 134, 0.425) !important;
+    border-radius: 10px !important;
+}
+/* 4.5.3 manage account */
+.list__4e6aa {
+    border-radius: 14px;
+    background-color: var(--background-tertiary) !important;
+    box-shadow: 2px 2px 5px black inset, 5px 5px 5px rgb(0, 0, 0);
+}
+[class="modal__20db0 root_a28985 small__05f7b fullscreenOnMobile__96797 rootWithShadow__073a7"]{
+    border-radius: 12px;
+    background-color: var(--background-secondary-alt) !important;
+    border-color: rgba(255, 255, 255, 0.11) !important;
+    border: 2px solid;
+}
+[class="text-md-semibold__4cb23 textOverflow__60719"]{
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+[class="menu_dc52c6 flexible__7055b"]{
+    background-color: black !important;
 }
 /* 4.6 Emoji - Soundboard Recolor */
 .drawerSizingWrapper__30274 {
