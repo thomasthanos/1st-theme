@@ -2220,6 +2220,13 @@ transition: 0.4s;
     font-weight: 700;
     letter-spacing: 1.1px;
     text-shadow: 2px 2px 5px rgb(255, 0, 157);
+    font-size: 0;
+}
+[class="problemsText__046e8"]::before{
+    content: "The internet crashed";
+    font-size: large;
+    justify-content: end;
+    display: flex;
 }
 .links_ab4aa2{
     margin-left: -10px !important;
@@ -2227,10 +2234,18 @@ transition: 0.4s;
     font-weight: 700 !important;
     letter-spacing: 1.1px !important;
     text-shadow: 2px 2px 5px rgb(170, 0, 0) !important;
+    font-size: 0;
+
+}
+.links_ab4aa2::before{
+    content: "Discord Status";
+    font-size: large;
+    justify-content: end;
 }
 [class="icon__8f8f4"]{
-    color: rgb(255, 0, 0);
+    display: none;
 }
+
 /* 5.9.3 reaction popup */
 .reactionTooltip__9384a {
     background: black;
