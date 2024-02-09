@@ -6,7 +6,7 @@
  * @authorId 706932839907852389
 */
 
-/**
+/** 
 font-family: 'Caveat', cursive;
 font-family: 'Courier Prime', monospace;
 font-family: 'Indie Flower', cursive;
@@ -52,6 +52,7 @@ Table of Contents
     5.9.2 out of connection
     5.9.3 reaction popup
     5.9.4 invite message |server|
+    5.9.5 emoji reaction
 6. Settings
     6.1 my account
     6.2 Profile
@@ -2168,6 +2169,8 @@ transition: 0.4s;
     transform: translateX(-48%);
     margin-top: 22px !important;
 }
+/* 5.9.5 emoji reaction */
+.reaction_fef95b:has(.reactionInner__4135b[aria-label*="1 reaction"], .reactionInner__4135b[aria-label*="1 super reaction"]) .reactionCount_b49901 {display: none;}
 /* 6.1 my account */
 .accountProfileCard__22589 .avatar__6c108 {
     box-shadow: 0px 0px 5px 4px black;
