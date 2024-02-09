@@ -2222,11 +2222,11 @@ transition: 0.4s;
     text-shadow: 2px 2px 5px rgb(255, 0, 157);
 }
 [rel="noreferrer noopener"] {
-    margin-left: -10px;
-    color: rgb(255, 0, 0);
-    font-weight: 700;
-    letter-spacing: 1.1px;
-    text-shadow: 2px 2px 5px rgb(170, 0, 0);
+    margin-left: -10px !important;
+    color: rgb(255, 0, 0) !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.1px !important;
+    text-shadow: 2px 2px 5px rgb(170, 0, 0) !important;
 }
 [class="icon__8f8f4"]{
     color: rgb(255, 0, 0);
