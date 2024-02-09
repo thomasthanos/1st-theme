@@ -2214,12 +2214,12 @@ transition: 0.4s;
 [class="anchor_c8ddc0 anchorUnderlineOnHover__78236 twitterLink_dae605 links_ab4aa2"]{
     display: none;
 }
-[class="problemsText__046e8"]{
-    font-family: Comic Sans MS;
-    color: rgb(255, 128, 187);
-    font-weight: 700;
-    letter-spacing: 1.1px;
-    text-shadow: 2px 2px 5px rgb(255, 0, 157);
+.links_ab4aa2{
+    margin-left: -10px !important;
+    color: rgb(255, 0, 0) !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.1px !important;
+    text-shadow: 2px 2px 5px rgb(170, 0, 0) !important;
 }
 [class="icon__8f8f4"]{
     color: rgb(255, 0, 0);
