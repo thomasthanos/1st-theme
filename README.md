@@ -2,6 +2,9 @@
 > After trying I made this theme with the help of some things from the theme developers on better discord.
 
 [𝐓𝐡𝐞𝐦𝐞 𝐥𝐢𝐧𝐤](https://thomasthanos.github.io/1st-theme/SimplethemeV2.theme.css)
+
+[𝐓𝐡𝐞𝐦𝐞 (𝐑𝐨𝐮𝐧𝐝𝐞𝐝) 𝐥𝐢𝐧𝐤](https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css)
+
 > [!IMPORTANT]
 > 1st stable version
 <!-- 1st video show -->
