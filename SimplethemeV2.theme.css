@@ -1722,6 +1722,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     box-shadow: 0px 0px 5px rgb(255, 255, 255);
 }
 /* 5.2 MP3 */
+/*
 .audioMetadata_e546a8:before {
     width: 33.5px;
     height: 37px;
@@ -1767,6 +1768,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     border-radius: 20px;
     box-shadow: 0px 0px 10px 2px rgb(0 0 0) !important;
 }
+*/
 /* 5.3 Minified Search Bar */
 :root {
     --transitionspeed: 0.45s;
