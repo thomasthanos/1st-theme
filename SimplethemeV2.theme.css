@@ -1768,18 +1768,6 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     border-radius: 20px;
     box-shadow: 0px 0px 10px 2px rgb(0 0 0) !important;
 }
-.mediaBarInteractionVolume_f4c833 {
-    flex: none;
-    align-self: center;
-    border-radius: 8px;
-    background-color: hsl(var(--black-500-hsl)/.7);
-    padding: 5px 8px;
-    width: 72px !important;
-    transform: translateY(32px) translateX(-43px);
-    margin: 0 4px 0 0;
-    justify-content: right;
-    display: flex;
-}
 /* 5.3 Minified Search Bar */
 :root {
     --transitionspeed: 0.45s;
