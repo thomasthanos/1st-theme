@@ -1396,8 +1396,8 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     width: 48px !important;
     height: 48px !important;
 }
-  .container_debb33 .avatarWrapper__500a6{
-    transform: scale(1.5) translateX(9px);
+.container_debb33 .avatarWrapper__500a6{
+    transform: scale(1.5) translateX(8px) !important;
     margin: 0 auto 0;
 }
 .container_debb33 .svg_a6bf1c > :is(svg,.pointerEvents__585e6) {
