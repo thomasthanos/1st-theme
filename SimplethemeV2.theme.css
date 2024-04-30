@@ -57,6 +57,7 @@ Table of Contents
     5.9.4 invite message |server|
     5.9.5 emoji reaction
     5.9.6 online status 
+    5.9.7 vote rechange
 6. Settings
     6.1 my account
     6.2 Profile
@@ -2315,6 +2316,44 @@ transition: 0.4s;
 /* 5.9.6 online status */
 [role="menuitem"]{
     border-radius: 10px !important;
+}
+/* 5.9.7 vote rechange*/
+.container__0bd59 {
+    background-color: var(--background-secondary-alt);
+    max-width: 480px;
+    min-width: 290px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 3px 3px 8px rgb(57, 97, 150) inset,3px 3px 10px rgb(31, 57, 104);
+}
+.text-md-medium_a84e09.fontScaling__56c42{
+    font-family: 'Merienda', cursive;
+    text-align: center;
+    text-shadow: 2px 2px 5px black;
+}
+.prompt__75afd{
+    text-align: center;
+    font-weight: 600;
+    text-shadow: 1px 1px 5px black;
+}
+.text-sm-normal__95a78.fontScaling__56c42{
+    font-weight: 550;
+    text-shadow: 1px 1px 5px black;
+    font-family: 'Playpen Sans', cursive;
+    font-size: .775rem;
+}
+.votePercentageBar_ba9103 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgb(27, 41, 63);
+    z-index: -1;
+}
+.votedStyles__57019 {
+    --custom-poll-style-vote-percentage: var(--polls-voted-fill);
+    --custom-poll-style-image-background: var(--info-positive-background);
+    --custom-poll-style-border: rgb(87, 128, 194);
 }
 /* 6.1 my account */
 .accountProfileCard__744d8 .avatar__6c108 {
