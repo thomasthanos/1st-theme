@@ -2085,9 +2085,11 @@ transition: 0.4s;
     margin-left: -6px;
 }
 /* 5.6 upload button */
+/*
 .menu_ec5137[aria-label="Ενέργειες καναλιού"]{
     background-color: transparent;
 }
+    */
 [class="scroller_d90b3d thin_eed6a8 scrollerBase_eed6a8"]{
     background-color: black;
     border-radius: 20px;
