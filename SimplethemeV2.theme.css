@@ -3131,12 +3131,9 @@ transition: 0.4s;
 .bd-toast.toast-success {
 	background-color: rgb(25, 94, 11);
 }
-
-
-
-
-
-
+/*
+=======
+*/
 .icon_c07d45 {
     border-radius: 12px 6px 6px 6px;
     color: white;
@@ -3160,4 +3157,32 @@ transition: 0.4s;
     border-radius: 10px;
     box-shadow: 0 0 6px black;
     transition: 200ms;
+}
+.descriptionClamp_abaf7d:not(.headerText_d331f1 .descriptionClamp_abaf7d) {
+    -webkit-line-clamp: unset;
+    max-height: 120px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.viewFullBio_abaf7d{display: none;}
+
+[id="popout_1608"]{
+    margin-top: -94px;
+}
+.form_a7d72e {
+    padding-top: 0px;
+    margin-top: 0;
+    border-top: solid transparent;
+}
+[class="activityText_a31c43"],[class="emoji emoji_ad923e activityEmoji_a31c43"]{
+    display: none;
+}
+[class="flex_dc333f horizontal_dc333f justifyStart_ec1a20 alignStretch_ec1a20 noWrap_ec1a20 buttons_b2ca13"]{
+    margin-left: -9px;
+}
+.footer_f8ec41{
+    display: none;
+}
+[aria-label="Εφαρμογές"]{
+    display: none;
 }
