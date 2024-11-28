@@ -2273,9 +2273,10 @@ transition: 0.4s;
 .avatar_b69b77~div:not([class]) {
     position: absolute;
     left: 50%;
-    transform: translateX(-48%);
-    margin-top: 22px !important;
+    margin-top: -22px !important;
+    transform: scale(0.85) translateX(-49%);
 }
+
 /* 5.9.5 emoji reaction */
 .reaction_ec6b19:has(.reactionInner_ec6b19[aria-label*="1 reaction"], .reactionInner_ec6b19[aria-label*="1 super reaction"]) .reactionCount_ec6b19 {display: none;}
 /* 5.9.6 online status */
