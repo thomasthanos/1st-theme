@@ -626,6 +626,11 @@ Table of Contents
 */
 
 /* 4.1 Server channels category */
+.footer_d71945{
+    background-color: transparent;
+    position: relative;
+    top: 30px; left: 0px;
+}
 .users_a5bc92, .total_a5bc92 {
     background-color: #000 !important;
     color: rgba(255, 208, 0, 0.377) !important;
