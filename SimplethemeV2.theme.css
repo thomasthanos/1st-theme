@@ -1804,9 +1804,7 @@ path[d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.
     padding-bottom: 13px;
     transform: scale(0.9);
 }
-body{
-    font-family: Comic Sans MS;
-}
+
 [class="background_cff728"]{
     background: linear-gradient(90deg, rgb(136, 151, 167) 0%, rgb(146, 120, 125) 50%, rgb(111, 95, 124) 100%) !important;
     border-radius: 50px !important;
