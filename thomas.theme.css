@@ -111,19 +111,7 @@ nav.guilds_c48ade {
     .rightAccessories__74017, .buttons__74017 {display: none;}
   }
 }
-/* Ορίζουμε το font με custom όνομα για βάρος 700 */
-@font-face {
-  font-family: 'MyCustomFont'; /* Το custom όνομα που θέλεις */
-  src: url('https://fonts.gstatic.com/s/comicneue/v8/4UaHrEJDsxBrF37olUeD96rp5w.woff2') format('woff2');
-  font-weight: 700; /* Βάρος 700 (bold) */
-  font-style: normal;
-}
 
-/* Εφαρμόζουμε το font σε όλα τα στοιχεία */
-a, abbr, acronym, address, applet, big, blockquote, body, caption, cite, code, dd, del, dfn, div, dl, dt, em, fieldset, form, h1, h2, h3, h4, h5, h6, html, iframe, img, ins, kbd, label, legend, li, object, ol, p, pre, q, s, samp, small, span, strike, strong, table, tbody, td, tfoot, th, thead, tr, tt, ul, var {
-  font-family: 'MyCustomFont', sans-serif;
-  font-weight: 700; /* Εφαρμόζουμε το βάρος 700 */
-}
 
 
 
