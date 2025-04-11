@@ -1040,3 +1040,105 @@ nav.guilds_c48ade {
 #app-mount .wrapper__2ea32.modeSelected__2ea32 .link__2ea32 {
     background: rgb(var(--accent), 0.1);
 }
+
+[aria-label="Στείλτε ένα δώρο"]{
+    display: none;
+}
+.mentioned__5126c:before,
+.ephemeral__5126c:before,
+.automodMessage__5126c:before,
+.replying__5126c:before,
+.highlighted_fc800f:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #6200ea, #304ffe);
+    border-radius: 4px 0 0 4px;
+    transform: scaleY(0.9);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease, background 0.3s ease;
+}
+
+.mentioned__5126c,
+.ephemeral__5126c,
+.automodMessage__5126c,
+.replying__5126c,
+.highlighted_fc800f {
+    position: relative;
+    background: rgba(30, 40, 60, 0.75);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(5px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+}
+
+.mentioned__5126c:hover,
+.mentioned__5126c:focus,
+.ephemeral__5126c:hover,
+.ephemeral__5126c:focus,
+.automodMessage__5126c:hover,
+.automodMessage__5126c:focus,
+.replying__5126c:hover,
+.replying__5126c:focus,
+.highlighted_fc800f:hover,
+.highlighted_fc800f:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(45, 55, 75, 0.85);
+}
+
+.mentioned__5126c:hover:before,
+.mentioned__5126c:focus:before,
+.ephemeral__5126c:hover:before,
+.ephemeral__5126c:focus:before,
+.automodMessage__5126c:hover:before,
+.automodMessage__5126c:focus:before,
+.replying__5126c:hover:before,
+.replying__5126c:focus:before,
+.highlighted_fc800f:hover:before,
+.highlighted_fc800f:focus:before {
+    transform: scaleY(1);
+    background: linear-gradient(180deg, #7c4dff, #448aff);
+}
+
+/* Styling for code blocks within these messages */
+.mentioned__5126c code,
+.ephemeral__5126c code,
+.automodMessage__5126c code,
+.replying__5126c code,
+.highlighted_fc800f code {
+    background: rgba(20, 25, 35, 0.9);
+    color: #d0d8ff;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    transition: background 0.3s ease;
+}
+
+/* For larger code blocks (preformatted text) */
+.mentioned__5126c pre,
+.ephemeral__5126c pre,
+.automodMessage__5126c pre,
+.replying__5126c pre,
+.highlighted_fc800f pre {
+    background: rgba(25, 30, 40, 0.95);
+    border-radius: 6px;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    color: #d0d8ff;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    overflow-x: auto;
+    transition: background 0.3s ease;
+}
+
+/* Hover effect for code blocks */
+.mentioned__5126c pre:hover,
+.ephemeral__5126c pre:hover,
+.automodMessage__5126c pre:hover,
+.replying__5126c pre:hover,
+.highlighted_fc800f pre:hover {
+    background: rgba(30, 35, 45, 0.95);
+}
