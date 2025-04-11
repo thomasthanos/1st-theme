@@ -3336,3 +3336,11 @@ a, abbr, acronym, address, applet, big, blockquote, body, caption, cite, code, d
     font-family: "Comic Sans MS";
     font-weight: 500 !important;
 }
+.button_aa90f4 {
+    font-size: 10px;
+}
+.button_aa90f4:hover {
+    font-size: 10px;
+    background-color: rgb(42, 56, 68) !important;
+    color: yellow !important;
+}
