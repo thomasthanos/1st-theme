@@ -9,6 +9,11 @@
 /* 1. Imports */
 
 @import url(https://davart154.github.io/Themes/Snippets/Two-Row%20Chat%20Bar%20Layout/TwoRowChatBar.css);
+[class^='membersGroup']:has([role=button]),
+[class^='member'] [class^='container']:has([class*='badges']) {
+  display: none;
+}
+
 .bd-toast {
     animation: toast-slide-in 0.4s ease;
     display: flex;
