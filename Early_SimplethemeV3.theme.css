@@ -378,9 +378,9 @@ nav.guilds_c48ade {
   [class="timeCounter"] {
     font-family: Comic Sans MS !important;
   }
-  [class="callContainer_cb9592"] {
+[class="root_c8dbe9 voiceCallWrapper_a21736"] {
     background-image: url(https://i.postimg.cc/t4N8x75w/call.gif) !important;
-  }
+}
   .root__2dbe1 {
     border-radius: 11px;
     box-shadow: 1px 3px 10px 2px var(--background-tertiary) inset,
