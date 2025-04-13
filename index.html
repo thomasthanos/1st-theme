@@ -2,9 +2,13 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Προβολή Κώδικα από GitHub</title>
+  <title>Προβολή Αρχείων με Highlight.js</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Βασικό CSS για ωραία εμφάνιση του κώδικα -->
+  
+  <!-- CSS του Highlight.js από CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  
+  <!-- Βασικά CSS στυλ για τη σελίδα -->
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,41 +23,43 @@
     }
     h1, h2 {
       text-align: center;
+      margin: 1.5rem 0;
     }
-    .code-block {
+    pre {
       background: #2d2d2d;
       color: #fff;
       padding: 1rem;
       border-radius: 5px;
       overflow-x: auto;
       margin-bottom: 1.5rem;
-      white-space: pre;
       font-size: 0.9rem;
       line-height: 1.5;
-      font-family: Consolas, monospace;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Προβολή Αρχείων από GitHub</h1>
+    <h1>Προβολή Αρχείων με Highlight.js</h1>
     
     <h2>Prezomenoi_OG.plugin.js</h2>
-    <pre id="code1" class="code-block">// Φόρτωση κώδικα...</pre>
+    <pre><code id="code1" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
     
     <h2>discord_change.plugin.js</h2>
-    <pre id="code2" class="code-block">// Φόρτωση κώδικα...</pre>
+    <pre><code id="code2" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
     
     <h2>Early_SimplethemeV3.theme.css</h2>
-    <pre id="code3" class="code-block">// Φόρτωση κώδικα...</pre>
+    <pre><code id="code3" class="language-css">// Φόρτωση κώδικα...</code></pre>
     
     <h2>SimplethemeV2.theme.css</h2>
-    <pre id="code4" class="code-block">// Φόρτωση κώδικα...</pre>
+    <pre><code id="code4" class="language-css">// Φόρτωση κώδικα...</code></pre>
   </div>
-
+  
+  <!-- JavaScript του Highlight.js από CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  
   <script>
-    // Συνάρτηση που φορτώνει το περιεχόμενο ενός αρχείου από URL και το εμφανίζει μέσα σε ένα στοιχείο
-    function loadCode(url, elementId) {
+    // Συνάρτηση για φόρτωση και εμφάνιση του κώδικα από URL
+    function loadCode(url, elementId, language) {
       fetch(url)
         .then(response => {
           if (!response.ok) {
@@ -62,24 +68,31 @@
           return response.text();
         })
         .then(data => {
-          document.getElementById(elementId).textContent = data;
+          const codeElement = document.getElementById(elementId);
+          codeElement.textContent = data;
+          // Εξασφαλίζουμε ότι υπάρχει η κλάση του Highlight.js για τον αντίστοιχο τύπο γλώσσας (π.χ. javascript ή css)
+          if (language) {
+            codeElement.classList.add(language);
+          }
+          // Ενεργοποίηση highlight για το συγκεκριμένο στοιχείο
+          hljs.highlightElement(codeElement);
         })
         .catch(error => {
           document.getElementById(elementId).textContent = 'Error loading code: ' + error;
         });
     }
-
-    // URLs προς τα αρχεία στο GitHub (βεβαιώσου ότι οι διαδρομές είναι σωστές και τα αρχεία είναι δημόσια)
+    
+    // URLs προς τα αρχεία στο GitHub – αντικατέστησε τα με τις σωστές διαδρομές
     const url1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
     const url2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
     const url3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
     const url4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
 
-    // Φόρτωση των αρχείων στα αντίστοιχα <pre> blocks
-    loadCode(url1, 'code1');
-    loadCode(url2, 'code2');
-    loadCode(url3, 'code3');
-    loadCode(url4, 'code4');
+    // Φόρτωση των αρχείων στα αντίστοιχα <code> blocks με ανάλογο language class για highlight.js
+    loadCode(url1, 'code1', 'language-javascript');
+    loadCode(url2, 'code2', 'language-javascript');
+    loadCode(url3, 'code3', 'language-css');
+    loadCode(url4, 'code4', 'language-css');
   </script>
 </body>
 </html>
