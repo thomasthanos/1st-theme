@@ -1,134 +1,205 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-  <title>Αναλυτική Προβολή Κώδικα</title>
+  <meta charset="UTF-8" />
+  <title>Προβολή & Truncation Κώδικα</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Highlight.js CSS - Dracula Dark Theme -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/dracula.min.css">
 
-  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση -->
+  <!-- Highlight.js (βιβλιοθήκη) + monokai-sublime theme για dark style -->
+  <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Κάποια βασικά custom CSS για εντυπωσιακό dark layout -->
   <style>
-    /* Βασική διαμόρφωση της σελίδας */
     body {
-      margin: 0;
+      margin: 0; 
       padding: 0;
-      background-color: #121212;
-      color: #e0e0e0;
-      font-family: 'Roboto', sans-serif;
-      line-height: 1.6;
+      background-color: #151515;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
     }
     .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem;
     }
     h1 {
       text-align: center;
       margin-bottom: 2rem;
-      font-size: 2rem;
     }
-    /* Στυλ για κάθε code card */
-    .code-container {
-      background-color: #1e1e1e;
+    h2 {
+      margin-top: 3rem;
+      font-size: 1.4rem;
+      color: #ff6f6f; /* Κόκκινη απόχρωση για τίτλους */
+    }
+    .code-block {
+      position: relative;
+      margin-top: 1rem;
       border: 1px solid #333;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-    .code-container h2 {
-      background-color: #333;
-      color: #fff;
-      margin: 0;
-      padding: 1rem;
-      font-size: 1.2rem;
-    }
-    .code-container pre {
-      margin: 0;
-      padding: 1rem;
-      overflow-x: auto;
-      background-color: #1e1e1e;
+    .code-header {
+      background: #222;
+      padding: 0.75rem 1rem;
+      font-weight: bold;
       font-size: 0.9rem;
+      border-bottom: 1px solid #333;
     }
-    /* Μικρά βελτιωτικά για το <code> ώστε να μην "χαλαρώνει" η μορφοποίηση */
-    pre code {
-      display: block;
-      white-space: pre-wrap;
-      word-wrap: break-word;
+    pre {
+      margin: 0;
+      padding: 1rem;
+      background: #1e1e1e; /* «βάθος» πιο σκούρο απ' το header */
+      overflow-x: auto;    /* οριζόντια κύλιση αν χρειαστεί */
+      max-height: 500px;   /* για τυχόν πολύ μεγάλα αρχεία */
+    }
+    /* Ετικέτα code με highlight */
+    code {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      white-space: pre;    /* διατηρεί κενά/γραμμές */
+    }
+    /* Στυλ για το κουμπί Show More / Show Less */
+    .toggle-btn {
+      display: inline-block;
+      background: #ff6f6f;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.3rem 0.6rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
+      margin: -2.2rem 1rem 0 0; /* τοποθετείται πάνω δεξιά */
+      z-index: 10;
+      position: relative;
+    }
+    .toggle-btn:hover {
+      background: #ff4d4d;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Προβολή Αρχείων με Highlight.js</h1>
+    <h1>Προβολή & Truncation Κώδικα</h1>
     
-    <!-- Card για Prezomenoi_OG.plugin.js -->
-    <div class="code-container">
-      <h2>Prezomenoi_OG.plugin.js</h2>
-      <pre><code id="code1" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
+    <!-- 1) SimplethemeV2.theme.css (truncate στους 83 χαρακτήρες) -->
+    <h2>SimplethemeV2.theme.css</h2>
+    <div class="code-block">
+      <div class="code-header">SimplethemeV2.theme.css</div>
+      <!-- Κουμπί Show More/Less -->
+      <button id="btn-simplev2" class="toggle-btn" style="display: none;">Show More</button>
+      <pre><code id="code-simplev2" class="language-css">/* Loading... */</code></pre>
     </div>
 
-    <!-- Card για discord_change.plugin.js -->
-    <div class="code-container">
-      <h2>discord_change.plugin.js</h2>
-      <pre><code id="code2" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
+    <!-- 2) Early_SimplethemeV3.theme.css (truncate στις 36 γραμμές) -->
+    <h2>Early_SimplethemeV3.theme.css</h2>
+    <div class="code-block">
+      <div class="code-header">Early_SimplethemeV3.theme.css</div>
+      <button id="btn-simplev3" class="toggle-btn" style="display: none;">Show More</button>
+      <pre><code id="code-simplev3" class="language-css">/* Loading... */</code></pre>
     </div>
 
-    <!-- Card για Early_SimplethemeV3.theme.css -->
-    <div class="code-container">
-      <h2>Early_SimplethemeV3.theme.css</h2>
-      <pre><code id="code3" class="language-css">/* Φόρτωση κώδικα... */</code></pre>
+    <!-- 3) Prezomenoi_OG.plugin.js (ολόκληρο) -->
+    <h2>Prezomenoi_OG.plugin.js</h2>
+    <div class="code-block">
+      <div class="code-header">Prezomenoi_OG.plugin.js</div>
+      <pre><code id="code-prezomenoi" class="language-javascript">// Loading...</code></pre>
     </div>
-    
-    <!-- Card για SimplethemeV2.theme.css -->
-    <div class="code-container">
-      <h2>SimplethemeV2.theme.css</h2>
-      <pre><code id="code4" class="language-css">/* Φόρτωση κώδικα... */</code></pre>
+
+    <!-- 4) discord_change.plugin.js (ολόκληρο) -->
+    <h2>discord_change.plugin.js</h2>
+    <div class="code-block">
+      <div class="code-header">discord_change.plugin.js</div>
+      <pre><code id="code-discord" class="language-javascript">// Loading...</code></pre>
     </div>
   </div>
-  
-  <!-- Highlight.js script -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  
-  <!-- JavaScript για φόρτωση των αρχείων μέσω fetch -->
+
   <script>
-    // URLs προς τα αρχεία στο GitHub
-    const url1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
-    const url2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
-    const url3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
-    const url4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
+    // Highlight.js init
+    document.addEventListener("DOMContentLoaded", () => {
+      hljs.highlightAll();
+    });
+
+    // URLs για τα αρχεία στο GitHub
+    const urlPrezomenoi = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
+    const urlDiscord =    "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
+    const urlEarly3 =     "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
+    const urlSimpleV2 =   "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
 
     /**
-     * Συνάρτηση για φόρτωση και εμφάνιση του κώδικα.
-     * @param {string} url - Το URL του raw αρχείου.
-     * @param {string} elementId - Το id του <code> στοιχείου που θα τοποθετηθεί ο κώδικας.
+     * Γενική συνάρτηση που φορτώνει κώδικα και τον τοποθετεί στο αντίστοιχο <code> element.
+     * Αν ορίζεις `maxLines > 0`, τότε κάνει truncate στις συγκεκριμένες γραμμές.
+     * Δημιουργεί επίσης μηχανισμό "Show More / Show Less" αν υπάρχουν περισσότερες γραμμές.
      */
-    function loadCode(url, elementId) {
+    function fetchAndDisplayCode(url, codeElementId, maxLines = 0, buttonId = null) {
       fetch(url)
         .then(response => {
           if (!response.ok) {
-            throw new Error('Error while fetching ' + url);
+            throw new Error('Network response was not ok for ' + url);
           }
           return response.text();
         })
         .then(data => {
-          const codeElement = document.getElementById(elementId);
-          codeElement.textContent = data;
-          // Εφαρμογή syntax highlighting σε αυτό το στοιχείο
+          const codeElement = document.getElementById(codeElementId);
+          const lines = data.split("\n");
+
+          // Αν δεν θέλουμε truncation ή αν το αρχείο έχει λιγότερες γραμμές από το maxLines
+          if (maxLines === 0 || lines.length <= maxLines) {
+            codeElement.textContent = data;
+            hljs.highlightElement(codeElement);
+            if (buttonId) {
+              // Κρύψε το κουμπί
+              document.getElementById(buttonId).style.display = "none";
+            }
+            return;
+          }
+
+          // Αλλιώς, κάνε truncate
+          const truncatedText = lines.slice(0, maxLines).join("\n");
+          let isTruncated = true;
+          codeElement.textContent = truncatedText + "\n\n/* ... [Truncated at line " + maxLines + "] */";
           hljs.highlightElement(codeElement);
+
+          // Εμφανίζουμε το κουμπί "Show More"
+          if (buttonId) {
+            const btn = document.getElementById(buttonId);
+            btn.style.display = "inline-block";
+            btn.addEventListener("click", () => {
+              if (isTruncated) {
+                // Δείξε ολόκληρο τον κώδικα
+                codeElement.textContent = data;
+                hljs.highlightElement(codeElement);
+                btn.textContent = "Show Less";
+              } else {
+                // Κάνε πάλι truncate
+                codeElement.textContent = truncatedText + "\n\n/* ... [Truncated at line " + maxLines + "] */";
+                hljs.highlightElement(codeElement);
+                btn.textContent = "Show More";
+              }
+              isTruncated = !isTruncated;
+            });
+          }
         })
         .catch(error => {
-          document.getElementById(elementId).textContent = 'Error loading code: ' + error;
+          document.getElementById(codeElementId).textContent = 'Error loading code: ' + error;
         });
     }
 
-    // Φόρτωση των αρχείων στα αντίστοιχα code blocks
-    loadCode(url1, 'code1');
-    loadCode(url2, 'code2');
-    loadCode(url3, 'code3');
-    loadCode(url4, 'code4');
+    // 1) SimplethemeV2.theme.css (truncate στις 83 γραμμές)
+    fetchAndDisplayCode(urlSimpleV2, "code-simplev2", 83, "btn-simplev2");
+
+    // 2) Early_SimplethemeV3.theme.css (truncate στις 36 γραμμές)
+    fetchAndDisplayCode(urlEarly3, "code-simplev3", 36, "btn-simplev3");
+
+    // 3) Prezomenoi_OG.plugin.js (ολόκληρο)
+    fetchAndDisplayCode(urlPrezomenoi, "code-prezomenoi", 0);
+
+    // 4) discord_change.plugin.js (ολόκληρο)
+    fetchAndDisplayCode(urlDiscord, "code-discord", 0);
   </script>
 </body>
 </html>
