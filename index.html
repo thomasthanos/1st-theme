@@ -2,44 +2,29 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Modern Code Viewer - VSCode Style</title>
+  <title>Modern Code Viewer - VSCode Style Menu & Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Highlight.js – Atom One Dark Theme (μπάζα για VSCode look) -->
+  <!-- Highlight.js – Atom One Dark Theme (για VSCode look) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   
-  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, ανανεωμένο με έμφαση στο VSCode στυλ -->
+  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, στυλιζαρισμένο menu και notes -->
   <style>
-    /* Global reset και βασικά styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* Global resets */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background-color: #1e1e1e;
       color: #d4d4d4;
       font-family: 'Roboto', sans-serif;
-      padding-top: 70px; /* χώρος για το fixed menu */
+      padding-top: 80px; /* χώρος για το fixed menu */
       scroll-behavior: smooth;
     }
     
     /* Custom minimal αλλά μοντέρνος scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-      height: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #1e1e1e;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #444;
-      border-radius: 5px;
-    }
-    html {
-      scrollbar-width: thin;
-      scrollbar-color: #444 #1e1e1e;
-    }
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #1e1e1e; }
+    ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
+    html { scrollbar-width: thin; scrollbar-color: #444 #1e1e1e; }
     
     /* Fixed Navigation Menu */
     nav {
@@ -57,28 +42,33 @@
       display: flex;
       justify-content: center;
     }
-    nav ul li {
-      margin: 0 20px;
-    }
+    nav ul li { margin: 0 20px; }
     nav ul li a {
       text-decoration: none;
       color: #d4d4d4;
-      font-size: 1rem;
-      transition: color 0.3s, transform 0.3s;
+      font-size: 1.1rem;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: color 0.3s, background 0.3s, transform 0.3s;
     }
     nav ul li a:hover {
-      color: #569cd6;  /* VSCode blue accent */
+      color: #569cd6;
+      background: rgba(86, 156, 214, 0.15);
       transform: scale(1.05);
     }
+    nav ul li a.active {
+      color: #569cd6;
+      border-bottom: 2px solid #569cd6;
+    }
     
-    /* Container για περιεχόμενο */
+    /* Container */
     .container {
       max-width: 1000px;
       margin: 0 auto;
       padding: 20px;
     }
     
-    /* Code container styling */
+    /* Code Container styling */
     .code-container {
       background-color: #252526;
       border: 1px solid #3c3c3c;
@@ -104,6 +94,16 @@
       word-wrap: break-word;
     }
     
+    /* Notes styling - εμπνευσμένα από τα Better Commands */
+    .note {
+      background: linear-gradient(135deg, #2a2d2e, #3a3d3f);
+      border-left: 4px solid #569cd6;
+      padding: 10px 15px;
+      margin: 15px 20px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    
     /* Toggle button styling για compressed view */
     .toggle-btn {
       display: block;
@@ -117,13 +117,11 @@
       text-align: center;
       transition: background 0.3s;
     }
-    .toggle-btn:hover {
-      background-color: #3c3c3c;
-    }
+    .toggle-btn:hover { background-color: #3c3c3c; }
   </style>
 </head>
 <body>
-  <!-- Navigation Menu (CSS πρώτα, JS μετά) -->
+  <!-- Navigation Menu (τα CSS πρώτα, τα JS μετά) -->
   <nav>
     <ul>
       <li><a href="#section-css1">Early_SimplethemeV3.theme.css</a></li>
@@ -137,26 +135,36 @@
     <!-- Section για CSS: Early_SimplethemeV3.theme.css (truncate στις 36 γραμμές) -->
     <div class="code-container" id="section-css1">
       <h2>Early_SimplethemeV3.theme.css</h2>
+      <div class="note">
+        Αυτό το αρχείο CSS εμφανίζεται αρχικά μέχρι τις 36 γραμμές. Κάνε κλικ στο "Show More" για πλήρη προβολή.
+      </div>
       <pre><code id="code-css1" class="language-css">/* Loading code... */</code></pre>
-      <!-- Toggle button θα προστεθεί εδώ αν χρειάζεται -->
     </div>
     
     <!-- Section για CSS: SimplethemeV2.theme.css (truncate στις 83 γραμμές) -->
     <div class="code-container" id="section-css2">
       <h2>SimplethemeV2.theme.css</h2>
+      <div class="note">
+        Αυτό το αρχείο CSS εμφανίζεται αρχικά μέχρι τις 83 γραμμές. Κάνε κλικ στο "Show More" για πλήρη προβολή.
+      </div>
       <pre><code id="code-css2" class="language-css">/* Loading code... */</code></pre>
-      <!-- Toggle button θα προστεθεί εδώ αν χρειάζεται -->
     </div>
     
     <!-- Section για JS: Prezomenoi_OG.plugin.js (πλήρης προβολή) -->
     <div class="code-container" id="section-js1">
       <h2>Prezomenoi_OG.plugin.js</h2>
+      <div class="note">
+        Το παρακάτω αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
+      </div>
       <pre><code id="code-js1" class="language-javascript">// Loading code...</code></pre>
     </div>
     
     <!-- Section για JS: discord_change.plugin.js (πλήρης προβολή) -->
     <div class="code-container" id="section-js2">
       <h2>discord_change.plugin.js</h2>
+      <div class="note">
+        Το παρακάτω αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
+      </div>
       <pre><code id="code-js2" class="language-javascript">// Loading code...</code></pre>
     </div>
   </div>
@@ -171,11 +179,11 @@
      * @param {string} url - Το URL του raw αρχείου.
      * @param {string} elementId - Το ID του <code> στοιχείου όπου θα εμφανιστεί ο κώδικας.
      * @param {string} languageClass - π.χ. 'language-css' ή 'language-javascript'
-     * @param {number} [truncateLines] - Προαιρετικά, αριθμός γραμμών που εμφανίζονται αρχικά.
+     * @param {number} [truncateLines] - Προαιρετικά, ο αριθμός γραμμών που θα εμφανίζονται αρχικά.
      */
     function loadCode(url, elementId, languageClass, truncateLines) {
       fetch(url)
-        .then(response => {
+        .then(response => { 
           if (!response.ok) { throw new Error('Error fetching: ' + url); }
           return response.text();
         })
@@ -228,7 +236,7 @@
     loadCode(urlCSS1, 'code-css1', 'language-css', 36);
     loadCode(urlCSS2, 'code-css2', 'language-css', 83);
     
-    // Φόρτωση JS αρχείων σε πλήρη προβολή
+    // Φόρτωση JS αρχείων (πλήρης προβολή)
     loadCode(urlJS1, 'code-js1', 'language-javascript');
     loadCode(urlJS2, 'code-js2', 'language-javascript');
   </script>
