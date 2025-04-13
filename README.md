@@ -5,6 +5,7 @@
 
 [𝐓𝐡𝐞𝐦𝐞 (𝐑𝐨𝐮𝐧𝐝𝐞𝐝) 𝐥𝐢𝐧𝐤](https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css)
 
+[𝐓𝐡𝐞𝐦𝐞 NEW 𝐥𝐢𝐧𝐤](https://thomasthanos.github.io/1st-theme/Early_SimplethemeV3.theme.css)
 > [!IMPORTANT]
 > **1st stable version**
 <!-- 1st video show -->
