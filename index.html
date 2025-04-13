@@ -1,98 +1,57 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-  <title>Προβολή Αρχείων με Highlight.js</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- CSS του Highlight.js από CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
-  
-  <!-- Βασικά CSS στυλ για τη σελίδα -->
+  <meta charset="UTF-8" />
+  <title>Dark Mode Code Highlighting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Ενσωμάτωση του Dracula theme για Highlight.js από CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/dracula.min.css" />
+
+  <!-- Μερικό custom CSS για ακόμα πιο «μοντέρνο» αποτέλεσμα -->
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #333;
       margin: 0;
-      padding: 1rem;
+      padding: 2rem;
+      background-color: #1e1e1e;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    h1, h2 {
+    h1 {
       text-align: center;
-      margin: 1.5rem 0;
     }
     pre {
-      background: #2d2d2d;
-      color: #fff;
-      padding: 1rem;
-      border-radius: 5px;
+      background-color: #2d2d2d; /* σκούρο φόντο για το code block */
+      border-radius: 8px;
+      padding: 1.5rem;
       overflow-x: auto;
-      margin-bottom: 1.5rem;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      margin: 2rem 0;
     }
+    /* Προαιρετικό: λίγο χρώμα στα σχόλια (Handlebars/HTML) */
+    /* Αυτό το χειρίζεται κυρίως το highlight.js, αλλά μπορούμε να τονίσουμε επιπλέον αν θέλουμε.*/
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Προβολή Αρχείων με Highlight.js</h1>
-    
-    <h2>Prezomenoi_OG.plugin.js</h2>
-    <pre><code id="code1" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
-    
-    <h2>discord_change.plugin.js</h2>
-    <pre><code id="code2" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
-    
-    <h2>Early_SimplethemeV3.theme.css</h2>
-    <pre><code id="code3" class="language-css">// Φόρτωση κώδικα...</code></pre>
-    
-    <h2>SimplethemeV2.theme.css</h2>
-    <pre><code id="code4" class="language-css">// Φόρτωση κώδικα...</code></pre>
-  </div>
+  <h1>Dark Mode Code Example with Dracula Theme</h1>
   
-  <!-- JavaScript του Highlight.js από CDN -->
+  <pre>
+    <code class="language-html">
+&lt;div class="entry"&gt;
+  {{!-- only show if author exists --}}
+  {{#if author}}
+    &lt;h1&gt;{{firstName}} {{lastName}}&lt;/h1&gt;
+  {{/if}}
+&lt;/div&gt;
+    </code>
+  </pre>
+
+  <!-- Ενσωμάτωση Highlight.js (βασικό script) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   
+  <!-- Αυτό το script αρχικοποιεί το highlighting σε όλα τα code blocks -->
   <script>
-    // Συνάρτηση για φόρτωση και εμφάνιση του κώδικα από URL
-    function loadCode(url, elementId, language) {
-      fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error while fetching ' + url);
-          }
-          return response.text();
-        })
-        .then(data => {
-          const codeElement = document.getElementById(elementId);
-          codeElement.textContent = data;
-          // Εξασφαλίζουμε ότι υπάρχει η κλάση του Highlight.js για τον αντίστοιχο τύπο γλώσσας (π.χ. javascript ή css)
-          if (language) {
-            codeElement.classList.add(language);
-          }
-          // Ενεργοποίηση highlight για το συγκεκριμένο στοιχείο
-          hljs.highlightElement(codeElement);
-        })
-        .catch(error => {
-          document.getElementById(elementId).textContent = 'Error loading code: ' + error;
-        });
-    }
-    
-    // URLs προς τα αρχεία στο GitHub – αντικατέστησε τα με τις σωστές διαδρομές
-    const url1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
-    const url2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
-    const url3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
-    const url4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
-
-    // Φόρτωση των αρχείων στα αντίστοιχα <code> blocks με ανάλογο language class για highlight.js
-    loadCode(url1, 'code1', 'language-javascript');
-    loadCode(url2, 'code2', 'language-javascript');
-    loadCode(url3, 'code3', 'language-css');
-    loadCode(url4, 'code4', 'language-css');
+    hljs.highlightAll();
   </script>
 </body>
 </html>
