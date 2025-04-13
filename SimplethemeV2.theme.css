@@ -58,6 +58,7 @@ Table of Contents
     5.9.5 emoji reaction
     5.9.6 online status 
     5.9.7 vote rechange
+    5.9.8 BETTER DISCORD
 6. Settings
     6.1 my account
     6.2 Profile
@@ -2326,6 +2327,40 @@ transition: 0.4s;
     --custom-poll-style-vote-percentage: var(--polls-voted-fill);
     --custom-poll-style-image-background: var(--info-positive-background);
     --custom-poll-style-border: rgb(87, 128, 194);
+}
+/* 5.9.8 BETTER DISCORD */
+.bd-toast {
+    animation: bd-toast-up 300ms ease;
+    transform: translateY(-10px);
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    background-color: #2C3E50;
+    color: #ecf0f1;
+    padding: 12px 20px;
+    margin-top: 10px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    pointer-events: none;
+    user-select: none;
+    opacity: 1;
+    box-sizing: border-box;
+    width: 38%;
+}
+
+.bd-toast.icon {
+    padding-left: 30px;
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: 6px 50%;
+}
+
+.bd-toast.toast-success {
+    background-color: #047900;
+    color: #fff;
+    opacity: 1;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
 }
 /* 6.1 my account */
 .accountProfileCard_b69b77 .avatar_b69b77 {
