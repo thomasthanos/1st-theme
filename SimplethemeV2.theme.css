@@ -2329,39 +2329,7 @@ transition: 0.4s;
     --custom-poll-style-border: rgb(87, 128, 194);
 }
 /* 5.9.8 BETTER DISCORD */
-.bd-toast {
-    animation: bd-toast-up 300ms ease;
-    transform: translateY(-10px);
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    background-color: #2C3E50;
-    color: #ecf0f1;
-    padding: 12px 20px;
-    margin-top: 10px;
-    border-radius: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-    font-weight: 600;
-    font-size: 14px;
-    text-align: center;
-    pointer-events: none;
-    user-select: none;
-    opacity: 1;
-    box-sizing: border-box;
-    width: 38%;
-}
 
-.bd-toast.icon {
-    padding-left: 30px;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: 6px 50%;
-}
-
-.bd-toast.toast-success {
-    background-color: #047900;
-    color: #fff;
-    opacity: 1;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
-}
 /* 6.1 my account */
 .accountProfileCard_b69b77 .avatar_b69b77 {
     box-shadow: 0px 0px 5px 4px black;
