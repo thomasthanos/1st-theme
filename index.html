@@ -8,7 +8,7 @@
   <!-- Highlight.js – Atom One Dark Theme (για VSCode look) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   
-  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, στυλιζαρισμένο menu και notes -->
+  <!-- Custom CSS για dark mode, menu, notes & inline code comments -->
   <style>
     /* Global resets */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -83,6 +83,14 @@
       padding: 15px 20px;
       font-size: 1.2rem;
     }
+    /* Τα notes τοποθετούνται αμέσως κάτω από τον τίτλο (χωρίς επιπλέον spacing) */
+    .code-container .note {
+      background: linear-gradient(135deg, #FF5C91, #FF995E);
+      color: #fff;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      border-left: 6px solid #fff;
+    }
     .code-container pre {
       padding: 20px;
       overflow-x: auto;
@@ -94,17 +102,17 @@
       word-wrap: break-word;
     }
     
-    /* Notes styling - εμπνευσμένα από τα Better Commands */
-    .note {
-      background: linear-gradient(135deg, #2a2d2e, #3a3d3f);
-      border-left: 4px solid #569cd6;
-      padding: 10px 15px;
-      margin: 15px 20px;
-      border-radius: 4px;
-      font-size: 0.9rem;
+    /* Custom styling για inline code comments (/* ... */) */
+    .hljs-comment,
+    .hljs-quote {
+      background: linear-gradient(135deg, #FF5C91, #FF995E);
+      color: #fff !important;
+      padding: 2px 4px;
+      border-left: 4px solid #fff;
+      border-radius: 3px;
     }
     
-    /* Toggle button styling για compressed view */
+    /* Toggle button styling για truncated view */
     .toggle-btn {
       display: block;
       width: 100%;
@@ -121,7 +129,7 @@
   </style>
 </head>
 <body>
-  <!-- Navigation Menu (τα CSS πρώτα, τα JS μετά) -->
+  <!-- Navigation Menu (Τα CSS πρώτα, μετά τα JS) -->
   <nav>
     <ul>
       <li><a href="#section-css1">Early_SimplethemeV3.theme.css</a></li>
@@ -136,7 +144,7 @@
     <div class="code-container" id="section-css1">
       <h2>Early_SimplethemeV3.theme.css</h2>
       <div class="note">
-        Αυτό το αρχείο CSS εμφανίζεται αρχικά μέχρι τις 36 γραμμές. Κάνε κλικ στο "Show More" για πλήρη προβολή.
+        Το αρχείο αυτό εμφανίζει τις πρώτες 36 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-css1" class="language-css">/* Loading code... */</code></pre>
     </div>
@@ -145,7 +153,7 @@
     <div class="code-container" id="section-css2">
       <h2>SimplethemeV2.theme.css</h2>
       <div class="note">
-        Αυτό το αρχείο CSS εμφανίζεται αρχικά μέχρι τις 83 γραμμές. Κάνε κλικ στο "Show More" για πλήρη προβολή.
+        Το αρχείο αυτό εμφανίζει τις πρώτες 83 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-css2" class="language-css">/* Loading code... */</code></pre>
     </div>
@@ -154,7 +162,7 @@
     <div class="code-container" id="section-js1">
       <h2>Prezomenoi_OG.plugin.js</h2>
       <div class="note">
-        Το παρακάτω αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
+        Το αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
       </div>
       <pre><code id="code-js1" class="language-javascript">// Loading code...</code></pre>
     </div>
@@ -163,7 +171,7 @@
     <div class="code-container" id="section-js2">
       <h2>discord_change.plugin.js</h2>
       <div class="note">
-        Το παρακάτω αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
+        Το αρχείο JavaScript φορτώθηκε πλήρως από το GitHub.
       </div>
       <pre><code id="code-js2" class="language-javascript">// Loading code...</code></pre>
     </div>
@@ -172,25 +180,25 @@
   <!-- Highlight.js script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   
-  <!-- JavaScript για φόρτωση των αρχείων και toggle για compressed view -->
+  <!-- JavaScript για φόρτωση των αρχείων και toggle για truncated view -->
   <script>
     /**
      * Φορτώνει κώδικα από το URL σε ένα element και, αν δοθεί, το περιορίζει σε truncateLines γραμμές.
      * @param {string} url - Το URL του raw αρχείου.
      * @param {string} elementId - Το ID του <code> στοιχείου όπου θα εμφανιστεί ο κώδικας.
      * @param {string} languageClass - π.χ. 'language-css' ή 'language-javascript'
-     * @param {number} [truncateLines] - Προαιρετικά, ο αριθμός γραμμών που θα εμφανίζονται αρχικά.
+     * @param {number} [truncateLines] - Ο αριθμός γραμμών που θα εμφανίζονται αρχικά.
      */
     function loadCode(url, elementId, languageClass, truncateLines) {
       fetch(url)
         .then(response => { 
-          if (!response.ok) { throw new Error('Error fetching: ' + url); }
+          if (!response.ok) throw new Error('Error fetching: ' + url);
           return response.text();
         })
         .then(data => {
           const codeElement = document.getElementById(elementId);
           const originalCode = data;
-          const applyHighlight = () => { hljs.highlightElement(codeElement); };
+          const applyHighlight = () => hljs.highlightElement(codeElement);
 
           if (truncateLines && originalCode.split('\n').length > truncateLines) {
             const lines = originalCode.split('\n');
@@ -232,7 +240,7 @@
     const urlJS1  = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
     const urlJS2  = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
     
-    // Φόρτωση CSS αρχείων με truncate: πρώτον μέχρι 36 γραμμές, δεύτερον μέχρι 83 γραμμές
+    // Φόρτωση CSS αρχείων με truncate (36 και 83 γραμμές)
     loadCode(urlCSS1, 'code-css1', 'language-css', 36);
     loadCode(urlCSS2, 'code-css2', 'language-css', 83);
     
