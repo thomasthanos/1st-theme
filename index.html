@@ -1,124 +1,85 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8" />
-  <title>Modern Page Example</title>
-
-  <!-- Για responsive σχεδίαση σε κινητά/tablets -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Σύνδεση με τα CSS από το GitHub σου (παράδειγμα) -->
-  <!-- Αν έχεις μόνο ένα CSS, βάλε απλώς ένα link -->
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js" />
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js" />
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css" />
-  <link rel="stylesheet" href="https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css" />
-
-  <!-- Προαιρετικό: Λίγα δικά μας στιλ για πιο "μοντέρνο" layout -->
+  <meta charset="UTF-8">
+  <title>Προβολή Κώδικα από GitHub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Βασικό CSS για ωραία εμφάνιση του κώδικα -->
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif; 
-      background: #f0f0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
       color: #333;
-    }
-    header, nav, main, footer {
-      margin: 0 auto;
-      max-width: 1200px;
+      margin: 0;
       padding: 1rem;
     }
-    header {
-      background: #1e1e1e;
-      color: #fff;
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-      padding: 0;
-      margin: 1rem 0 0 0;
-    }
-    nav a {
-      text-decoration: none;
-      color: #fff; /* αλλαγή για να φαίνονται στο σκοτεινό header */
-      font-weight: bold;
-    }
-    main {
-      background: #fff;
-      padding: 2rem;
-      margin-top: 1rem;
-      border-radius: 8px;
-    }
-    h2 {
-      margin-top: 0;
-    }
-    button {
-      padding: 0.5rem 1rem;
-      margin-top: 1rem;
-      background: #007bff;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    footer {
+    h1, h2 {
       text-align: center;
-      margin: 1rem auto;
-      color: #666;
+    }
+    .code-block {
+      background: #2d2d2d;
+      color: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+      white-space: pre;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      font-family: Consolas, monospace;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Προβολή Αρχείων από GitHub</h1>
+    
+    <h2>Prezomenoi_OG.plugin.js</h2>
+    <pre id="code1" class="code-block">// Φόρτωση κώδικα...</pre>
+    
+    <h2>discord_change.plugin.js</h2>
+    <pre id="code2" class="code-block">// Φόρτωση κώδικα...</pre>
+    
+    <h2>Early_SimplethemeV3.theme.css</h2>
+    <pre id="code3" class="code-block">// Φόρτωση κώδικα...</pre>
+    
+    <h2>SimplethemeV2.theme.css</h2>
+    <pre id="code4" class="code-block">// Φόρτωση κώδικα...</pre>
+  </div>
 
-  <header>
-    <h1>Καλώς ήρθες στο Modern Example!</h1>
-    <nav>
-      <ul>
-        <li><a href="#">Αρχική</a></li>
-        <li><a href="#">Σχετικά</a></li>
-        <li><a href="#">Επικοινωνία</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <main>
-    <section>
-      <h2>Περιγραφή</h2>
-      <p>
-        Αυτή είναι μια μοντέρνα σελίδα, δομημένη με HTML5 semantic tags,
-        η οποία κάνει include τα CSS & JS αρχεία σου απευθείας από το GitHub.
-      </p>
-      <button id="actionButton">Πάτα με!</button>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2025 Το δικό σου site. Όλα τα δικαιώματα κατοχυρωμένα.</p>
-  </footer>
-
-  <!-- Σύνδεση με τα JS αρχεία από το GitHub σου -->
-  <script src="https://raw.githubusercontent.com/thomasthanos/lst-theme/main/Prezemnoi_OG-plugin.js"></script>
-  <script src="https://raw.githubusercontent.com/thomasthanos/lst-theme/main/discord_change-plugin.js"></script>
-
-  <!-- Προαιρετικό JS για δοκιμή -->
   <script>
-    const btn = document.getElementById('actionButton');
-    btn.addEventListener('click', () => {
-      alert('Hello from the Modern Page!');
-    });
-  </script>
+    // Συνάρτηση που φορτώνει το περιεχόμενο ενός αρχείου από URL και το εμφανίζει μέσα σε ένα στοιχείο
+    function loadCode(url, elementId) {
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error while fetching ' + url);
+          }
+          return response.text();
+        })
+        .then(data => {
+          document.getElementById(elementId).textContent = data;
+        })
+        .catch(error => {
+          document.getElementById(elementId).textContent = 'Error loading code: ' + error;
+        });
+    }
 
+    // URLs προς τα αρχεία στο GitHub (βεβαιώσου ότι οι διαδρομές είναι σωστές και τα αρχεία είναι δημόσια)
+    const url1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
+    const url2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
+    const url3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
+    const url4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
+
+    // Φόρτωση των αρχείων στα αντίστοιχα <pre> blocks
+    loadCode(url1, 'code1');
+    loadCode(url2, 'code2');
+    loadCode(url3, 'code3');
+    loadCode(url4, 'code4');
+  </script>
 </body>
 </html>
