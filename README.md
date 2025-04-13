@@ -27,13 +27,11 @@ _A beautiful theme crafted with insights from BetterDiscord developers, updated 
 
 ## Stable Releases
 
-Below are the current stable releases (displayed using the _Important_ visual style you liked):
-
-> [!IMPORTANT]
+> [!OUTDATED]
 > **2nd Stable Version**  
 > [Video Demo](https://github.com/thomasthanos/1st-theme/assets/116557800/d4e122e7-f3c8-4554-9b30-ff42f772c681)
 
-> [!IMPORTANT]
+> [!OUTDATED]
 > **2.1st Stable Version (Rounded)**  
 > [Video Demo](https://github.com/thomasthanos/1st-theme/assets/116557800/89913b35-a6b8-450e-9372-b06759524dd7)
 
@@ -45,7 +43,8 @@ Below are the current stable releases (displayed using the _Important_ visual st
 
 ## Additional Information
 
-Feel free to fork, star, or contribute to this project. If you'd like to explore the source code with syntax highlighting and inline color-coded comments (similar to Better Commands in VSCode), check out the live view:
+Feel free to fork, star, or contribute to this project.  
+If you'd like to explore the source code with syntax highlighting and inline color-coded comments (similar to Better Commands in VSCode), check out the live view:
 
 **[View Code Online](https://thomasthanos.github.io/1st-theme/index.html#section-css1)**
 
