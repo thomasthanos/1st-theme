@@ -19,7 +19,7 @@ _A beautiful theme crafted with insights from BetterDiscord developers, updated 
 |--------------------------|------------------------------------------------------------------------------------------------|
 | **SimplethemeV2 - OUTDATED**        | [View CSS](https://thomasthanos.github.io/1st-theme/SimplethemeV2.theme.css)                     |
 | **Den Xero Ti Kanoyn - OUTDATED**   | [Rounded Theme](https://nikospepponis.github.io/links/den-xero-ti-kanoyn.theme.css)               |
-| **Early_SimplethemeV30 - OUTDATED**  | [View CSS](https://thomasthanos.github.io/1st-theme/Early_SimplethemeV3.theme.css)               |
+| **Early_SimplethemeV30**  | [View CSS](https://thomasthanos.github.io/1st-theme/Early_SimplethemeV3.theme.css)               |
 
 </div>
 
