@@ -4,42 +4,10 @@
 [![GitHub issues](https://img.shields.io/github/issues/thomasthanos/1st-theme?style=flat-square)](https://github.com/thomasthanos/1st-theme/issues)
 [![GitHub stars](https://img.shields.io/github/stars/thomasthanos/1st-theme?style=flat-square)](https://github.com/thomasthanos/1st-theme/stargazers)
 
-_A beautiful theme crafted with insights from BetterDiscord developers, inspired by the modern VSCode and Better Commands aesthetics._
+_A beautiful theme crafted with insights from BetterDiscord developers._
 
 > [!NOTE]  
-> This theme was developed with valuable feedback from dedicated theme developers on BetterDiscord.
-
----
-
-## Table of Contents
-
-- [About](#about)
-- [Features](#features)
-- [Theme Links](#theme-links)
-- [Live Preview](#live-preview)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
-## About
-
-1st Theme is a sleek, modern theme designed to offer an elegant and visually appealing experience. Inspired by VSCode's color schemes and the advanced inline comment styling of Better Commands, this theme enhances readability and style in a minimal yet striking way.
-
----
-
-## Features
-
-- **Modern Dark Design:**  
-  A VSCode-inspired dark mode with vibrant highlights.
-- **Advanced Syntax Highlighting:**  
-  Inline code comments are rendered with a colorful gradient and bold borders.
-- **Live Preview:**  
-  Instantly view the theme in action online.
-- **Multiple Versions:**  
-  Choose from different theme versions to suit your preference.
+> This theme was created with inspiration and tips from the dedicated theme developers on BetterDiscord.
 
 ---
 
@@ -57,43 +25,31 @@ _A beautiful theme crafted with insights from BetterDiscord developers, inspired
 
 ---
 
-## Live Preview
+## Stable Versions
 
-Δες το θέμα σε δράση:
+> [!IMPORTANT]  
+> **1st Stable Version**  
+> [Video Demo](https://github.com/thomasthanos/1st-theme/assets/116557800/bf699006-6b82-47dd-a70f-08e8841a33a6)
 
-[![Live Preview](https://img.shields.io/badge/Live-Preview-blue?style=flat-square)](https://thomasthanos.github.io/1st-theme/index.html#section-css1)
+> [!IMPORTANT]  
+> **2nd Stable Version**  
+> [Video Demo](https://github.com/thomasthanos/1st-theme/assets/116557800/d4e122e7-f3c8-4554-9b30-ff42f772c681)
 
-Για όσους επιθυμούν να δουν τον πλήρη κώδικα με όμορφο syntax highlighting και inline advanced code comments (à la Better Commands), δες τον πλήρη κώδικα εδώ:
+> [!IMPORTANT]  
+> **2.1st Stable Version (Rounded)**  
+> [Video Demo](https://github.com/thomasthanos/1st-theme/assets/116557800/89913b35-a6b8-450e-9372-b06759524dd7)
+
+> [!IMPORTANT]  
+> **3rd Stable Version NEW**  
+> [Video Demo](https://github.com/user-attachments/assets/3412be9e-7bf7-4fe2-b26a-cba148e4a0fd)
+
+---
+
+## Additional Information
+
+Feel free to fork, star, or contribute to the project. If you want to see the source code with syntax highlighting and inline color-coded comments (similar to Better Commands in VSCode), visit the live code view:
 
 **[View Code Online](https://thomasthanos.github.io/1st-theme/index.html#section-css1)**
-
----
-
-## Installation
-
-1. Κατέβασε το αρχείο CSS από τους παραπάνω συνδέσμους.
-2. Αντέγραψε τον κώδικα στο περιβάλλον BetterDiscord ή στην εφαρμογή που χρησιμοποιείς.
-3. Εφάρμοσε το θέμα και απόλαυσε το νέο του look.
-
----
-
-## Usage
-
-- Επίλεξε την έκδοση που σου αρέσει από τους παραπάνω συνδέσμους.
-- Ενεργοποίησε το θέμα στον client σου.
-- Κάνε προσαρμογές εάν χρειάζεται για να ταιριάξει πλήρως στις προτιμήσεις σου.
-
----
-
-## Contributing
-
-Εάν έχεις προτάσεις, διορθώσεις ή θέλεις να συνεισφέρεις, κάνε fork το αποθετήριο και στείλε pull request. Όλες οι προτάσεις είναι ευπρόσδεκτες!
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
