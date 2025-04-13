@@ -2,45 +2,43 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Modern Code Viewer</title>
+  <title>Modern Code Viewer - VSCode Style</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Highlight.js – Dracula theme -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/dracula.min.css">
+  <!-- Highlight.js – Atom One Dark Theme (μπάζα για VSCode look) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   
-  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, minimal scrollbar και menu -->
+  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, ανανεωμένο με έμφαση στο VSCode στυλ -->
   <style>
-    /* Global resets & βασικές ρυθμίσεις */
+    /* Global reset και βασικά styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
     body {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
       font-family: 'Roboto', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      line-height: 1.6;
-      padding-top: 70px; /* χώρο για το fixed menu */
+      padding-top: 70px; /* χώρος για το fixed menu */
       scroll-behavior: smooth;
     }
     
-    /* Minimal modern scrollbar */
+    /* Custom minimal αλλά μοντέρνος scrollbar */
     ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
     }
     ::-webkit-scrollbar-track {
-      background: #121212;
+      background: #1e1e1e;
     }
     ::-webkit-scrollbar-thumb {
-      background-color: #444;
-      border-radius: 4px;
+      background: #444;
+      border-radius: 5px;
     }
-    /* Firefox */
     html {
       scrollbar-width: thin;
-      scrollbar-color: #444 #121212;
+      scrollbar-color: #444 #1e1e1e;
     }
     
     /* Fixed Navigation Menu */
@@ -49,53 +47,55 @@
       top: 0;
       left: 0;
       width: 100%;
-      background: #1e1e1e;
-      padding: 10px 20px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-      z-index: 100;
+      background: linear-gradient(90deg, #333, #222);
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
     }
     nav ul {
+      list-style: none;
       display: flex;
       justify-content: center;
-      list-style: none;
     }
     nav ul li {
-      margin: 0 15px;
+      margin: 0 20px;
     }
     nav ul li a {
       text-decoration: none;
-      color: #e0e0e0;
-      font-weight: bold;
-      transition: color 0.3s;
+      color: #d4d4d4;
+      font-size: 1rem;
+      transition: color 0.3s, transform 0.3s;
     }
     nav ul li a:hover {
-      color: #ff4081;
+      color: #569cd6;  /* VSCode blue accent */
+      transform: scale(1.05);
     }
     
-    /* Container για τα code blocks */
+    /* Container για περιεχόμενο */
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 20px;
     }
+    
+    /* Code container styling */
     .code-container {
-      background-color: #1e1e1e;
-      border: 1px solid #333;
+      background-color: #252526;
+      border: 1px solid #3c3c3c;
       border-radius: 8px;
       margin: 30px 0;
       overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
     .code-container h2 {
-      background-color: #333;
-      padding: 15px;
+      background-color: #007acc;
       color: #fff;
+      padding: 15px 20px;
       font-size: 1.2rem;
     }
     .code-container pre {
-      padding: 15px;
+      padding: 20px;
       overflow-x: auto;
-      background-color: #1e1e1e;
       font-size: 0.9rem;
     }
     pre code {
@@ -104,13 +104,13 @@
       word-wrap: break-word;
     }
     
-    /* Style για το toggle κουμπί */
+    /* Toggle button styling για compressed view */
     .toggle-btn {
       display: block;
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background-color: #333;
-      color: #fff;
+      color: #d4d4d4;
       border: none;
       cursor: pointer;
       font-size: 0.9rem;
@@ -118,69 +118,65 @@
       transition: background 0.3s;
     }
     .toggle-btn:hover {
-      background-color: #444;
+      background-color: #3c3c3c;
     }
   </style>
 </head>
 <body>
-  <!-- Navigation Menu -->
+  <!-- Navigation Menu (CSS πρώτα, JS μετά) -->
   <nav>
     <ul>
-      <li><a href="#section1">Prezomenoi_OG.plugin.js</a></li>
-      <li><a href="#section2">discord_change.plugin.js</a></li>
-      <li><a href="#section3">Early_SimplethemeV3.theme.css</a></li>
-      <li><a href="#section4">SimplethemeV2.theme.css</a></li>
+      <li><a href="#section-css1">Early_SimplethemeV3.theme.css</a></li>
+      <li><a href="#section-css2">SimplethemeV2.theme.css</a></li>
+      <li><a href="#section-js1">Prezomenoi_OG.plugin.js</a></li>
+      <li><a href="#section-js2">discord_change.plugin.js</a></li>
     </ul>
   </nav>
   
   <div class="container">
-    <!-- Section 1: Prezomenoi_OG.plugin.js (πλήρης προβολή) -->
-    <div class="code-container" id="section1">
-      <h2>Prezomenoi_OG.plugin.js</h2>
-      <pre><code id="code1" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
-    </div>
-    
-    <!-- Section 2: discord_change.plugin.js (πλήρης προβολή) -->
-    <div class="code-container" id="section2">
-      <h2>discord_change.plugin.js</h2>
-      <pre><code id="code2" class="language-javascript">// Φόρτωση κώδικα...</code></pre>
-    </div>
-    
-    <!-- Section 3: Early_SimplethemeV3.theme.css (προβολή μέχρι 36 γραμμές αρχικά) -->
-    <div class="code-container" id="section3">
+    <!-- Section για CSS: Early_SimplethemeV3.theme.css (truncate στις 36 γραμμές) -->
+    <div class="code-container" id="section-css1">
       <h2>Early_SimplethemeV3.theme.css</h2>
-      <pre><code id="code3" class="language-css">/* Φόρτωση κώδικα... */</code></pre>
-      <!-- Το κουμπί toggle θα προστεθεί δυναμικά αν χρειάζεται -->
+      <pre><code id="code-css1" class="language-css">/* Loading code... */</code></pre>
+      <!-- Toggle button θα προστεθεί εδώ αν χρειάζεται -->
     </div>
     
-    <!-- Section 4: SimplethemeV2.theme.css (προβολή μέχρι 83 γραμμές αρχικά) -->
-    <div class="code-container" id="section4">
+    <!-- Section για CSS: SimplethemeV2.theme.css (truncate στις 83 γραμμές) -->
+    <div class="code-container" id="section-css2">
       <h2>SimplethemeV2.theme.css</h2>
-      <pre><code id="code4" class="language-css">/* Φόρτωση κώδικα... */</code></pre>
-      <!-- Το κουμπί toggle θα προστεθεί δυναμικά αν χρειάζεται -->
+      <pre><code id="code-css2" class="language-css">/* Loading code... */</code></pre>
+      <!-- Toggle button θα προστεθεί εδώ αν χρειάζεται -->
+    </div>
+    
+    <!-- Section για JS: Prezomenoi_OG.plugin.js (πλήρης προβολή) -->
+    <div class="code-container" id="section-js1">
+      <h2>Prezomenoi_OG.plugin.js</h2>
+      <pre><code id="code-js1" class="language-javascript">// Loading code...</code></pre>
+    </div>
+    
+    <!-- Section για JS: discord_change.plugin.js (πλήρης προβολή) -->
+    <div class="code-container" id="section-js2">
+      <h2>discord_change.plugin.js</h2>
+      <pre><code id="code-js2" class="language-javascript">// Loading code...</code></pre>
     </div>
   </div>
   
   <!-- Highlight.js script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   
-  <!-- JavaScript για φόρτωση των αρχείων και toggle για τον πλήρη/συμπιεσμένο κώδικα -->
+  <!-- JavaScript για φόρτωση των αρχείων και toggle για compressed view -->
   <script>
     /**
-     * Φορτώνει το αρχείο από το URL και, αν έχει δοθεί,
-     * το μειώνει (truncate) στις πρώτες truncateLines γραμμές.
-     *
-     * @param {string} url       Το URL του raw αρχείου.
-     * @param {string} elementId Το ID του <code> στοιχείου όπου θα εμφανιστεί ο κώδικας.
-     * @param {string} language  Η γλώσσα που χρησιμοποιείται (π.χ., 'language-css', 'language-javascript').
-     * @param {number} [truncateLines]  Προαιρετικά, ο αριθμός γραμμών που θέλουμε αρχικά να εμφανίζονται.
+     * Φορτώνει κώδικα από το URL σε ένα element και, αν δοθεί, το περιορίζει σε truncateLines γραμμές.
+     * @param {string} url - Το URL του raw αρχείου.
+     * @param {string} elementId - Το ID του <code> στοιχείου όπου θα εμφανιστεί ο κώδικας.
+     * @param {string} languageClass - π.χ. 'language-css' ή 'language-javascript'
+     * @param {number} [truncateLines] - Προαιρετικά, αριθμός γραμμών που εμφανίζονται αρχικά.
      */
-    function loadCode(url, elementId, language, truncateLines) {
+    function loadCode(url, elementId, languageClass, truncateLines) {
       fetch(url)
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Error fetching: ' + url);
-          }
+          if (!response.ok) { throw new Error('Error fetching: ' + url); }
           return response.text();
         })
         .then(data => {
@@ -194,7 +190,7 @@
             codeElement.textContent = truncatedCode;
             applyHighlight();
 
-            // Δημιουργία κουμπιού toggle για πλήρη εμφάνιση
+            // Δημιουργία toggle button για πλήρη προβολή
             const btn = document.createElement("button");
             btn.textContent = "Show More";
             btn.className = "toggle-btn";
@@ -211,7 +207,6 @@
               }
               applyHighlight();
             });
-            // Εισαγωγή του κουμπιού μετά το <pre> (δηλαδή μέσα στο code container)
             codeElement.parentNode.parentNode.appendChild(btn);
           } else {
             codeElement.textContent = originalCode;
@@ -223,20 +218,19 @@
         });
     }
     
-    // Ορισμός των URLs προς τα αρχεία στο GitHub
-    const url1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
-    const url2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
-    const url3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
-    const url4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
+    // URLs προς τα αρχεία στο GitHub
+    const urlCSS1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/Early_SimplethemeV3.theme.css";
+    const urlCSS2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Themes/SimplethemeV2.theme.css";
+    const urlJS1  = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/Prezomenoi_OG.plugin.js";
+    const urlJS2  = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord%20DEV/Plugins/discord_change.plugin.js";
     
-    // Φόρτωση των αρχείων:
-    // Για τα .js αρχεία: πλήρης εμφάνιση
-    loadCode(url1, 'code1', 'language-javascript'); 
-    loadCode(url2, 'code2', 'language-javascript');
+    // Φόρτωση CSS αρχείων με truncate: πρώτον μέχρι 36 γραμμές, δεύτερον μέχρι 83 γραμμές
+    loadCode(urlCSS1, 'code-css1', 'language-css', 36);
+    loadCode(urlCSS2, 'code-css2', 'language-css', 83);
     
-    // Για τα .css αρχεία: εμφάνιση μέχρι συγκεκριμένες γραμμές
-    loadCode(url3, 'code3', 'language-css', 36);
-    loadCode(url4, 'code4', 'language-css', 83);
+    // Φόρτωση JS αρχείων σε πλήρη προβολή
+    loadCode(urlJS1, 'code-js1', 'language-javascript');
+    loadCode(urlJS2, 'code-js2', 'language-javascript');
   </script>
 </body>
 </html>
