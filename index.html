@@ -2,13 +2,13 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>Modern Code Viewer - VSCode Style Menu & Colorful Notes</title>
+  <title>Modern Code Viewer - VSCode Style Menu, Colorful Code Comments & Notes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Highlight.js – Atom One Dark Theme (για VSCode look) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   
-  <!-- Custom CSS για μοντέρνα dark mode εμφάνιση, στυλιζαρισμένο menu και έντονες σημειώσεις -->
+  <!-- Custom CSS για dark mode εμφάνιση, menu, notes και custom styling για σχόλια (/* */) μέσα στον κώδικα -->
   <style>
     /* Global resets */
     * {
@@ -24,7 +24,7 @@
       scroll-behavior: smooth;
     }
     
-    /* Custom minimal αλλά μοντέρνος scrollbar */
+    /* Minimal αλλά μοντέρνος scrollbar */
     ::-webkit-scrollbar {
       width: 10px;
       height: 10px;
@@ -111,28 +111,28 @@
       word-wrap: break-word;
     }
     
-    /* Notes styling – πιο έντονα χρώματα τύπου Better Commands */
+    /* Custom styling για τα σχόλια μέσα στον κώδικα (/* ... */) */
+    .hljs-comment,
+    .hljs-quote {
+      /* Προσαρμοσμένο background και border για "έγχρωμα" σχόλια */
+      background: linear-gradient(135deg, #FF5C91, #FF995E);
+      color: #fff !important;
+      padding: 2px 4px;
+      border-left: 4px solid #fff;
+      border-radius: 3px;
+    }
+    
+    /* Notes styling – για σημειώσεις πάνω από τα code blocks (έξω από τον κώδικα) */
     .note {
-      /* Ένα ζωντανό gradient για φόντο: */
       background: linear-gradient(135deg, #FF5C91, #FF995E);
       color: #fff;
       padding: 12px 15px;
       margin: 15px 20px;
       border-radius: 4px;
       font-size: 0.9rem;
-      /* Έντονο αριστερό border */
       border-left: 6px solid #fff;
-      /* Ή εναλλακτικά κάποιο άλλο χρώμα, π.χ. #000 */
-      /* border-left: 6px solid #000; */
-      
-      /* Προαιρετική σκιά για έμφαση */
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
-    /* Προαιρετικά, μπορούμε να πειραματιστούμε με blended text shadow κτλ.
-       .note {
-         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-       }
-    */
     
     /* Toggle button styling για truncated view */
     .toggle-btn {
@@ -168,8 +168,7 @@
     <div class="code-container" id="section-css1">
       <h2>Early_SimplethemeV3.theme.css</h2>
       <div class="note">
-        Αυτή η σημείωση έχει έντονο χρώμα σαν Better Commands! 
-        Εμφανίζουμε τις πρώτες 36 γραμμές του CSS. Κάνε κλικ στο "Show More" για όλο το αρχείο.
+        Το αρχείο αυτό εμφανίζει τις πρώτες 36 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-css1" class="language-css">/* Loading code... */</code></pre>
     </div>
@@ -178,8 +177,7 @@
     <div class="code-container" id="section-css2">
       <h2>SimplethemeV2.theme.css</h2>
       <div class="note">
-        Αυτή η σημείωση έχει έντονο χρώμα σαν Better Commands! 
-        Εμφανίζουμε τις πρώτες 83 γραμμές του CSS. Κάνε κλικ στο "Show More" για όλο το αρχείο.
+        Το αρχείο αυτό εμφανίζει τις πρώτες 83 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-css2" class="language-css">/* Loading code... */</code></pre>
     </div>
@@ -188,7 +186,6 @@
     <div class="code-container" id="section-js1">
       <h2>Prezomenoi_OG.plugin.js</h2>
       <div class="note">
-        Αυτή η σημείωση έχει έντονο χρώμα σαν Better Commands! 
         Το αρχείο JavaScript φορτώνεται πλήρως.
       </div>
       <pre><code id="code-js1" class="language-javascript">// Loading code...</code></pre>
@@ -198,7 +195,6 @@
     <div class="code-container" id="section-js2">
       <h2>discord_change.plugin.js</h2>
       <div class="note">
-        Αυτή η σημείωση έχει έντονο χρώμα σαν Better Commands!
         Το αρχείο JavaScript φορτώνεται πλήρως.
       </div>
       <pre><code id="code-js2" class="language-javascript">// Loading code...</code></pre>
@@ -208,7 +204,7 @@
   <!-- Highlight.js script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   
-  <!-- JavaScript για φόρτωση των αρχείων και toggle για compressed view -->
+  <!-- JavaScript για φόρτωση των αρχείων και toggle για truncated view -->
   <script>
     /**
      * Φορτώνει κώδικα από το URL σε ένα element και, αν δοθεί, το περιορίζει σε truncateLines γραμμές.
