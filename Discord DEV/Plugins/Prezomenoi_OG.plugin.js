@@ -10,9 +10,11 @@
 
 module.exports = class RenameChannel {
     start() {
-        // Custom styling για το guild icon (χωρίς custom font)
+        // Δημιουργία του style element
         const style = document.createElement('style');
+        style.id = 'prezomenoi-og-style';
         style.textContent = `
+          /* Guild icon για το sidebar */
           [data-list-item-id="guildsnav___1216757265391161537"] img {
             content: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
             object-fit: cover;
@@ -20,16 +22,30 @@ module.exports = class RenameChannel {
             background-color: #000 !important;
             transform: scale(2) translateX(0px) translateY(8px);
           }
-          .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
+    
+          /* Εικονίδιο για το title */
+          .prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
             background-image: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
             background-size: cover !important;
             border-radius: 20% !important;
           }
         `;
         document.head.appendChild(style);
-
+    
         this.renameAll();
-
+    
+        // Λειτουργία για ενημέρωση του CSS class με βάση το guild ID
+        const updateGuildClass = () => {
+            if (this.isCorrectGuild()) {
+                document.body.classList.add('prezomenoi-og-active');
+            } else {
+                document.body.classList.remove('prezomenoi-og-active');
+            }
+        };
+    
+        // Εκτέλεση κατά την εκκίνηση
+        updateGuildClass();
+    
         // MutationObserver για δυναμικές αλλαγές στο DOM
         this.observer = new MutationObserver(mutations => {
             mutations.forEach(mutation => {
@@ -41,13 +57,14 @@ module.exports = class RenameChannel {
             });
         });
         this.observer.observe(document.body, { childList: true, subtree: true });
-
+    
         // Παρακολούθηση αλλαγής URL (π.χ. server switch)
         this.currentLocation = window.location.pathname;
         this.locationCheckInterval = setInterval(() => {
             if (window.location.pathname !== this.currentLocation) {
                 this.currentLocation = window.location.pathname;
                 this.renameAll();
+                updateGuildClass(); // Ενημέρωση του class όταν αλλάζει το URL
             }
         }, 500);
     }
