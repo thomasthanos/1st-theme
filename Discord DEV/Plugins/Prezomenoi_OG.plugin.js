@@ -4,7 +4,6 @@
  * @description Plugin που αλλάζει δυναμικά τα ονόματα καναλιών, κατηγοριών, 
  * χρηστών και τον τίτλο παραθύρου μόνο στο guild Prezomenoi OG (ID: 1216757265391161537).
  * Περιλαμβάνει mapping για renames με βάση τα data‑text attributes (π.χ. FlaviBot & Simple Poll με gold)
- * και εφαρμόζει κόκκινο χρώμα (red) στους χρήστες χωρίς role (με το συγκεκριμένο class),
  * αλλά το CSS αυτό τίθεται μόνο στο guild Prezomenoi.
  * Προσθέτει επίσης ένα BDSettings panel με Master Toggle για έλεγχο όλων των features.
  */
@@ -32,7 +31,7 @@ module.exports = class RenameChannel {
         style.textContent = `
             /* Guild icon για το sidebar */
             [data-list-item-id="guildsnav___1216757265391161537"] img {
-                content: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
+                content: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
                 object-fit: cover;
                 border-radius: 20% !important;
                 background-color: #000 !important;
@@ -40,7 +39,7 @@ module.exports = class RenameChannel {
             }
             /* Εικονίδιο για το title */
             .prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
-                background-image: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
+                background-image: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
                 background-size: cover !important;
                 border-radius: 20% !important;
             }
@@ -271,6 +270,9 @@ module.exports = class RenameChannel {
     /* -------------------- TEXT REPLACEMENT -------------------- */
     textReplace(rootNode) {
         if (!rootNode) return;
+    
+        // Απλή αντικατάσταση σε κείμενο
+        this.replaceTextInNode(rootNode, "Prezomenoi OG", "Ghost Server");
         this.replaceTextInNode(rootNode, "☌⟟⏃⋏⋏⟟☊", "Giannhs");
         this.replaceTextInNode(rootNode, "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
         this.replaceTextInNode(rootNode, "スパイダーマン", "Mpillias");
@@ -278,66 +280,75 @@ module.exports = class RenameChannel {
         this.replaceTextInNode(rootNode, "ANNOUSKA", "Eirini");
         this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
         this.replaceTextInNode(rootNode, "Simple Poll", "Simple Poll");
-
+    
+        // Αντικατάσταση σε attributes (aria-label, data-text, title, alt)
         const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
         elementsWithAttrs.forEach(el => {
             const ariaVal = el.getAttribute("aria-label");
-            if (ariaVal) {
-                if (ariaVal.includes("☌⟟⏃⋏⋏⟟☊"))
-                    el.setAttribute("aria-label", ariaVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
-                if (ariaVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
-                    el.setAttribute("aria-label", ariaVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
-                if (ariaVal.includes("スパイダーマン"))
-                    el.setAttribute("aria-label", ariaVal.replace("スパイダーマン", "Mpillias"));
-                if (ariaVal.includes("アスタ"))
-                    el.setAttribute("aria-label", ariaVal.replace("アスタ", "Petros"));
-                if (ariaVal.includes("ANNOUSKA"))
-                    el.setAttribute("aria-label", ariaVal.replace("ANNOUSKA", "Eirini"));
-                if (ariaVal.includes("FlaviBot"))
-                    el.setAttribute("aria-label", ariaVal.replace("FlaviBot", "FlaviBot"));
-                if (ariaVal.includes("Simple Poll"))
-                    el.setAttribute("aria-label", ariaVal.replace("Simple Poll", "Simple Poll"));
+            if (ariaVal && ariaVal.includes("Prezomenoi OG")) {
+                el.setAttribute("aria-label", ariaVal.replace("Prezomenoi OG", "Prezomenoi LOCAL"));
             }
+    
             const dtVal = el.getAttribute("data-text");
-            if (dtVal) {
-                if (dtVal.includes("☌⟟⏃⋏⋏⟟☊")) {
-                    el.setAttribute("data-text", dtVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
-                    if (el.textContent.includes("☌⟟⏃⋏⋏⟟☊"))
-                        el.textContent = el.textContent.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs");
-                }
-                if (dtVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟")) {
-                    el.setAttribute("data-text", dtVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
-                    if (el.textContent.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
-                        el.textContent = el.textContent.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
-                }
-                if (dtVal.includes("スパイダーマン")) {
-                    el.setAttribute("data-text", dtVal.replace("スパイダーマン", "Mpillias"));
-                    if (el.textContent.includes("スパイダーマン"))
-                        el.textContent = el.textContent.replace("スパイダーマン", "Mpillias");
-                }
-                if (dtVal.includes("アスタ")) {
-                    el.setAttribute("data-text", dtVal.replace("アスタ", "Petros"));
-                    if (el.textContent.includes("アスタ"))
-                        el.textContent = el.textContent.replace("アスタ", "Petros");
-                }
-                if (dtVal.includes("ANNOUSKA")) {
-                    el.setAttribute("data-text", dtVal.replace("ANNOUSKA", "Eirini"));
-                    if (el.textContent.includes("ANNOUSKA"))
-                        el.textContent = el.textContent.replace("ANNOUSKA", "Eirini");
-                }
-                if (dtVal.includes("FlaviBot")) {
-                    el.setAttribute("data-text", dtVal.replace("FlaviBot", "FlaviBot"));
-                    if (el.textContent.includes("FlaviBot"))
-                        el.textContent = el.textContent.replace("FlaviBot", "FlaviBot");
-                }
-                if (dtVal.includes("Simple Poll")) {
-                    el.setAttribute("data-text", dtVal.replace("Simple Poll", "Simple Poll"));
-                    if (el.textContent.includes("Simple Poll"))
-                        el.textContent = el.textContent.replace("Simple Poll", "Simple Poll");
-                }
+            if (dtVal && dtVal.includes("Prezomenoi OG")) {
+                el.setAttribute("data-text", dtVal.replace("Prezomenoi OG", "Prezomenoi LOCAL"));
+                if (el.textContent.includes("Prezomenoi OG"))
+                    el.textContent = el.textContent.replace("Prezomenoi OG", "Prezomenoi LOCAL");
+            }
+    
+            if (ariaVal && ariaVal.includes("☌⟟⏃⋏⋏⟟☊"))
+                el.setAttribute("aria-label", ariaVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
+            if (ariaVal && ariaVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
+                el.setAttribute("aria-label", ariaVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
+            if (ariaVal && ariaVal.includes("スパイダーマン"))
+                el.setAttribute("aria-label", ariaVal.replace("スパイダーマン", "Mpillias"));
+            if (ariaVal && ariaVal.includes("アスタ"))
+                el.setAttribute("aria-label", ariaVal.replace("アスタ", "Petros"));
+            if (ariaVal && ariaVal.includes("ANNOUSKA"))
+                el.setAttribute("aria-label", ariaVal.replace("ANNOUSKA", "Eirini"));
+            if (ariaVal && ariaVal.includes("FlaviBot"))
+                el.setAttribute("aria-label", ariaVal.replace("FlaviBot", "FlaviBot"));
+            if (ariaVal && ariaVal.includes("Simple Poll"))
+                el.setAttribute("aria-label", ariaVal.replace("Simple Poll", "Simple Poll"));
+    
+            if (dtVal && dtVal.includes("☌⟟⏃⋏⋏⟟☊")) {
+                el.setAttribute("data-text", dtVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
+                if (el.textContent.includes("☌⟟⏃⋏⋏⟟☊"))
+                    el.textContent = el.textContent.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs");
+            }
+            if (dtVal && dtVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟")) {
+                el.setAttribute("data-text", dtVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
+                if (el.textContent.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
+                    el.textContent = el.textContent.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
+            }
+            if (dtVal && dtVal.includes("スパイダーマン")) {
+                el.setAttribute("data-text", dtVal.replace("スパイダーマン", "Mpillias"));
+                if (el.textContent.includes("スパイダーマン"))
+                    el.textContent = el.textContent.replace("スパイダーマン", "Mpillias");
+            }
+            if (dtVal && dtVal.includes("アスタ")) {
+                el.setAttribute("data-text", dtVal.replace("アスタ", "Petros"));
+                if (el.textContent.includes("アスタ"))
+                    el.textContent = el.textContent.replace("アスタ", "Petros");
+            }
+            if (dtVal && dtVal.includes("ANNOUSKA")) {
+                el.setAttribute("data-text", dtVal.replace("ANNOUSKA", "Eirini"));
+                if (el.textContent.includes("ANNOUSKA"))
+                    el.textContent = el.textContent.replace("ANNOUSKA", "Eirini");
+            }
+            if (dtVal && dtVal.includes("FlaviBot")) {
+                el.setAttribute("data-text", dtVal.replace("FlaviBot", "FlaviBot"));
+                if (el.textContent.includes("FlaviBot"))
+                    el.textContent = el.textContent.replace("FlaviBot", "FlaviBot");
+            }
+            if (dtVal && dtVal.includes("Simple Poll")) {
+                el.setAttribute("data-text", dtVal.replace("Simple Poll", "Simple Poll"));
+                if (el.textContent.includes("Simple Poll"))
+                    el.textContent = el.textContent.replace("Simple Poll", "Simple Poll");
             }
         });
     }
+    
 
     /* -------------------- HELPER FUNCTIONS -------------------- */
     replaceTextInNode(node, oldStr, newStr) {
