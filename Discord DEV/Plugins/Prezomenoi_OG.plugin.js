@@ -1,120 +1,57 @@
 /**
  * @name Prezomenoi_OG
- * @version 2.6.3
+ * @version 2.6.2
  * @description Plugin που αλλάζει δυναμικά τα ονόματα καναλιών, κατηγοριών, 
  * χρηστών και τον τίτλο παραθύρου μόνο στο guild Prezomenoi OG (ID: 1216757265391161537).
- * Περιλαμβάνει mapping για renames και εφαρμόζει κόκκινο χρώμα (red) στους χρήστες χωρίς role.
- * Προστέθηκε settings panel για enable/disable λειτουργιών.
+ * Περιλαμβάνει mapping για renames με βάση τα data‑text attributes (π.χ. FlaviBot & Simple Poll με gold)
+ * και εφαρμόζει κόκκινο χρώμα (red) στους χρήστες χωρίς role (με το συγκεκριμένο class),
+ * αλλά το CSS αυτό τίθεται μόνο στο guild Prezomenoi.
+ * Προσθέτει επίσης ένα BDSettings panel με Master Toggle για έλεγχο όλων των features.
  */
-
-const { BdApi } = window;
-
-const config = {
-    settings: [
-        {
-            type: "category",
-            id: "general",
-            name: "General Settings",
-            collapsible: true,
-            shown: false,
-            settings: [
-                {
-                    type: "switch",
-                    id: "guildIcon",
-                    name: "Guild Icon",
-                    note: "Changes the guild icon in the sidebar and title",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "renameChannels",
-                    name: "Rename Channels",
-                    note: "Renames channels based on the predefined map",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "renameCategories",
-                    name: "Rename Categories",
-                    note: "Renames categories based on the predefined map",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "renameHeaderTitle",
-                    name: "Rename Header Title",
-                    note: "Changes the header title to match channel names",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "renameUsers",
-                    name: "Rename Users",
-                    note: "Renames users based on the predefined map",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "renameRepliedMessages",
-                    name: "Rename Replied Messages",
-                    note: "Renames users in replied messages",
-                    value: true
-                },
-                {
-                    type: "switch",
-                    id: "textReplace",
-                    name: "Text Replacement",
-                    note: "Replaces specific text strings in the DOM",
-                    value: true
-                }
-            ]
-        }
-    ]
-};
 
 module.exports = class RenameChannel {
     constructor() {
-        this.defaultSettings = {
-            guildIcon: true,
+        // Initialize settings with a default masterToggle
+        this.settings = BdApi.Data.load("Prezomenoi_OG", "settings") || {
+            masterToggle: true,
             renameChannels: true,
             renameCategories: true,
-            renameHeaderTitle: true,
             renameUsers: true,
-            renameRepliedMessages: true,
-            textReplace: true
+            renameHeader: true,
+            renameRepliedMessages: true
         };
-        this.settings = this.loadSettings();
-    }
-
-    loadSettings() {
-        return { ...this.defaultSettings, ...BdApi.Data.load('Prezomenoi_OG', 'settings') };
-    }
-
-    saveSettings(newSettings) {
-        this.settings = newSettings;
-        BdApi.Data.save('Prezomenoi_OG', 'settings', newSettings);
-    }
-
-    getSettingsPanel() {
-        config.settings.forEach(category => {
-            if (category.settings) {
-                category.settings.forEach(setting => {
-                    setting.value = this.settings[setting.id];
-                });
-            }
-        });
-
-        return BdApi.UI.buildSettingsPanel({
-            settings: config.settings,
-            onChange: (category, id, value) => {
-                const newSettings = { ...this.settings, [id]: value };
-                this.saveSettings(newSettings);
-                this.renameAll(); // Ενημέρωση όλων των αλλαγών
-            }
-        });
     }
 
     start() {
+        // Skip all logic if masterToggle is disabled
+        if (!this.settings.masterToggle) return;
+
+        // Inject CSS for guild icons and styling
+        const style = document.createElement('style');
+        style.id = 'prezomenoi-og-style';
+        style.textContent = `
+            /* Guild icon για το sidebar */
+            [data-list-item-id="guildsnav___1216757265391161537"] img {
+                content: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
+                object-fit: cover;
+                border-radius: 20% !important;
+                background-color: #000 !important;
+                transform: scale(2) translateX(0px) translateY(8px);
+            }
+            /* Εικονίδιο για το title */
+            .prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
+                background-image: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
+                background-size: cover !important;
+                border-radius: 20% !important;
+            }
+            /* Optional: Style for the BDSettings panel switch */
+            .prezomenoi-og-switch .bd-switch-body {
+                background-color: var(--brand-experiment) !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Perform renaming if respective settings are enabled
         this.renameAll();
 
         // Λειτουργία για ενημέρωση του CSS class με βάση το guild ID
@@ -152,55 +89,27 @@ module.exports = class RenameChannel {
         }, 500);
     }
 
+    // Επιστρέφει true αν το URL ανήκει στο guild Prezomenoi OG (ID: 1216757265391161537)
     isCorrectGuild() {
         const match = window.location.pathname.match(/^\/channels\/(\d+)\//);
         return match && match[1] === "1216757265391161537";
     }
 
+    // Κεντρική μέθοδος: καλεί όλες τις λειτουργίες ανανέωσης
     renameAll() {
-        if (!this.isCorrectGuild()) {
+        if (!this.isCorrectGuild() || !this.settings.masterToggle) {
             this.removeNoRoleCss();
-            const style = document.getElementById('prezomenoi-og-style');
-            if (style) style.remove();
             return;
         }
-
-        // Εφαρμογή λειτουργιών μόνο αν είναι ενεργοποιημένες
-        if (this.settings.guildIcon) this.applyGuildIcon();
         if (this.settings.renameChannels) this.renameChannels();
         if (this.settings.renameCategories) this.renameCategories();
-        if (this.settings.renameHeaderTitle) this.renameHeaderTitle();
+        if (this.settings.renameHeader) this.renameHeaderTitle();
         if (this.settings.renameUsers) this.renameUsers();
         if (this.settings.renameRepliedMessages) this.renameRepliedMessages();
-        if (this.settings.textReplace) this.textReplace(document.body);
+        this.textReplace(document.body);
     }
 
-    applyGuildIcon() {
-        let style = document.getElementById('prezomenoi-og-style');
-        if (!style) {
-            style = document.createElement('style');
-            style.id = 'prezomenoi-og-style';
-            document.head.appendChild(style);
-        }
-        style.textContent = `
-          /* Guild icon για το sidebar */
-          [data-list-item-id="guildsnav___1216757265391161537"] img {
-            content: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
-            object-fit: cover;
-            border-radius: 20% !important;
-            background-color: #000 !important;
-            transform: scale(2) translateX(0px) translateY(8px);
-          }
-    
-          /* Εικονίδιο για το title */
-          .prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
-            background-image: url("https://i.postimg.cc/zBLbHXPC/Untitled-Project.jpg") !important;
-            background-size: cover !important;
-            border-radius: 20% !important;
-          }
-        `;
-    }
-
+    /* -------------------- RENAME CHANNELS & CATEGORIES -------------------- */
     renameChannels() {
         const channels = this.getChannelMap();
         Object.entries(channels).forEach(([channelId, newName]) => {
@@ -242,12 +151,13 @@ module.exports = class RenameChannel {
         }
     }
 
+    /* ------------------------- RENAME USERS ------------------------- */
     renameUsers() {
         const userMap = {
             "411178013103751190": { name: "Akrivos", color: "#1F8249" },
             "681933873877352472": { name: "Mpillias", color: "#734986" },
             "1076347460500324363": { name: "Giannhs", color: "#1F8249" },
-            "633412575601623049": { name: "Petros", color: "#206694" },
+            "633412575601623049": { name: "Petros", color: "#FF4500" },
             "804860278788456469": { name: "Eirini", color: "#FF69B4" },
             "684773505157431347": { name: "FlaviBot", color: "#FFD700" },
             "324631108731928587": { name: "Simple Poll", color: "#FFD700" }
@@ -268,11 +178,11 @@ module.exports = class RenameChannel {
             }
         });
 
-        // 2) Fallback μέσω data-text
+        // 2) Fallback μέσω data‑text
         const fallbackUsers = [
             { fallback: "☌⟟⏃⋏⋏⟟☊", name: "Giannhs", color: "#1F8249" },
-            { fallback: "⏚⏃⋏⍜☊☌�s", name: "Akrivos", color: "#1F8249" },
-            { fallback: "スパイダーマン", name: "M spillias", color: "#734986" },
+            { fallback: "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", name: "Akrivos", color: "#1F8249" },
+            { fallback: "スパイダーマン", name: "Mpillias", color: "#734986" },
             { fallback: "アスタ", name: "Petros", color: "#FF4500" },
             { fallback: "ANNOUSKA", name: "Eirini", color: "#FF69B4" },
             { fallback: "FlaviBot", name: "FlaviBot", color: "#FFD700" },
@@ -285,7 +195,7 @@ module.exports = class RenameChannel {
             });
         });
 
-        // 3) Default fallback χρώμα
+        // 3) Default fallback χρώμα για όλους τους χρήστες χωρίς inline χρώμα
         const defaultCustomColor = "#C0C0C0";
         document.querySelectorAll("div[class*='username']").forEach(div => {
             if (!div.style.color || div.style.color === "") {
@@ -294,6 +204,7 @@ module.exports = class RenameChannel {
         });
     }
 
+    /* -------------------- RENAME IN REPLIED MESSAGES -------------------- */
     renameRepliedMessages() {
         const replyAriaElements = document.querySelectorAll(
             "[aria-label*='☌⟟⏃⋏⋏⟟☊'], " +
@@ -312,7 +223,7 @@ module.exports = class RenameChannel {
             if (oldAria.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
                 el.setAttribute("aria-label", oldAria.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
             if (oldAria.includes("スパイダーマン"))
-                el.setAttribute("aria-label", oldAria.replace("スパイダーマン", "M spillias"));
+                el.setAttribute("aria-label", oldAria.replace("スパイダーマン", "Mpillias"));
             if (oldAria.includes("アスタ"))
                 el.setAttribute("aria-label", oldAria.replace("アスタ", "Petros"));
             if (oldAria.includes("ANNOUSKA"))
@@ -334,7 +245,7 @@ module.exports = class RenameChannel {
                     el.style.color = "#1F8249";
                 }
                 if (trimmed === "スパイダーマン") {
-                    el.textContent = "M spillias";
+                    el.textContent = "Mpillias";
                     el.style.color = "#734986";
                 }
                 if (trimmed === "アスタ") {
@@ -357,10 +268,9 @@ module.exports = class RenameChannel {
         });
     }
 
+    /* -------------------- TEXT REPLACEMENT -------------------- */
     textReplace(rootNode) {
-        if (!this.settings.textReplace || !rootNode) return;
-    
-        // Text node replacements
+        if (!rootNode) return;
         this.replaceTextInNode(rootNode, "☌⟟⏃⋏⋏⟟☊", "Giannhs");
         this.replaceTextInNode(rootNode, "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
         this.replaceTextInNode(rootNode, "スパイダーマン", "Mpillias");
@@ -368,8 +278,7 @@ module.exports = class RenameChannel {
         this.replaceTextInNode(rootNode, "ANNOUSKA", "Eirini");
         this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
         this.replaceTextInNode(rootNode, "Simple Poll", "Simple Poll");
-    
-        // Attribute replacements
+
         const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
         elementsWithAttrs.forEach(el => {
             const ariaVal = el.getAttribute("aria-label");
@@ -389,7 +298,6 @@ module.exports = class RenameChannel {
                 if (ariaVal.includes("Simple Poll"))
                     el.setAttribute("aria-label", ariaVal.replace("Simple Poll", "Simple Poll"));
             }
-    
             const dtVal = el.getAttribute("data-text");
             if (dtVal) {
                 if (dtVal.includes("☌⟟⏃⋏⋏⟟☊")) {
@@ -430,6 +338,8 @@ module.exports = class RenameChannel {
             }
         });
     }
+
+    /* -------------------- HELPER FUNCTIONS -------------------- */
     replaceTextInNode(node, oldStr, newStr) {
         if (!node) return;
         if (node.nodeType === Node.TEXT_NODE) {
@@ -443,7 +353,7 @@ module.exports = class RenameChannel {
     }
 
     renameInNode(node) {
-        if (this.settings.textReplace) this.textReplace(node);
+        this.textReplace(node);
     }
 
     getChannelMap() {
@@ -470,8 +380,86 @@ module.exports = class RenameChannel {
     stop() {
         if (this.observer) this.observer.disconnect();
         if (this.locationCheckInterval) clearInterval(this.locationCheckInterval);
-        const style = document.getElementById('prezomenoi-og-style');
+        const style = document.getElementById("prezomenoi-og-style");
         if (style) style.remove();
-        document.body.classList.remove('prezomenoi-og-active');
+    }
+
+    /* -------------------- BDSETTINGS PANEL -------------------- */
+    getSettingsPanel() {
+        const settings = [
+            {
+                type: "switch",
+                id: "masterToggle",
+                name: "Enable ALL Features (Master Switch)",
+                note: "Toggle all renaming features at once",
+                value: this.settings.masterToggle
+            },
+            {
+                type: "switch",
+                id: "renameChannels",
+                name: "Rename Channels",
+                note: "Enable renaming of channels",
+                value: this.settings.renameChannels
+            },
+            {
+                type: "switch",
+                id: "renameCategories",
+                name: "Rename Categories",
+                note: "Enable renaming of categories",
+                value: this.settings.renameCategories
+            },
+            {
+                type: "switch",
+                id: "renameUsers",
+                name: "Rename Users",
+                note: "Enable renaming of users",
+                value: this.settings.renameUsers
+            },
+            {
+                type: "switch",
+                id: "renameHeader",
+                name: "Rename Header Title",
+                note: "Enable renaming of the header title",
+                value: this.settings.renameHeader
+            },
+            {
+                type: "switch",
+                id: "renameRepliedMessages",
+                name: "Rename Replied Messages",
+                note: "Enable renaming in replied messages",
+                value: this.settings.renameRepliedMessages
+            }
+        ];
+
+        return BdApi.UI.buildSettingsPanel({
+            settings: settings,
+            onChange: (category, id, value) => {
+                let newSettings = { ...this.settings, [id]: value };
+
+                // Master Toggle logic: Enable/Disable all features
+                if (id === "masterToggle") {
+                    if (value === true) {
+                        Object.keys(newSettings).forEach(key => {
+                            if (key !== "masterToggle") newSettings[key] = true;
+                        });
+                    } else {
+                        Object.keys(newSettings).forEach(key => {
+                            if (key !== "masterToggle") newSettings[key] = false;
+                        });
+                    }
+                }
+
+                this.saveSettings(newSettings);
+
+                // Restart plugin to apply changes
+                this.stop();
+                this.start();
+            }
+        });
+    }
+
+    saveSettings(newSettings) {
+        this.settings = newSettings;
+        BdApi.Data.save("Prezomenoi_OG", "settings", newSettings);
     }
 };
