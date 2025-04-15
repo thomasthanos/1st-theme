@@ -1,30 +1,16 @@
 /**
  * @name Prezomenoi_OG
+ * @author ThomasT
+ * @authorId 706932839907852389
  * @version 2.6.2
- * @description Plugin που αλλάζει δυναμικά τα ονόματα καναλιών, κατηγοριών, 
- * χρηστών και τον τίτλο παραθύρου μόνο στο guild Prezomenoi OG (ID: 1216757265391161537).
- * Περιλαμβάνει mapping για renames με βάση τα data‑text attributes (π.χ. FlaviBot & Simple Poll με gold)
- * αλλά το CSS αυτό τίθεται μόνο στο guild Prezomenoi.
- * Προσθέτει επίσης ένα BDSettings panel με Master Toggle για έλεγχο όλων των features.
+ * @description This plugin dynamically renames channels, categories, users, 
+ * and the window title in the Prezomenoi OG
  */
 
 module.exports = class RenameChannel {
-    constructor() {
-        // Initialize settings with a default masterToggle
-        this.settings = BdApi.Data.load("Prezomenoi_OG", "settings") || {
-            masterToggle: true,
-            renameChannels: true,
-            renameCategories: true,
-            renameUsers: true,
-            renameHeader: true,
-            renameRepliedMessages: true
-        };
-    }
+    constructor() {}
 
     start() {
-        // Skip all logic if masterToggle is disabled
-        if (!this.settings.masterToggle) return;
-
         // Inject CSS for guild icons and styling
         const style = document.createElement('style');
         style.id = 'prezomenoi-og-style';
@@ -43,14 +29,15 @@ module.exports = class RenameChannel {
                 background-size: cover !important;
                 border-radius: 20% !important;
             }
-            /* Optional: Style for the BDSettings panel switch */
-            .prezomenoi-og-switch .bd-switch-body {
-                background-color: var(--brand-experiment) !important;
+            /* Επαναφορά του font-size για usernames σε voice calls */
+            .prezomenoi-og-active [class*="voiceUser"] [class*="username"],
+            .prezomenoi-og-active [class*="voiceUser"] [class*="name"] {
+                font-size: 14.5px !important; /* Το default μέγεθος του Discord για voice calls */
             }
         `;
         document.head.appendChild(style);
 
-        // Perform renaming if respective settings are enabled
+        // Perform renaming
         this.renameAll();
 
         // Λειτουργία για ενημέρωση του CSS class με βάση το guild ID
@@ -96,15 +83,15 @@ module.exports = class RenameChannel {
 
     // Κεντρική μέθοδος: καλεί όλες τις λειτουργίες ανανέωσης
     renameAll() {
-        if (!this.isCorrectGuild() || !this.settings.masterToggle) {
+        if (!this.isCorrectGuild()) {
             this.removeNoRoleCss();
             return;
         }
-        if (this.settings.renameChannels) this.renameChannels();
-        if (this.settings.renameCategories) this.renameCategories();
-        if (this.settings.renameHeader) this.renameHeaderTitle();
-        if (this.settings.renameUsers) this.renameUsers();
-        if (this.settings.renameRepliedMessages) this.renameRepliedMessages();
+        this.renameChannels();
+        this.renameCategories();
+        this.renameHeaderTitle();
+        this.renameUsers();
+        this.renameRepliedMessages();
         this.textReplace(document.body);
     }
 
@@ -156,7 +143,7 @@ module.exports = class RenameChannel {
             "411178013103751190": { name: "Akrivos", color: "#1F8249" },
             "681933873877352472": { name: "Mpillias", color: "#734986" },
             "1076347460500324363": { name: "Giannhs", color: "#1F8249" },
-            "633412575601623049": { name: "Petros", color: "#FF4500" },
+            "633412575601623049": { name: "Petros", color: "#206694" },
             "804860278788456469": { name: "Eirini", color: "#FF69B4" },
             "684773505157431347": { name: "FlaviBot", color: "#FFD700" },
             "324631108731928587": { name: "Simple Poll", color: "#FFD700" }
@@ -166,14 +153,37 @@ module.exports = class RenameChannel {
         const allUsernameDivs = document.querySelectorAll("div[class*='username']");
         allUsernameDivs.forEach(div => {
             const avatarDiv = div.closest(".content__07f91")?.querySelector(".userAvatar__55bab");
-            if (!avatarDiv) return;
-            const match = avatarDiv.style.backgroundImage.match(/avatars\/(\d+)\//);
-            if (!match) return;
-            const userId = match[1];
+            const isVoiceCall = div.closest("[class*='voiceUser']"); // Ελέγχουμε αν είναι σε voice call
+
+            if (!avatarDiv && !isVoiceCall) return; // Αν δεν υπάρχει avatar και δεν είναι voice call, συνεχίζουμε
+
+            let userId;
+            if (avatarDiv) {
+                const match = avatarDiv.style.backgroundImage.match(/avatars\/(\d+)\//);
+                if (!match) return;
+                userId = match[1];
+            } else if (isVoiceCall) {
+                // Ελέγχουμε το user ID μέσω άλλου τρόπου για voice calls (π.χ. data attributes)
+                const voiceUserDiv = div.closest("[class*='voiceUser']");
+                if (!voiceUserDiv) return;
+                const userIdMatch = voiceUserDiv.getAttribute("data-user-id") || voiceUserDiv.id?.match(/voice-user-(\d+)/)?.[1];
+                if (!userIdMatch) return;
+                userId = userIdMatch;
+            }
+
             const userInfo = userMap[userId];
             if (userInfo) {
+                // Αποθηκεύουμε το αρχικό font-size πριν την αλλαγή
+                const computedStyle = window.getComputedStyle(div);
+                const originalFontSize = computedStyle.fontSize;
+
                 div.textContent = userInfo.name;
                 div.style.color = userInfo.color;
+
+                // Επαναφέρουμε το font-size αν είναι σε voice call
+                if (isVoiceCall) {
+                    div.style.fontSize = originalFontSize; // Επαναφέρουμε το αρχικό μέγεθος
+                }
             }
         });
 
@@ -348,7 +358,6 @@ module.exports = class RenameChannel {
             }
         });
     }
-    
 
     /* -------------------- HELPER FUNCTIONS -------------------- */
     replaceTextInNode(node, oldStr, newStr) {
@@ -393,84 +402,7 @@ module.exports = class RenameChannel {
         if (this.locationCheckInterval) clearInterval(this.locationCheckInterval);
         const style = document.getElementById("prezomenoi-og-style");
         if (style) style.remove();
-    }
-
-    /* -------------------- BDSETTINGS PANEL -------------------- */
-    getSettingsPanel() {
-        const settings = [
-            {
-                type: "switch",
-                id: "masterToggle",
-                name: "Enable ALL Features (Master Switch)",
-                note: "Toggle all renaming features at once",
-                value: this.settings.masterToggle
-            },
-            {
-                type: "switch",
-                id: "renameChannels",
-                name: "Rename Channels",
-                note: "Enable renaming of channels",
-                value: this.settings.renameChannels
-            },
-            {
-                type: "switch",
-                id: "renameCategories",
-                name: "Rename Categories",
-                note: "Enable renaming of categories",
-                value: this.settings.renameCategories
-            },
-            {
-                type: "switch",
-                id: "renameUsers",
-                name: "Rename Users",
-                note: "Enable renaming of users",
-                value: this.settings.renameUsers
-            },
-            {
-                type: "switch",
-                id: "renameHeader",
-                name: "Rename Header Title",
-                note: "Enable renaming of the header title",
-                value: this.settings.renameHeader
-            },
-            {
-                type: "switch",
-                id: "renameRepliedMessages",
-                name: "Rename Replied Messages",
-                note: "Enable renaming in replied messages",
-                value: this.settings.renameRepliedMessages
-            }
-        ];
-
-        return BdApi.UI.buildSettingsPanel({
-            settings: settings,
-            onChange: (category, id, value) => {
-                let newSettings = { ...this.settings, [id]: value };
-
-                // Master Toggle logic: Enable/Disable all features
-                if (id === "masterToggle") {
-                    if (value === true) {
-                        Object.keys(newSettings).forEach(key => {
-                            if (key !== "masterToggle") newSettings[key] = true;
-                        });
-                    } else {
-                        Object.keys(newSettings).forEach(key => {
-                            if (key !== "masterToggle") newSettings[key] = false;
-                        });
-                    }
-                }
-
-                this.saveSettings(newSettings);
-
-                // Restart plugin to apply changes
-                this.stop();
-                this.start();
-            }
-        });
-    }
-
-    saveSettings(newSettings) {
-        this.settings = newSettings;
-        BdApi.Data.save("Prezomenoi_OG", "settings", newSettings);
+        // Refresh by re-running renameAll to clean up
+        this.renameAll();
     }
 };
