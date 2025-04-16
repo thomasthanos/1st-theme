@@ -36,7 +36,7 @@
 */
 
 /* ! Discord Values recolor */
-
+@import url(https://mwittrien.github.io/BetterDiscordAddons/Themes/SettingsModal/SettingsModal.css);
 
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar,
@@ -67,6 +67,11 @@
   
     --brand-560: #002f86;
   }
+  :root {
+	--settingswidth: 	960;			/* default:	960px			(width of the settings modal, px)												*/
+	--settingsheight: 	80;			/* default:	80vh			(height of the settings modal, vh)												*/
+	--settingsbackground: 	transparent;		/* default:	transparent		(lowest BG Color of changed Windows, change it in case another Theme turns them transparent)					*/
+}
 /* font Change all discord*/
 a, abbr, acronym, address, applet, big, blockquote, body, caption, cite, code, dd, del, dfn, div, dl, dt, em, fieldset, form, h1, h2, h3, h4, h5, h6, html, iframe, img, ins, kbd, label, legend, li, object, ol, p, pre, q, s, samp, small, span, strike, strong, table, tbody, td, tfoot, th, thead, tr, tt, ul, var{
     font-family: "Comic Sans MS";
