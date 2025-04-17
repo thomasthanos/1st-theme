@@ -1916,37 +1916,115 @@ button.button__67645.redGlow__67645, span.button__67645.redGlow__67645 {
   background: rgb(var(--accent), 0.1);
 }
 /* 5.7 BETTER DISCORD */
-.bd-toast {
-  animation: bd-toast-up 300ms ease;
-  transform: translateY(-10px);
-  transition: transform 0.25s ease, opacity 0.25s ease;
-  background-color: #2C3E50;
-  color: #ecf0f1;
-  padding: 12px 20px;
-  margin-top: 10px;
-  border-radius: 20px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-  font-weight: 600;
-  font-size: 14px;
-  text-align: center;
-  pointer-events: none;
-  user-select: none;
-  opacity: 1;
-  box-sizing: border-box;
-  width: 38%;
-}
-
-.bd-toast.icon {
-  padding-left: 30px;
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: 6px 50%;
-}
-
-.bd-toast.toast-success {
-  background-color: #047900;
-  color: #fff;
-  opacity: 1;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
-}
-/* 5.7 BETTER DISCORD */
+/* ===========================================================================
+   1) MODAL ROOT — Container & Overall Background
+   =========================================================================== */
+   .bd-modal-root.bd-modal-medium.bd-addon-modal {
+    background-color: #1F1F1F !important;
+    border: 1px solid #333333 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+    overflow: hidden; /* για να “κόβονται” οι γωνίες */
+  }
+  
+  /* ===========================================================================
+     2) MODAL HEADER — Header Bar Styling
+     =========================================================================== */
+  .bd-flex.bd-flex-horizontal.bd-flex-justify-start.bd-flex-align-center.bd-flex-no-wrap.bd-modal-header {
+    background-color: #292929 !important;
+    border-bottom: 1px solid #333333 !important;
+    padding: 16px !important;
+  }
+  
+  /* ===========================================================================
+     2a) Title — Cleaner, High‑Contrast Centered
+     =========================================================================== */
+  .bd-modal-header .bd-header-primary.bd-text-20.bd-text-strong {
+    display: inline-block;                    /* να “αγκαλιάζει” το περιεχόμενο */
+    margin: 0 auto;                           /* center στο container */
+    text-align: center;
+  
+    /* Typography */
+    font-family: "Segoe UI", sans-serif !important;
+    font-size: 22px !important;
+    line-height: 28px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+  
+    /* High‑contrast text */
+    color: #F5F5F5 !important;
+  
+    /* Subtle background highlight για αναγνωσιμότητα */
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    padding: 4px 12px !important;
+    border-radius: 4px !important;
+  
+    /* Ελαφρύ shadow για βάθος, χωρίς να κουράζει */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  }
+  
+  /* ===========================================================================
+     3) MODAL CONTENT — Main Body & Scroll Styling
+     =========================================================================== */
+  .bd-modal-content.bd-scroller-base.bd-scroller-thin {
+    background-color: #1E1E1E !important;
+    color: #D0D0D0 !important;
+    padding: 16px !important;
+  }
+  .bd-modal-content.bd-scroller-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+  .bd-modal-content.bd-scroller-thin::-webkit-scrollbar-track {
+    background: #2A2A2A;
+  }
+  .bd-modal-content.bd-scroller-thin::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+  }
+  
+  /* ===========================================================================
+     4) MODAL FOOTER — Footer Bar & Centering
+     =========================================================================== */
+  /* 4a) Footer Container */
+  .bd-flex.bd-flex-reverse.bd-flex-justify-start.bd-flex-align-stretch.bd-flex-no-wrap.bd-modal-footer {
+    background-color: #292929 !important;
+    border-top: 1px solid #333333 !important;
+    display: flex !important;
+    flex-direction: row !important;        /* override row-reverse */
+    justify-content: center !important;    /* center children */
+    padding: 12px 16px !important;         /* διατηρούμε υπάρχον padding */
+  }
+  
+  /* 4b) Dark‑Material Button Styling + Light Border */
+  .bd-modal-footer .bd-button.bd-button-filled.bd-button-color-brand.bd-button-medium.bd-button-grow {
+    margin: 0 auto !important;             /* center within footer */
+    background: linear-gradient(135deg, #222222, #121212) !important;
+    color: #E0E0E0 !important;
+    border: 1px solid rgba(224, 224, 224, 0.27) !important;
+    border-radius: 8px !important;
+    box-shadow:
+      0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+      0px 2px 2px 0px  rgba(0, 0, 0, 0.14),
+      0px 1px 5px 0px  rgba(0, 0, 0, 0.12) !important;
+    transition:
+      background 0.2s ease,
+      transform 0.1s ease,
+      box-shadow 0.2s ease !important;
+  }
+  .bd-modal-footer .bd-button.bd-button-filled.bd-button-color-brand.bd-button-medium.bd-button-grow:hover {
+    background: linear-gradient(135deg, #2E2E2E, #1A1A1A) !important;
+    transform: translateY(-1px) scale(1.01) !important;
+    box-shadow:
+      0px 4px 5px -2px rgba(0, 0, 0, 0.2),
+      0px 1px 10px 0px rgba(0, 0, 0, 0.14),
+      0px 2px 4px 0px rgba(0, 0, 0, 0.12) !important;
+  }
+  .bd-modal-footer .bd-button.bd-button-filled.bd-button-color-brand.bd-button-medium.bd-button-grow:active {
+    background: linear-gradient(135deg, #1A1A1A, #090909) !important;
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow:
+      0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+      0px 1px 3px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 2px 0px rgba(0, 0, 0, 0.12) !important;
+  }
+  
