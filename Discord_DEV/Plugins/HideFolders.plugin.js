@@ -3,8 +3,8 @@
  * @author ThomasT
  * @version 1.4.0
  * @description Κρύβει τον wrapper με πολλαπλά folder IDs μέσω BetterDiscord Settings, με πιο compact Material‑style UI.
- * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
- * @updateUrl https://thomasthanos.github.io/1st-theme/Discord_DEV/Plugins/autoreadtrash.plugin.js
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/HideFolders.plugin.js
+ * @updateUrl https://thomasthanos.github.io/1st-theme/Discord_DEV/Plugins/HideFolders.plugin.js
  */
 
 const config = {
