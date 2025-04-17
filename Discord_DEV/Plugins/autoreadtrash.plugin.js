@@ -3,7 +3,7 @@
  * @version 4.1.0
  * @author ThomasT
  * @description Μαρκάρει αυτόματα φακέλους ως αναγνωσμένους κάθε Χ δευτερόλεπτα. Μοντέρνο UI, υποστήριξη πολλαπλών φακέλων, χωρίς ορατό context menu.
- * @source https://github.com/thomasthanos/1st-theme
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
  * @updateUrl https://thomasthanos.github.io/1st-theme/Discord_DEV/Plugins/autoreadtrash.plugin.js
  */
 
