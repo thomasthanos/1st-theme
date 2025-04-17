@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 4.0.0
+ * @version 4.1.0
  * @author ThomasT
  * @description Μαρκάρει αυτόματα φακέλους ως αναγνωσμένους κάθε Χ δευτερόλεπτα. Μοντέρνο UI, υποστήριξη πολλαπλών φακέλων, χωρίς ορατό context menu.
  * @source https://github.com/thomasthanos/1st-theme
@@ -135,47 +135,6 @@ module.exports = class AutoReadTrash {
 				font-size: 12px;
 				color: var(--text-muted);
 			}
-			.art-button-wrapper {
-				display: flex;
-				justify-content: flex-end;
-				margin: 16px 16px 0 16px;
-			}
-			.art-button {
-				position: relative;
-				padding: 12px 24px;
-				background: #0288d1;
-				color: #ffffff;
-				border-radius: 8px;
-				border: none;
-				font-size: 14px;
-				font-weight: 500;
-				cursor: pointer;
-				transition: background 0.2s ease, transform 0.1s ease;
-				overflow: hidden;
-			}
-			.art-button:hover {
-				background: #01579b;
-				transform: translateY(-1px);
-			}
-			.art-button:active {
-				transform: translateY(0);
-			}
-			.art-button::after {
-				content: '';
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				width: 0;
-				height: 0;
-				background: rgba(255, 255, 255, 0.3);
-				border-radius: 50%;
-				transform: translate(-50%, -50%);
-				transition: width 0.3s ease, height 0.3s ease;
-			}
-			.art-button:hover::after {
-				width: 200px;
-				height: 200px;
-			}
 		`;
 
 		const panel = document.createElement("div");
@@ -244,20 +203,7 @@ module.exports = class AutoReadTrash {
 			}
 		);
 
-		const buttonWrapper = document.createElement("div");
-		buttonWrapper.className = "art-button-wrapper";
-
-		const saveButton = document.createElement("button");
-		saveButton.className = "art-button";
-		saveButton.textContent = "Αποθήκευση";
-		saveButton.onclick = () => {
-			BdApi.saveData("AutoReadTrash", "settings", this.settings);
-			this.startInterval();
-			BdApi.UI.showToast("Οι ρυθμίσεις αποθηκεύτηκαν!", { type: "success" });
-		};
-
-		buttonWrapper.append(saveButton);
-		panel.append(folderInput, intervalInput, buttonWrapper);
+		panel.append(folderInput, intervalInput);
 		return panel;
 	}
 
