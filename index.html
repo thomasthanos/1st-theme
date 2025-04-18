@@ -26,39 +26,52 @@
     ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
     html { scrollbar-width: thin; scrollbar-color: #444 #1e1e1e; }
     
-    /* Fixed Navigation Menu */
+    /* Fixed Navigation Menu - Νέο, πιο όμορφο design */
     nav {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      background: linear-gradient(90deg, #333, #222);
-      padding: 15px 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+      padding: 12px 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px); /* Ελαφρύ blur effect στο background */
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       z-index: 1000;
     }
     nav ul {
       list-style: none;
       display: flex;
       justify-content: center;
+      flex-wrap: wrap; /* Για να τυλίγεται σε μικρές οθόνες */
+      gap: 10px;
     }
-    nav ul li { margin: 0 20px; }
+    nav ul li {
+      margin: 0 10px;
+    }
     nav ul li a {
       text-decoration: none;
-      color: #d4d4d4;
-      font-size: 1.1rem;
-      padding: 5px 10px;
-      border-radius: 4px;
-      transition: color 0.3s, background 0.3s, transform 0.3s;
+      color: #e0e0e0;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.05);
     }
     nav ul li a:hover {
-      color: #569cd6;
-      background: rgba(86, 156, 214, 0.15);
-      transform: scale(1.05);
+      color: #ffffff;
+      background: linear-gradient(90deg, #569cd6, #1e90ff);
+      transform: translateY(-2px);
+      box-shadow: 0 2px 8px rgba(86, 156, 214, 0.3);
     }
     nav ul li a.active {
-      color: #569cd6;
-      border-bottom: 2px solid #569cd6;
+      color: #ffffff;
+      background: linear-gradient(90deg, #569cd6, #1e90ff);
+      border-bottom: none;
+      box-shadow: 0 2px 8px rgba(86, 156, 214, 0.3);
     }
     
     /* Container */
@@ -82,6 +95,8 @@
       color: #fff;
       padding: 15px 20px;
       font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
     /* Τα notes τοποθετούνται αμέσως κάτω από τον τίτλο (χωρίς επιπλέον spacing) */
     .code-container .note {
@@ -141,7 +156,7 @@
   <div class="container">
     <!-- Section για CSS: SimplethemeV3.theme.css (truncate στις 66 γραμμές) -->
     <div class="code-container" id="section-css1">
-      <h2>SimplethemeV3.theme.css</h2>
+      <h2>SimplethemeV3.theme.css UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 66 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -150,7 +165,7 @@
     
     <!-- Section για CSS: OLD_WORKING_SimplethemeV3.theme.css (truncate στις 36 γραμμές) -->
     <div class="code-container" id="section-css2">
-      <h2>OLD_WORKING_SimplethemeV3.theme.css</h2>
+      <h2>OLD_WORKING_SimplethemeV3.theme.css UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 36 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -159,7 +174,7 @@
     
     <!-- Section για CSS: SimplethemeV2.theme.css (truncate στις 83 γραμμές) -->
     <div class="code-container" id="section-css3">
-      <h2>SimplethemeV2.theme.css</h2>
+      <h2>SimplethemeV2.theme.css UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 83 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -168,7 +183,7 @@
     
     <!-- Section για JS: Prezomenoi_OG.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js1">
-      <h>Prezomenoi_OG.plugin.js</h2>
+      <h2>Prezomenoi_OG.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -177,7 +192,7 @@
     
     <!-- Section για JS: autoreadtrash.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js2">
-      <h2>autoreadtrash.plugin.js</h2>
+      <h2>autoreadtrash.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -186,7 +201,7 @@
     
     <!-- Section για JS: HideFolders.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js3">
-      <h2>HideFolders.plugin.js</h2>
+      <h2>HideFolders.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -195,7 +210,7 @@
     
     <!-- Section για JS: discord_change.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js4">
-      <h2>discord_change.plugin.js</h2>
+      <h2>discord_change.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
@@ -204,7 +219,7 @@
     
     <!-- Section για JS: BetterAccountButtons.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js5">
-      <h2>BetterAccountButtons.plugin.js</h2>
+      <h2>BetterAccountButtons.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
