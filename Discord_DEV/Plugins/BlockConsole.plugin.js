@@ -2,7 +2,7 @@
  * @name BlockConsole
  * @version 1.3.0
  * @description Κρύβει όλα τα console μηνύματα που περιέχουν συγκεκριμένα prefixes.
- * @author —
+ * @author ThomasT
  * @license MIT
  */
 class BlockConsole {
