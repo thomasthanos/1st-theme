@@ -44,6 +44,7 @@
  *   - Reaction Hover Bar Styling
  *   - Pinned Messages Modal - Material Modern
  *   - Search minimal
+ *   - Discord Internet-Crash
  *?5 Server
  *   - server channel ui
  *   - Server member view | offline
@@ -1728,6 +1729,111 @@ body {
     color: var(--text-muted);
 }
 /* */
+/* Discord Internet-Crash */
+/* Αφαίρεση προεπιλεγμένου background */
+[class="container_a2f514 fixClipping_efbae7"] {
+    background: none !important;
+  }
+  
+  /* Κύριο container με Material Dark φόντο */
+  .container_a2f514 {
+    background: #121212;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    padding-left: 40px;
+    padding-right: 40px;
+    box-sizing: border-box;
+  }
+  
+  /* Σύνδεσμοι με Material Design Purple χρώμα */
+  .container_a2f514 .anchor-1MIwyf {
+    pointer-events: auto;
+    color: #bb86fc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .container_a2f514 .anchor-1MIwyf:hover {
+    color: #d0b0ff;
+  }
+  
+  /* Απόκρυψη κειμένου */
+  .container_a2f514 .content_a2f514 .text_a2f514 {
+    display: none;
+  }
+  
+  /* Discord logo – τοποθέτηση πάνω από τα προβλήματα */
+  .container_a2f514 .ready_a2f514 {
+    position: absolute;
+    bottom: 135px;
+    left: 90%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  
+  /* Εικόνες και βίντεο σε στυλ Material Design */
+  .container_a2f514 img,
+  .container_a2f514 video {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    object-fit: cover;
+  }
+  
+  /* Κάρτα προβλημάτων στο κάτω μέρος */
+  .container_a2f514 .problems_a2f514 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 62px 26px 15px;
+    bottom: 80px;
+    left: 90%;
+    transform: translateX(-50%) scale(1.3);
+    width: 200px;
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  /* Στυλ εικονιδίων (Twitter & Discord) */
+  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"],
+  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] {
+    font-size: 0;
+    margin: 8px 4px;
+  }
+  
+  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"] svg,
+  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] svg {
+    color: #ffffff;
+  }
+  
+  /* Wrapper για κεντράρισμα των εικονιδίων */
+  .container_a2f514 .problems_a2f514 > div:last-child {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  /* Κείμενο προβλήματος με Comic Sans και Amber */
+  [class="problemsText_a2f514"] {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: #ffb300;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    font-size: 0;
+    text-shadow: none;
+  }
+  
+  /* Περιεχόμενο προβλήματος */
+  [class="problemsText_a2f514"]::before {
+    content: "The internet crashed";
+    font-size: large;
+    justify-content: center;
+    display: flex;
+  }
 /*! server channel ui*/
 .containerDefault_c69b6d.selected-37j_iU
     .modeSelected__2ea32
