@@ -39,7 +39,6 @@ module.exports = class AutoReadTrash {
   
 	async run() {
 	  const ids = this.settings.folderIds.split(",").map(id => id.trim()).filter(Boolean);
-	  this.log("🔍 Ψάχνει folders με ID:", ids);
   
 	  const items = ids.map(id => document.querySelector(`[data-list-item-id="${id}"]`)).filter(Boolean);
   
@@ -50,7 +49,6 @@ module.exports = class AutoReadTrash {
   
 	  for (const [index, folder] of items.entries()) {
 		const id = folder.getAttribute("data-list-item-id");
-		this.log(`🕒 Επεξεργασία φακέλου: ${id}`);
   
 		setTimeout(() => {
 		  folder.dispatchEvent(new MouseEvent("contextmenu", {
@@ -64,15 +62,14 @@ module.exports = class AutoReadTrash {
 			const btn = document.querySelector('#guild-context-mark-folder-read');
 			if (btn) {
 			  btn.click();
-			  this.log(`📬 Κλικ στο κουμπί για φάκελο: ${id}`);
+			  //this.log(`📬 Κλικ στο κουμπί για φάκελο: ${id}`);
 			} else {
-			  this.log(`⚠️ Δεν βρέθηκε κουμπί για φάκελο: ${id}`);
+			 // this.log(`⚠️ Δεν βρέθηκε κουμπί για φάκελο: ${id}`);
 			}
   
 			const menu = document.querySelector('[class*="contextMenu"]');
 			if (menu) {
 			  menu.style.display = "none";
-			  this.log(`❌ Απόκρυψη μενού για φάκελο: ${id}`);
 			}
 		  }, 150);
 		}, index * 400);
@@ -202,7 +199,7 @@ module.exports = class AutoReadTrash {
 	  const diff = Math.max(0, Math.floor((next - now) / 1000));
 	  const mins = Math.floor(diff / 60);
 	  const secs = diff % 60;
-	  el.textContent = `Επόμενος καθαρισμός σε ${mins}λ ${secs}δ`;
+	  el.textContent = `Next clear --> ${mins}λ ${secs}δ`;
 	}
   
 	getSettingsPanel() {
