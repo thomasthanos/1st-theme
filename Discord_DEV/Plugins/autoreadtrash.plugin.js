@@ -4,7 +4,7 @@
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
- * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/refs/heads/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
  * @website https://github.com/thomasthanos
  */
 
