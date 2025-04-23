@@ -1,12 +1,15 @@
 /**
  * @name AutoReadTrash
- * @version 5.4.16
+ * @version 5.4.1
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
+ * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
- * @website https://github.com/thomasthanos
+ * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
+ * @website https://thomasthanos.github.io/1st-theme/Discord_DEV/Plugins/autoreadtrash.plugin.js
  */
+
 
 module.exports = class AutoReadTrash {
 	defaultSettings = {
