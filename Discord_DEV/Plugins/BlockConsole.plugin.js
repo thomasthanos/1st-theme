@@ -2,7 +2,7 @@
  * @name BlockConsole
  * @version 1.3.0
  * @description Κρύβει όλα τα console μηνύματα που περιέχουν συγκεκριμένα prefixes.
- * @author ThomasT
+ * @author —
  * @license MIT
  */
 class BlockConsole {
@@ -29,7 +29,16 @@ class BlockConsole {
         "[StaffTag]",
         "[OverlayBridgeStore]",
         "[RunningGameStore]",
-        "[ReadStateStore]"
+        "[ReadStateStore]",
+        "[RTCControlSocket(stream)]",
+        "[RTCControlSocket(default)]",
+        "[DirectVideo]",
+        "[HDStreamingConsumableModal]",
+        "[ConnectionEventFramerateReducer]",
+        "[OverlayRenderStore]",
+        "[discord_protos.discord_users.v1.FrecencyUserSetting]",
+        "[Routing/Utils]"
+
       ];
       this._methods = ["log", "info", "warn", "error", "debug"];
     }

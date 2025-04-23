@@ -146,7 +146,8 @@ module.exports = class RenameChannel {
             "633412575601623049": { name: "Petros", color: "#206694" },
             "804860278788456469": { name: "Eirini", color: "#FF69B4" },
             "684773505157431347": { name: "FlaviBot", color: "#FFD700" },
-            "324631108731928587": { name: "Simple Poll", color: "#FFD700" }
+            "324631108731928587": { name: "Simple Poll", color: "#FFD700" },
+            "778355613373693953": { name: "Andreas", color: "#8B0000" } // Ενημερώθηκε εδώ
         };
 
         // 1) Mapping μέσω custom avatar
@@ -195,7 +196,8 @@ module.exports = class RenameChannel {
             { fallback: "アスタ", name: "Petros", color: "#FF4500" },
             { fallback: "ANNOUSKA", name: "Eirini", color: "#FF69B4" },
             { fallback: "FlaviBot", name: "FlaviBot", color: "#FFD700" },
-            { fallback: "Simple Poll", name: "Simple Poll", color: "#FFD700" }
+            { fallback: "Simple Poll", name: "Simple Poll", color: "#FFD700" },
+            { fallback: "Kontosouvli lover", name: "Andreas", color: "#8B0000" } // Ενημερώθηκε εδώ
         ];
         fallbackUsers.forEach(user => {
             document.querySelectorAll(`[data-text="${user.fallback}"]`).forEach(el => {
@@ -222,7 +224,8 @@ module.exports = class RenameChannel {
             "[aria-label*='アスタ'], " +
             "[aria-label*='ANNOUSKA'], " +
             "[aria-label*='FlaviBot'], " +
-            "[aria-label*='Simple Poll']"
+            "[aria-label*='Simple Poll'], " +
+            "[aria-label*='Kontosouvli lover']" // Διατηρήθηκε για συνέπεια
         );
         replyAriaElements.forEach(el => {
             const oldAria = el.getAttribute("aria-label");
@@ -241,6 +244,8 @@ module.exports = class RenameChannel {
                 el.setAttribute("aria-label", oldAria.replace("FlaviBot", "FlaviBot"));
             if (oldAria.includes("Simple Poll"))
                 el.setAttribute("aria-label", oldAria.replace("Simple Poll", "Simple Poll"));
+            if (oldAria.includes("@Kontosouvli lover"))
+                el.setAttribute("aria-label", oldAria.replace("@Kontosouvli lover", "Andreas")); // Ενημερώθηκε εδώ
         });
         document.querySelectorAll("*").forEach(el => {
             if (el.childElementCount === 0) {
@@ -273,6 +278,10 @@ module.exports = class RenameChannel {
                     el.textContent = "Simple Poll";
                     el.style.color = "#FFD700";
                 }
+                if (trimmed === "Kontosouvli lover") {
+                    el.textContent = "Andreas";
+                    el.style.color = "#8B0000"; // Ενημερώθηκε εδώ
+                }
             }
         });
     }
@@ -290,6 +299,7 @@ module.exports = class RenameChannel {
         this.replaceTextInNode(rootNode, "ANNOUSKA", "Eirini");
         this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
         this.replaceTextInNode(rootNode, "Simple Poll", "Simple Poll");
+        this.replaceTextInNode(rootNode, "@Kontosouvli lover", "Andreas"); // Ενημερώθηκε εδώ
     
         // Αντικατάσταση σε attributes (aria-label, data-text, title, alt)
         const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
@@ -320,6 +330,8 @@ module.exports = class RenameChannel {
                 el.setAttribute("aria-label", ariaVal.replace("FlaviBot", "FlaviBot"));
             if (ariaVal && ariaVal.includes("Simple Poll"))
                 el.setAttribute("aria-label", ariaVal.replace("Simple Poll", "Simple Poll"));
+            if (ariaVal && ariaVal.includes("@Kontosouvli lover"))
+                el.setAttribute("aria-label", ariaVal.replace("@Kontosouvli lover", "Andreas")); // Ενημερώθηκε εδώ
     
             if (dtVal && dtVal.includes("☌⟟⏃⋏⋏⟟☊")) {
                 el.setAttribute("data-text", dtVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
@@ -356,6 +368,11 @@ module.exports = class RenameChannel {
                 if (el.textContent.includes("Simple Poll"))
                     el.textContent = el.textContent.replace("Simple Poll", "Simple Poll");
             }
+            if (dtVal && dtVal.includes("@Kontosouvli lover")) {
+                el.setAttribute("data-text", dtVal.replace("@Kontosouvli lover", "Andreas"));
+                if (el.textContent.includes("@Kontosouvli lover"))
+                    el.textContent = el.textContent.replace("@Kontosouvli lover", "Andreas"); // Ενημερώθηκε εδώ
+            }
         });
     }
 
@@ -383,12 +400,13 @@ module.exports = class RenameChannel {
             "1216757354574385203": "💬〢Chat",
             "1333458086094045385": "📽️〢Clips",
             "1344770404023144550": "📰〢Epikairotita",
-            "1357173641745404006": "🔒〢Password",
-            "1355323003084341359": "📝〢Notes",
+            "1357173641745404006": "☘️〢Drugs",
+            "1355323003084341359": "🌐〢Nord VPN",
             "1216757265936154689": "📞〢Larose",
             "1250083136818122813": "☣️〢Karkinos",
             "1216761517194739936": "⚖️〢Dikastirio",
-            "1216818976898941068": "🎬〢Movies"
+            "1216818976898941068": "🎬〢Movies",
+            "1345100969393917953": "🔏〢Secret"
         };
     }
 
