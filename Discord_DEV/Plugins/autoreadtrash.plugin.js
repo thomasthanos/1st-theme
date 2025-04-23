@@ -1,9 +1,9 @@
 /**
  * @name AutoReadTrash
- * @version 5.3.1
+ * @version 5.3.16
  * @author ThomasT
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
- * @note This version centers the settings panel background and enhances its UI to match notifications.
+ * @note Reduced width of inputs and textarea, keeping them centered.
  */
 
 module.exports = class AutoReadTrash {
@@ -19,31 +19,73 @@ module.exports = class AutoReadTrash {
 		this._isRunning = false;
 		this._lastRun = 0;
 		this._startTimeout = null;
+		this._uiCheckInterval = null;
 	}
 
-	start() {
+	waitForElement(selector, timeout = 10000) {
+		return new Promise((resolve, reject) => {
+			const startTime = Date.now();
+			const checkElement = () => {
+				const element = document.querySelector(selector);
+				if (element) return resolve(element);
+				if (Date.now() - startTime > timeout) return reject(new Error(`Timeout waiting for element: ${selector}`));
+				setTimeout(checkElement, 500);
+			};
+			checkElement();
+		});
+	}
+
+	startUICheck() {
+		if (this._uiCheckInterval) return;
+		this._uiCheckInterval = setInterval(() => {
+			const guildsWrapper = document.querySelector('[class="wrapper_ef3116 guilds_c48ade"]');
+			if (!guildsWrapper) return;
+
+			if (!document.querySelector('.art-countdown') && this.settings.showCountdown) {
+				this.createCountdownUI().catch(error => this.log("❌ Error re-adding countdown:", error.message));
+			}
+
+			if (!document.querySelector('.art-wrapper') && this._notificationQueue.length > 0) {
+				this.wrapper3d = null;
+				this.processNotificationQueue();
+			}
+		}, 2000);
+	}
+
+	stopUICheck() {
+		if (this._uiCheckInterval) {
+			clearInterval(this._uiCheckInterval);
+			this._uiCheckInterval = null;
+		}
+	}
+
+	async start() {
 		this.settings = Object.assign({}, this.defaultSettings, BdApi.loadData("AutoReadTrash", "settings") || {});
 		this._lastRun = Date.now();
 		this.injectStyles();
-		this.log("✅ Ξεκίνησε με settings:", this.settings);
-		this.debounceStartInterval();
-		this.startCountdown();
+
+		try {
+			await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+			this.debounceStartInterval();
+			this.startCountdown();
+			this.startUICheck();
+		} catch (error) {
+			this.log("❌ Failed to find guilds wrapper:", error.message);
+		}
 	}
 
 	stop() {
 		this.clearInterval();
 		this.clearStartTimeout();
 		this.stopCountdown();
+		this.stopUICheck();
 		this.clearNotifications();
 		this._isRunning = false;
-		this.log("🛑 Σταμάτησε");
 	}
 
 	debounceStartInterval() {
 		this.clearStartTimeout();
-		this._startTimeout = setTimeout(() => {
-			this.startInterval();
-		}, 500);
+		this._startTimeout = setTimeout(() => this.startInterval(), 500);
 	}
 
 	clearStartTimeout() {
@@ -55,13 +97,9 @@ module.exports = class AutoReadTrash {
 
 	startInterval() {
 		this.clearInterval();
-		if (!this._isRunning) {
-			this.run();
-		}
+		if (!this._isRunning) this.run();
 		this.interval = setInterval(() => {
-			if (!this._isRunning) {
-				this.run();
-			}
+			if (!this._isRunning) this.run();
 		}, this.settings.intervalMinutes * 60 * 1000);
 	}
 
@@ -73,36 +111,36 @@ module.exports = class AutoReadTrash {
 	}
 
 	async run() {
-		if (this._isRunning) {
-			this.log("⏳ Ήδη εκτελείται, παραλείπεται...");
-			return;
-		}
+		if (this._isRunning) return;
 		this._isRunning = true;
 
 		try {
 			const ids = this.settings.folderIds.split(",").map(id => id.trim()).filter(Boolean);
-			const items = ids.map(id => document.querySelector(`[data-list-item-id="${id}"]`)).filter(Boolean);
+			const items = await Promise.all(
+				ids.map(async id => {
+					try {
+						return await this.waitForElement(`[data-list-item-id="${id}"]`, 5000);
+					} catch (error) {
+						this.log(`❌ Failed to find folder with ID ${id}:`, error.message);
+						return null;
+					}
+				})
+			).then(results => results.filter(Boolean));
 
 			if (!items.length) {
 				this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
-				this.queueNotification("Κανένας φάκελος δεν καθαρίστηκε");
+				this.queueNotification(0);
 				return;
 			}
-
-			this.log(`🔍 Βρέθηκαν ${items.length} φάκελοι για έλεγχο`);
 
 			let successfulReads = 0;
 
 			for (const [index, folder] of items.entries()) {
 				const id = folder.getAttribute("data-list-item-id");
-				this.log(`📂 Επεξεργασία φακέλου: ${id}`);
 
 				await new Promise(resolve => {
 					const existingMenu = document.querySelector('[class*="contextMenu"]');
-					if (existingMenu) {
-						existingMenu.style.display = "none";
-						this.log(`🧹 Κλείσιμο προηγούμενου context menu`);
-					}
+					if (existingMenu) existingMenu.style.display = "none";
 
 					setTimeout(() => {
 						folder.dispatchEvent(new MouseEvent("contextmenu", {
@@ -115,36 +153,22 @@ module.exports = class AutoReadTrash {
 						setTimeout(() => {
 							const btn = document.querySelector('#guild-context-mark-folder-read');
 							if (btn) {
-								const isDisabled = btn.getAttribute("aria-disabled") === "true";
-								this.log(`🔘 Κατάσταση κουμπιού για ${id}: aria-disabled=${isDisabled}`);
-								if (isDisabled) {
-									this.log(`🚫 Ο φάκελος ${id} δεν έχει κάτι για ανάγνωση (κουμπί απενεργοποιημένο)`);
-								} else {
+								if (btn.getAttribute("aria-disabled") !== "true") {
 									btn.click();
 									successfulReads++;
 									this.log(`📬 Φάκελος ${id} μαρκαρίστηκε ως αναγνωσμένος`);
 								}
-							} else {
-								this.log(`⚠️ Δεν βρέθηκε κουμπί για φάκελο: ${id}`);
 							}
 
 							const menu = document.querySelector('[class*="contextMenu"]');
-							if (menu) {
-								menu.style.display = "none";
-							}
-
+							if (menu) menu.style.display = "none";
 							resolve();
 						}, 250);
 					}, index * 500);
 				});
 			}
 
-			const message = successfulReads === 0
-				? "Κανένας φάκελος δεν καθαρίστηκε"
-				: `Καθαρίστηκαν ${successfulReads} ${successfulReads === 1 ? "φάκελος" : "φάκελοι"}`;
-			this.queueNotification(message);
-			this.log(`📊 Αποτέλεσμα: ${message}`);
-
+			this.queueNotification(successfulReads);
 			this._lastRun = Date.now();
 			this.updateCountdownUI?.();
 		} finally {
@@ -152,21 +176,16 @@ module.exports = class AutoReadTrash {
 		}
 	}
 
-	queueNotification(message) {
-		if (this._notificationQueue.length < 3) {
-			this._notificationQueue.push(message);
-		}
-		if (!this._isShowingNotification) {
-			this.processNotificationQueue();
-		}
+	queueNotification(successfulReads) {
+		if (this._notificationQueue.length < 3) this._notificationQueue.push(successfulReads);
+		if (!this._isShowingNotification) this.processNotificationQueue();
 	}
 
 	processNotificationQueue() {
 		if (!this._notificationQueue.length || this._isShowingNotification) return;
-
 		this._isShowingNotification = true;
-		const message = this._notificationQueue.shift();
-		this.showDiscordNotification(message);
+		const successfulReads = this._notificationQueue.shift();
+		this.showDiscordNotification(successfulReads);
 	}
 
 	clearNotifications() {
@@ -174,44 +193,56 @@ module.exports = class AutoReadTrash {
 		this._isShowingNotification = false;
 		if (this.wrapper3d) {
 			this.wrapper3d.innerHTML = '';
+			this.wrapper3d.remove();
+			this.wrapper3d = null;
 		}
 	}
 
-	showDiscordNotification(message) {
-		if (!this.wrapper3d) {
-			this.wrapper3d = document.createElement('div');
-			this.wrapper3d.className = 'art-wrapper';
-			document.body.appendChild(this.wrapper3d);
+	async showDiscordNotification(successfulReads) {
+		try {
+			const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+			if (!guildsWrapper) {
+				this.log("❌ Guilds wrapper not found for notifications");
+				return;
+			}
+
+			if (!this.wrapper3d) {
+				this.wrapper3d = document.createElement('div');
+				this.wrapper3d.className = 'art-wrapper';
+				guildsWrapper.appendChild(this.wrapper3d);
+			}
+
+			const notif = document.createElement('div');
+			notif.className = 'art-notif';
+			notif.innerHTML = `
+				<div class="art-notif-message">
+					<div class="art-notif-number">${successfulReads}</div>
+					<div class="art-notif-read">read</div>
+				</div>
+			`;
+			this.wrapper3d.appendChild(notif);
+			requestAnimationFrame(() => notif.classList.add('show'));
+
+			const hideNotification = () => {
+				notif.classList.remove('show');
+				notif.classList.add('hide');
+				notif.addEventListener('transitionend', () => {
+					notif.remove();
+					this._isShowingNotification = false;
+					this.processNotificationQueue();
+				}, { once: true });
+			};
+
+			clearTimeout(this._hide3d);
+			this._hide3d = setTimeout(hideNotification, 3000);
+
+			notif.addEventListener('mouseenter', () => clearTimeout(this._hide3d));
+			notif.addEventListener('mouseleave', () => {
+				this._hide3d = setTimeout(hideNotification, 1000);
+			});
+		} catch (error) {
+			this.log("❌ Error showing notification:", error.message);
 		}
-
-		const notif = document.createElement('div');
-		notif.className = 'art-notif';
-		notif.innerHTML = `
-			<svg class="art-notif-icon" viewBox="0 0 24 24">
-				<path d="M9 16.17L4.83 12l-1.42 1.41L9 19l12-12-1.41-1.41z"/>
-			</svg>
-			<div class="art-notif-message">${message}</div>
-		`;
-		this.wrapper3d.appendChild(notif);
-		requestAnimationFrame(() => notif.classList.add('show'));
-
-		const hideNotification = () => {
-			notif.classList.remove('show');
-			notif.classList.add('hide');
-			notif.addEventListener('transitionend', () => {
-				notif.remove();
-				this._isShowingNotification = false;
-				this.processNotificationQueue();
-			}, { once: true });
-		};
-
-		clearTimeout(this._hide3d);
-		this._hide3d = setTimeout(hideNotification, 3000);
-
-		notif.addEventListener('mouseenter', () => clearTimeout(this._hide3d));
-		notif.addEventListener('mouseleave', () => {
-			this._hide3d = setTimeout(hideNotification, 1000);
-		});
 	}
 
 	injectStyles() {
@@ -219,90 +250,149 @@ module.exports = class AutoReadTrash {
 		const style = document.createElement('style');
 		style.textContent = `
 			.art-wrapper {
-				position: fixed;
-				bottom: 20px;
-				right: 35px;
+				position: absolute !important;
+				bottom: 85px;
+				left: 50% !important;
+				transform: translateX(-50%) !important;
+				width: 48px;
+				max-width: 48px;
 				display: flex;
-				flex-direction: column-reverse;
-				gap: 12px;
+				flex-direction: column;
+				gap: 6px;
 				z-index: 9999;
-				perspective: 800px;
+				margin: 0 auto;
+				right: 0;
 			}
 			.art-notif {
+				position: absolute !important;
+				bottom: 50px;
+				left: 50% !important;
+				transform: translateX(-50%) !important;
+				width: 48px !important;
+				max-width: 48px;
+				height: 50px;
 				display: flex;
+				flex-direction: column;
+				justify-content: center;
 				align-items: center;
-				gap: 10px;
-				padding: 12px 16px;
-				max-width: 300px;
-				background: linear-gradient(145deg, #2f3136, #36393f);
-				color: #ffffff;
-				border-radius: 12px;
-				border: 1px solid rgba(255, 255, 255, 0.1);
-				box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-				transform-style: preserve-3d;
-				transform: translateY(20px) rotateX(10deg) scale(0.95);
-				opacity: 0;
-				transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
-				cursor: pointer;
-				font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-			}
-			.art-notif.show {
-				opacity: 1;
-				transform: translateY(0) rotateX(0deg) scale(1);
-				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.3);
-			}
-			.art-notif.hide {
-				opacity: 0;
-				transform: translateY(20px) rotateX(10deg) scale(0.95);
-			}
-			.art-notif:hover {
-				transform: translateY(-2px) rotateX(0deg) scale(1.02);
-				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 12px rgba(0, 0, 0, 0.4);
-				background: linear-gradient(145deg, #36393f, #40444b);
-			}
-			.art-notif-icon {
-				width: 20px;
-				height: 20px;
-				fill: #43b581;
-				flex-shrink: 0;
-			}
-			.art-notif-message {
-				font-size: 14px;
-				line-height: 1.4;
-				color: #dcddde;
-			}
-			.art-countdown {
-				position: fixed;
-				bottom: 80px;
-				right: 64px;
+				padding: 2px;
 				background: linear-gradient(145deg, #2f3136, #36393f);
 				color: #dcddde;
-				padding: 8px 14px;
-				border-radius: 10px;
+				border-radius: 4px;
 				border: 1px solid rgba(255, 255, 255, 0.1);
-				font-size: 13px;
 				font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 				z-index: 9999;
 				opacity: 0.9;
 				transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+				margin: 0 auto;
+				right: 0;
+			}
+			.art-notif.show {
+				opacity: 0.9;
+				transform: translateY(0);
+			}
+			.art-notif.hide {
+				opacity: 0;
+				transform: translateY(5px);
+			}
+			.art-notif:hover {
+				opacity: 1;
+				box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+				background: linear-gradient(145deg, #36393f, #40444b);
+			}
+			.art-notif-message {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+			}
+			.art-notif-number {
+				font-size: 12px;
+				font-weight: 600;
+				color: #dcddde;
+				line-height: 1;
+				margin-bottom: 2px;
+			}
+			.art-notif-read {
+				font-size: 10px;
+				color: #b9bbbe;
+				line-height: 1;
+			}
+			.art-countdown {
+				position: absolute !important;
+				bottom: 75px !important;
+				left: 50% !important;
+				transform: translateX(-50%) !important;
+				width: 48px !important;
+				max-width: 48px;
+				height: 50px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				padding: 2px;
+				background: linear-gradient(145deg, #2f3136, #36393f);
+				color: #dcddde;
+				border-radius: 4px;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+				font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+				z-index: 9999;
+				opacity: 0.9;
+				transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+				margin: 0 auto;
+				right: 0;
 			}
 			.art-countdown:hover {
-				transform: translateY(-2px);
-				box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+				box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
 				opacity: 1;
+			}
+			.art-countdown-title {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+			}
+			.art-countdown-next {
+				font-size: 7px;
+				font-weight: 600;
+				color: #b9bbbe;
+				text-transform: uppercase;
+				line-height: 1;
+				margin-bottom: 2px;
+			}
+			.art-countdown-clear {
+				font-size: 7px;
+				font-weight: 600;
+				color: #b9bbbe;
+				text-transform: uppercase;
+				line-height: 1;
+				margin-bottom: 2px;
+			}
+			.art-countdown-time {
+				font-size: 13px;
+				color: #dcddde;
+				line-height: 1;
 			}
 		`;
 		document.head.appendChild(style);
 		this._style3d = style;
 	}
 
-	startCountdown() {
+	async startCountdown() {
 		this.stopCountdown();
 		if (!this.settings.showCountdown) return;
-		this.createCountdownUI();
-		this.countdownInterval = setInterval(() => this.updateCountdownUI(), 1000);
-		this.updateCountdownUI();
+
+		try {
+			await this.createCountdownUI();
+			this.countdownInterval = setInterval(() => this.updateCountdownUI(), 1000);
+			this.updateCountdownUI();
+		} catch (error) {
+			this.log("❌ Error starting countdown:", error.message);
+		}
 	}
 
 	stopCountdown() {
@@ -314,11 +404,25 @@ module.exports = class AutoReadTrash {
 		if (el) el.remove();
 	}
 
-	createCountdownUI() {
+	async createCountdownUI() {
+		const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+		if (!guildsWrapper) {
+			this.log("❌ Guilds wrapper not found for countdown");
+			throw new Error("Guilds wrapper not found");
+		}
+
 		if (document.querySelector('.art-countdown')) return;
 		const el = document.createElement('div');
 		el.className = 'art-countdown';
-		document.body.appendChild(el);
+		el.style.position = 'absolute';
+		el.style.bottom = '75px';
+		el.style.left = '50%';
+		el.style.transform = 'translateX(-50%)';
+		el.style.width = '48px';
+		el.style.maxWidth = '48px';
+		el.style.margin = '0 auto';
+		el.style.right = '0';
+		guildsWrapper.appendChild(el);
 	}
 
 	updateCountdownUI() {
@@ -329,7 +433,13 @@ module.exports = class AutoReadTrash {
 		const diff = Math.max(0, Math.floor((next - now) / 1000));
 		const mins = Math.floor(diff / 60);
 		const secs = diff % 60;
-		el.textContent = `Next clear → ${mins}λ ${secs}δ`;
+		el.innerHTML = `
+			<div class="art-countdown-title">
+				<div class="art-countdown-next">next</div>
+				<div class="art-countdown-clear">clear</div>
+				<div class="art-countdown-time">${mins}' ${secs}"</div>
+			</div>
+		`;
 	}
 
 	getSettingsPanel() {
@@ -339,99 +449,100 @@ module.exports = class AutoReadTrash {
 			display: flex;
 			flex-direction: column;
 			gap: 20px;
-			max-width: 600px;
+			max-width: 500px;
 			width: 100%;
 			margin: 0 auto;
 			padding: 24px;
-			background: linear-gradient(145deg, #2f3136, #36393f);
-			border-radius: 12px;
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-			color: #dcddde;
-			font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+			background: linear-gradient(145deg, #1A1A1E, #202023);
+			border-radius: 16px;
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+			color: #e0e0e0;
+			font-family: 'Roboto', 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 			box-sizing: border-box;
+			overflow: hidden;
 		`;
-
-		const header = document.createElement("div");
-		header.className = "art-header";
-		header.textContent = "AutoReadTrash Settings";
-		header.style = `
-			font-size: 18px;
-			font-weight: 600;
-			color: #ffffff;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-			padding-bottom: 10px;
-			margin-bottom: 10px;
-		`;
-		panel.appendChild(header);
-
+	
 		const style = document.createElement("style");
 		style.textContent = `
 			.art-label {
-				font-weight: 600;
+				font-weight: 500;
 				font-size: 14px;
-				color: #b9bbbe;
-				margin-bottom: 6px;
+				color: #b0bec5;
+				margin-bottom: 8px;
 				text-transform: uppercase;
-				letter-spacing: 0.5px;
+				letter-spacing: 0.8px;
+				text-align: center;
+				transition: color 0.2s ease;
 			}
 			.art-input, .art-textarea {
+				max-width: 360px;
 				width: 100%;
+				margin: 0 auto;
 				padding: 12px 16px;
-				border-radius: 8px;
-				background: linear-gradient(145deg, #1e2124, #232529);
-				color: #dcddde;
-				border: 1px solid rgba(255, 255, 255, 0.1);
+				border-radius: 12px;
+				background: linear-gradient(145deg,rgb(26, 26, 30),rgb(22, 22, 24));
+				color: #e0e0e0;
+				border: none;
+				box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
 				box-sizing: border-box;
 				font-size: 14px;
-				font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-				transition: border 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+				font-family: 'Roboto', 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				transition: box-shadow 0.3s ease, background 0.3s ease;
+				display: block;
 			}
 			.art-input:focus, .art-textarea:focus {
-				border-color: #5865f2;
-				background: linear-gradient(145deg, #232529, #272b2f);
-				box-shadow: 0 0 6px rgba(88, 101, 242, 0.4);
-				transform: scale(1.01);
+				background: linear-gradient(145deg, #202023, #252528);
+				box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 8px rgba(33, 150, 243, 0.5);
 				outline: none;
 			}
 			.art-textarea {
-				min-height: 60px;
+				min-height: 48px;
 				resize: vertical;
+				-ms-overflow-style: none;  /* IE and Edge */
+				scrollbar-width: none;  /* Firefox */
 			}
-			.art-toggle {
-				display: flex;
-				align-items: center;
-				gap: 12px;
+			.art-textarea::-webkit-scrollbar {
+				display: none;  /* Chrome, Safari, and Opera */
 			}
-			.art-toggle button {
-				padding: 8px 18px;
-				border: none;
-				border-radius: 6px;
-				background: linear-gradient(145deg, #5865f2, #4752c4);
-				color: #ffffff;
-				font-weight: 500;
-				font-size: 14px;
-				cursor: pointer;
-				transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
-				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-			}
-			.art-toggle button.off {
-				background: linear-gradient(145deg, #4f545c, #3a3f45);
-			}
-			.art-toggle button:hover {
-				background: linear-gradient(145deg, #4752c4, #3841a1);
-				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-				transform: translateY(-2px);
-			}
-			.art-toggle button.off:hover {
-				background: linear-gradient(145deg, #3a3f45, #2e3236);
-			}
-			.art-toggle button:active {
-				transform: translateY(0);
-				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-			}
+        .art-toggle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .art-toggle button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #0288d1, #0277bd);
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .art-toggle button.off {
+            background: linear-gradient(145deg, #455a64, #37474f);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .art-toggle button:hover {
+            background: linear-gradient(145deg, #01579b, #0277bd);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        .art-toggle button.off:hover {
+            background: linear-gradient(145deg, #546e7a, #455a64);
+        }
+        .art-toggle button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
 		`;
 		document.head.appendChild(style);
-
+	
 		const debounce = (fn, wait = 500) => {
 			let timeout;
 			return (...args) => {
@@ -439,13 +550,15 @@ module.exports = class AutoReadTrash {
 				timeout = setTimeout(() => fn(...args), wait);
 			};
 		};
-
+	
 		const createTextArea = (label, value, key) => {
 			const wrapper = document.createElement("div");
+			wrapper.style.textAlign = "center";
+	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-
+	
 			const input = document.createElement("textarea");
 			input.className = "art-textarea";
 			input.value = value;
@@ -455,58 +568,51 @@ module.exports = class AutoReadTrash {
 				BdApi.saveData("AutoReadTrash", "settings", this.settings);
 				this.debounceStartInterval();
 			});
-
+	
 			wrapper.append(lbl, input);
 			return wrapper;
 		};
-
+	
 		const createNumberInput = (label, value, key) => {
 			const wrapper = document.createElement("div");
+			wrapper.style.textAlign = "center";
+	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-
+	
 			const input = document.createElement("input");
 			input.className = "art-input";
 			input.type = "number";
 			input.min = 5;
 			input.value = value;
 			input.oninput = debounce(() => {
-				let raw = input.value.trim();
-				let parsed = parseInt(raw);
-				if (isNaN(parsed)) parsed = 5;
-
-				let v = Math.max(5, Math.min(parsed, 120));
+				const parsed = parseInt(input.value.trim()) || 5;
+				const v = Math.max(5, Math.min(parsed, 120));
 				if (parsed !== v) {
-					if (parsed < 5) {
-						BdApi.showToast("Το ελάχιστο επιτρεπτό διάστημα είναι 5 λεπτά", { type: "error" });
-					} else if (parsed > 120) {
-						BdApi.showToast("Το μέγιστο επιτρεπτό διάστημα είναι 120 λεπτά (2 ώρες)", { type: "error" });
-					}
+					BdApi.showToast(parsed < 5 ? "Το ελάχιστο είναι 5 λεπτά" : "Το μέγιστο είναι 120 λεπτά", { type: "error" });
 				}
-
 				input.value = v;
 				this.settings[key] = v;
 				BdApi.saveData("AutoReadTrash", "settings", this.settings);
 				this.debounceStartInterval();
 			});
-
+	
 			wrapper.append(lbl, input);
 			return wrapper;
 		};
-
+	
 		const createToggleButton = (label, value, key) => {
 			const wrapper = document.createElement("div");
 			wrapper.className = "art-toggle";
-
+	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-
+	
 			const button = document.createElement("button");
 			button.textContent = value ? "Ενεργό" : "Ανενεργό";
 			button.className = value ? "" : "off";
-
 			button.onclick = () => {
 				const newVal = !this.settings[key];
 				this.settings[key] = newVal;
@@ -515,17 +621,17 @@ module.exports = class AutoReadTrash {
 				button.className = newVal ? "" : "off";
 				newVal ? this.startCountdown() : this.stopCountdown();
 			};
-
+	
 			wrapper.append(lbl, button);
 			return wrapper;
 		};
-
+	
 		panel.append(
 			createTextArea("Folder IDs (comma-separated)", this.settings.folderIds, "folderIds"),
 			createNumberInput("Διάστημα (λεπτά)", this.settings.intervalMinutes, "intervalMinutes"),
 			createToggleButton("Αντίστροφη μέτρηση κάτω δεξιά", this.settings.showCountdown, "showCountdown")
 		);
-
+	
 		return panel;
 	}
 
