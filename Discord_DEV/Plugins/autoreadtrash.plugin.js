@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.5.0
+ * @version 5.5.1
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -663,24 +663,32 @@ module.exports = class AutoReadTrash {
 		console.log("[AutoReadTrash]", ...args);
 	}
 
+	
 	checkForUpdate() {
 		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
-		const currentVersion = "5.5.0"; // update this with each new version
+		const currentVersion = "5.5.1";
 
 		fetch(updateUrl)
 			.then(res => res.text())
 			.then(code => {
 				const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-				if (!remoteVersion) return;
+				if (!remoteVersion) {
+					BdApi.showToast("⚠️ Δεν βρέθηκε απομακρυσμένη έκδοση.", { type: "error" });
+					return;
+				}
 
 				if (this.isNewerVersion(remoteVersion, currentVersion)) {
 					this.promptUpdate(updateUrl, remoteVersion);
+				} else {
+					BdApi.showToast("🔍 Έχεις ήδη την τελευταία έκδοση (" + currentVersion + ")", { type: "info" });
 				}
 			})
-			.catch(err => console.error("Update check failed:", err));
-	}
-
-	isNewerVersion(remote, local) {
+			.catch(err => {
+				console.error("Update check failed:", err);
+				BdApi.showToast("❌ Σφάλμα σύνδεσης για έλεγχο ενημέρωσης.", { type: "error" });
+			});
+};
+isNewerVersion(remote, local) {
 		const r = remote.split(".").map(n => parseInt(n));
 		const l = local.split(".").map(n => parseInt(n));
 		for (let i = 0; i < Math.max(r.length, l.length); i++) {
