@@ -1,6 +1,6 @@
 /**
  * @name 1HideFolders
- * @version 1.4.0
+ * @version 1.4.4
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -440,7 +440,7 @@ module.exports = class HideFolders {
     }
 
     getVersion() {
-        return this._config.info.version;
+        return "1.4.4";
     }
 
     showCustomToast(text, type = "info") {

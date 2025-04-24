@@ -1,6 +1,6 @@
 /**
  * @name 1BlockConsole
- * @version 1.0.8
+ * @version 1.3.0
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
