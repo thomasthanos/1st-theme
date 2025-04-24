@@ -1,6 +1,6 @@
 /**
  * @name 1discord_change
- * @version 1.7.4
+ * @version 1.7.2
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
