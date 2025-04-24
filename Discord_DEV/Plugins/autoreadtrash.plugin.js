@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.8
+ * @version 5.6.9
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -738,7 +738,7 @@ try {
 			});
 	}
 	getVersion() {
-		return "5.6.8";
+		return "5.6.9";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
