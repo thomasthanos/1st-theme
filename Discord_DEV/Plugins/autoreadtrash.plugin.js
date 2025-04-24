@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.4
+ * @version 5.6.5
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -687,28 +687,12 @@ isNewerVersion(remote, local) {
 
     const cancel = document.createElement("button");
     cancel.textContent = "Όχι τώρα";
-    cancel.style = `
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #121214;
-      color: #eee;
-      font-weight: 500;
-      cursor: pointer;
-    `;
+    cancel.style = "padding: 10px 20px; border-radius: 8px; border: 1px solid #777; background: #181818; color: #ccc; font-weight: 500; cursor: pointer; transition: all 0.2s ease-in-out;";
     cancel.onclick = () => document.body.removeChild(modal);
 
     const confirm = document.createElement("button");
     confirm.textContent = "Ενημέρωση";
-    confirm.style = `
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: 1px solid #1A1A1E;
-      background: #1A1A1E;
-      color: #ffffff;
-      font-weight: 600;
-      cursor: pointer;
-    `;
+    confirm.style = "padding: 10px 20px; border-radius: 8px; border: 1px solid #4caf50; background: #4caf50; color: #000; font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out;";
     confirm.onclick = () => {
       document.body.removeChild(modal);
       if (this._updateInProgress) return;
@@ -762,7 +746,7 @@ try {
 			});
 	}
 	getVersion() {
-		return "5.6.4";
+		return "5.6.5";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
