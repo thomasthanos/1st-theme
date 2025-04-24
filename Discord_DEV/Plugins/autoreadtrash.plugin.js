@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.5.6
+ * @version 5.5.7
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -9,15 +9,12 @@
  * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
  * @website https://github.com/thomasthanos
  */
-
-
 module.exports = class AutoReadTrash {
 	defaultSettings = {
 		folderIds: "guildsnav___2512556488",
 		intervalMinutes: 15,
 		showCountdown: true
 	};
-
 	constructor() {
 		this._notificationQueue = [];
 		this._isShowingNotification = false;
@@ -26,7 +23,6 @@ module.exports = class AutoReadTrash {
 		this._startTimeout = null;
 		this._uiCheckInterval = null;
 	}
-
 	waitForElement(selector, timeout = 10000) {
 		return new Promise((resolve, reject) => {
 			const startTime = Date.now();
@@ -39,36 +35,30 @@ module.exports = class AutoReadTrash {
 			checkElement();
 		});
 	}
-
 	startUICheck() {
 		if (this._uiCheckInterval) return;
 		this._uiCheckInterval = setInterval(() => {
 			const guildsWrapper = document.querySelector('[class="wrapper_ef3116 guilds_c48ade"]');
 			if (!guildsWrapper) return;
-
 			if (!document.querySelector('.art-countdown') && this.settings.showCountdown) {
 				this.createCountdownUI().catch(error => this.log("❌ Error re-adding countdown:", error.message));
 			}
-
 			if (!document.querySelector('.art-wrapper') && this._notificationQueue.length > 0) {
 				this.wrapper3d = null;
 				this.processNotificationQueue();
 			}
 		}, 2000);
 	}
-
 	stopUICheck() {
 		if (this._uiCheckInterval) {
 			clearInterval(this._uiCheckInterval);
 			this._uiCheckInterval = null;
 		}
 	}
-
 	async start() {
 		this.settings = Object.assign({}, this.defaultSettings, BdApi.loadData("AutoReadTrash", "settings") || {});
 		this._lastRun = Date.now();
 		this.injectStyles();
-
 		try {
 			await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
 			this.debounceStartInterval();
@@ -78,7 +68,6 @@ module.exports = class AutoReadTrash {
 			this.log("❌ Failed to find guilds wrapper:", error.message);
 		}
 	}
-
 	stop() {
 		this.clearInterval();
 		this.clearStartTimeout();
@@ -87,19 +76,16 @@ module.exports = class AutoReadTrash {
 		this.clearNotifications();
 		this._isRunning = false;
 	}
-
 	debounceStartInterval() {
 		this.clearStartTimeout();
 		this._startTimeout = setTimeout(() => this.startInterval(), 500);
 	}
-
 	clearStartTimeout() {
 		if (this._startTimeout) {
 			clearTimeout(this._startTimeout);
 			this._startTimeout = null;
 		}
 	}
-
 	startInterval() {
 		this.clearInterval();
 		if (!this._isRunning) this.run();
@@ -107,18 +93,15 @@ module.exports = class AutoReadTrash {
 			if (!this._isRunning) this.run();
 		}, this.settings.intervalMinutes * 60 * 1000);
 	}
-
 	clearInterval() {
 		if (this.interval) {
 			clearInterval(this.interval);
 			this.interval = null;
 		}
 	}
-
 	async run() {
 		if (this._isRunning) return;
 		this._isRunning = true;
-
 		try {
 			const ids = this.settings.folderIds.split(",").map(id => id.trim()).filter(Boolean);
 			const items = await Promise.all(
@@ -131,22 +114,17 @@ module.exports = class AutoReadTrash {
 					}
 				})
 			).then(results => results.filter(Boolean));
-
 			if (!items.length) {
 				this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
 				this.queueNotification(0);
 				return;
 			}
-
 			let successfulReads = 0;
-
 			for (const [index, folder] of items.entries()) {
 				const id = folder.getAttribute("data-list-item-id");
-
 				await new Promise(resolve => {
 					const existingMenu = document.querySelector('[class*="contextMenu"]');
 					if (existingMenu) existingMenu.style.display = "none";
-
 					setTimeout(() => {
 						folder.dispatchEvent(new MouseEvent("contextmenu", {
 							bubbles: true,
@@ -154,7 +132,6 @@ module.exports = class AutoReadTrash {
 							clientX: -9999,
 							clientY: -9999
 						}));
-
 						setTimeout(() => {
 							const btn = document.querySelector('#guild-context-mark-folder-read');
 							if (btn) {
@@ -164,7 +141,6 @@ module.exports = class AutoReadTrash {
 									this.log(`📬 Φάκελος ${id} μαρκαρίστηκε ως αναγνωσμένος`);
 								}
 							}
-
 							const menu = document.querySelector('[class*="contextMenu"]');
 							if (menu) menu.style.display = "none";
 							resolve();
@@ -172,7 +148,6 @@ module.exports = class AutoReadTrash {
 					}, index * 500);
 				});
 			}
-
 			this.queueNotification(successfulReads);
 			this._lastRun = Date.now();
 			this.updateCountdownUI?.();
@@ -180,19 +155,16 @@ module.exports = class AutoReadTrash {
 			this._isRunning = false;
 		}
 	}
-
 	queueNotification(successfulReads) {
 		if (this._notificationQueue.length < 3) this._notificationQueue.push(successfulReads);
 		if (!this._isShowingNotification) this.processNotificationQueue();
 	}
-
 	processNotificationQueue() {
 		if (!this._notificationQueue.length || this._isShowingNotification) return;
 		this._isShowingNotification = true;
 		const successfulReads = this._notificationQueue.shift();
 		this.showDiscordNotification(successfulReads);
 	}
-
 	clearNotifications() {
 		this._notificationQueue = [];
 		this._isShowingNotification = false;
@@ -202,7 +174,6 @@ module.exports = class AutoReadTrash {
 			this.wrapper3d = null;
 		}
 	}
-
 	async showDiscordNotification(successfulReads) {
 		try {
 			const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
@@ -210,13 +181,11 @@ module.exports = class AutoReadTrash {
 				this.log("❌ Guilds wrapper not found for notifications");
 				return;
 			}
-
 			if (!this.wrapper3d) {
 				this.wrapper3d = document.createElement('div');
 				this.wrapper3d.className = 'art-wrapper';
 				guildsWrapper.appendChild(this.wrapper3d);
 			}
-
 			const notif = document.createElement('div');
 			notif.className = 'art-notif';
 			notif.innerHTML = `
@@ -227,7 +196,6 @@ module.exports = class AutoReadTrash {
 			`;
 			this.wrapper3d.appendChild(notif);
 			requestAnimationFrame(() => notif.classList.add('show'));
-
 			const hideNotification = () => {
 				notif.classList.remove('show');
 				notif.classList.add('hide');
@@ -237,10 +205,8 @@ module.exports = class AutoReadTrash {
 					this.processNotificationQueue();
 				}, { once: true });
 			};
-
 			clearTimeout(this._hide3d);
 			this._hide3d = setTimeout(hideNotification, 3000);
-
 			notif.addEventListener('mouseenter', () => clearTimeout(this._hide3d));
 			notif.addEventListener('mouseleave', () => {
 				this._hide3d = setTimeout(hideNotification, 1000);
@@ -249,7 +215,6 @@ module.exports = class AutoReadTrash {
 			this.log("❌ Error showing notification:", error.message);
 		}
 	}
-
 	injectStyles() {
 		if (this._style3d) return;
 		const style = document.createElement('style');
@@ -386,11 +351,9 @@ module.exports = class AutoReadTrash {
 		document.head.appendChild(style);
 		this._style3d = style;
 	}
-
 	async startCountdown() {
 		this.stopCountdown();
 		if (!this.settings.showCountdown) return;
-
 		try {
 			await this.createCountdownUI();
 			this.countdownInterval = setInterval(() => this.updateCountdownUI(), 1000);
@@ -399,7 +362,6 @@ module.exports = class AutoReadTrash {
 			this.log("❌ Error starting countdown:", error.message);
 		}
 	}
-
 	stopCountdown() {
 		if (this.countdownInterval) {
 			clearInterval(this.countdownInterval);
@@ -408,14 +370,12 @@ module.exports = class AutoReadTrash {
 		const el = document.querySelector('.art-countdown');
 		if (el) el.remove();
 	}
-
 	async createCountdownUI() {
 		const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
 		if (!guildsWrapper) {
 			this.log("❌ Guilds wrapper not found for countdown");
 			throw new Error("Guilds wrapper not found");
 		}
-
 		if (document.querySelector('.art-countdown')) return;
 		const el = document.createElement('div');
 		el.className = 'art-countdown';
@@ -429,7 +389,6 @@ module.exports = class AutoReadTrash {
 		el.style.right = '0';
 		guildsWrapper.appendChild(el);
 	}
-
 	updateCountdownUI() {
 		const el = document.querySelector('.art-countdown');
 		if (!el) return;
@@ -446,7 +405,6 @@ module.exports = class AutoReadTrash {
 			</div>
 		`;
 	}
-
 	getSettingsPanel() {
 		const panel = document.createElement("div");
 		panel.className = "art-container bd-addon-settings-wrap";
@@ -466,7 +424,6 @@ module.exports = class AutoReadTrash {
 			box-sizing: border-box;
 			overflow: hidden;
 		`;
-	
 		const style = document.createElement("style");
 		style.textContent = `
 			.art-label {
@@ -547,7 +504,6 @@ module.exports = class AutoReadTrash {
         }
 		`;
 		document.head.appendChild(style);
-	
 		const debounce = (fn, wait = 500) => {
 			let timeout;
 			return (...args) => {
@@ -555,15 +511,12 @@ module.exports = class AutoReadTrash {
 				timeout = setTimeout(() => fn(...args), wait);
 			};
 		};
-	
 		const createTextArea = (label, value, key) => {
 			const wrapper = document.createElement("div");
 			wrapper.style.textAlign = "center";
-	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-	
 			const input = document.createElement("textarea");
 			input.className = "art-textarea";
 			input.value = value;
@@ -573,19 +526,15 @@ module.exports = class AutoReadTrash {
 				BdApi.saveData("AutoReadTrash", "settings", this.settings);
 				this.debounceStartInterval();
 			});
-	
 			wrapper.append(lbl, input);
 			return wrapper;
 		};
-	
 		const createNumberInput = (label, value, key) => {
 			const wrapper = document.createElement("div");
 			wrapper.style.textAlign = "center";
-	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-	
 			const input = document.createElement("input");
 			input.className = "art-input";
 			input.type = "number";
@@ -602,19 +551,15 @@ module.exports = class AutoReadTrash {
 				BdApi.saveData("AutoReadTrash", "settings", this.settings);
 				this.debounceStartInterval();
 			});
-	
 			wrapper.append(lbl, input);
 			return wrapper;
 		};
-	
 		const createToggleButton = (label, value, key) => {
 			const wrapper = document.createElement("div");
 			wrapper.className = "art-toggle";
-	
 			const lbl = document.createElement("div");
 			lbl.className = "art-label";
 			lbl.textContent = label;
-	
 			const button = document.createElement("button");
 			button.textContent = value ? "Ενεργό" : "Ανενεργό";
 			button.className = value ? "" : "off";
@@ -626,18 +571,14 @@ module.exports = class AutoReadTrash {
 				button.className = newVal ? "" : "off";
 				newVal ? this.startCountdown() : this.stopCountdown();
 			};
-	
 			wrapper.append(lbl, button);
 			return wrapper;
 		};
-	
 		panel.append(
 			createTextArea("Folder IDs (comma-separated)", this.settings.folderIds, "folderIds"),
 			createNumberInput("Διάστημα (λεπτά)", this.settings.intervalMinutes, "intervalMinutes"),
 			createToggleButton("Αντίστροφη μέτρηση κάτω δεξιά", this.settings.showCountdown, "showCountdown")
 		);
-	
-		
         const updateButton = document.createElement("button");
         updateButton.textContent = "Έλεγχος για νέα έκδοση";
         updateButton.style.padding = "12px 24px";
@@ -656,18 +597,13 @@ module.exports = class AutoReadTrash {
         updateButton.onclick = () => this.checkForUpdate();
         panel.append(updateButton);
         return panel;
-    
 	}
-
 	log(...args) {
 		console.log("[AutoReadTrash]", ...args);
 	}
-
-	
 	checkForUpdate() {
 		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js?t=" + Date.now();
 		const currentVersion = this.getVersion();
-
 		fetch(updateUrl)
 			.then(res => res.text())
 			.then(code => {
@@ -676,7 +612,6 @@ module.exports = class AutoReadTrash {
 					this.showCustomToast("⚠️ Δεν βρέθηκε απομακρυσμένη έκδοση.", "error");
 					return;
 				}
-
 				if (this.isNewerVersion(remoteVersion, currentVersion)) {
 				if (this._justUpdated) {
 					this._justUpdated = false;
@@ -702,9 +637,6 @@ isNewerVersion(remote, local) {
 		}
 		return false;
 	}
-
-	
-	
 	promptUpdate(url, newVersion) {
 		const modal = document.createElement("div");
 		modal.style.position = "fixed";
@@ -717,7 +649,6 @@ isNewerVersion(remote, local) {
 		modal.style.alignItems = "center";
 		modal.style.justifyContent = "center";
 		modal.style.zIndex = "9999";
-
 		const box = document.createElement("div");
 		box.style.background = "#1e1e2f";
 		box.style.border = "1px solid #444";
@@ -727,22 +658,18 @@ isNewerVersion(remote, local) {
 		box.style.color = "#fff";
 		box.style.boxShadow = "0 8px 30px rgba(0,0,0,0.7)";
 		box.style.fontFamily = "Segoe UI, sans-serif";
-
 		const title = document.createElement("h2");
 		title.textContent = "✨ Νέα Έκδοση Διαθέσιμη";
 		title.style.marginBottom = "12px";
 		box.appendChild(title);
-
 		const desc = document.createElement("p");
 		desc.textContent = `Υπάρχει διαθέσιμη η έκδοση ${newVersion}. Θέλεις να κάνεις ενημέρωση τώρα;`;
 		desc.style.marginBottom = "20px";
 		box.appendChild(desc);
-
 		const buttons = document.createElement("div");
 		buttons.style.display = "flex";
 		buttons.style.justifyContent = "flex-end";
 		buttons.style.gap = "10px";
-
 		const cancel = document.createElement("button");
 		cancel.textContent = "Όχι τώρα";
 		cancel.style.padding = "8px 16px";
@@ -751,7 +678,6 @@ isNewerVersion(remote, local) {
 		cancel.style.background = "#2a2a3d";
 		cancel.style.color = "#fff";
 		cancel.onclick = () => { document.body.removeChild(modal); };
-
 		const confirm = document.createElement("button");
 		confirm.textContent = "Ενημέρωση";
 		confirm.style.padding = "8px 16px";
@@ -765,16 +691,12 @@ isNewerVersion(remote, local) {
 			this._updateInProgress = true;
 			this.downloadUpdate(url);
 		};
-
 		buttons.appendChild(cancel);
 		buttons.appendChild(confirm);
 		box.appendChild(buttons);
 		modal.appendChild(box);
 		document.body.appendChild(modal);
 	}
-
-
-		
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
@@ -783,9 +705,7 @@ isNewerVersion(remote, local) {
 					const fs = require("fs");
 					const path = require("path");
 					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
-
 					fs.writeFileSync(filePath, content, "utf8");
-
 					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
 this._justUpdated = true;
 const modal = document.querySelector('[role="dialog"]');
@@ -800,14 +720,9 @@ setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 				this.showCustomToast("❌ Αποτυχία σύνδεσης για ενημέρωση.", "error");
 			});
 	}
-
-
 	getVersion() {
-		return "5.5.6";
+		return "5.5.7";
 	}
-
-
-
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
 		toast.textContent = text;
@@ -823,12 +738,10 @@ setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 		toast.style.zIndex = "9999";
 		toast.style.fontFamily = "Segoe UI, sans-serif";
 		toast.style.transition = "opacity 0.4s ease";
-
 		document.body.appendChild(toast);
 		setTimeout(() => {
 			toast.style.opacity = "0";
 			setTimeout(() => toast.remove(), 400);
 		}, 3000);
 	}
-
 };
