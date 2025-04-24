@@ -187,7 +187,9 @@ module.exports = class FolderManager {
                 return;
             }
             let successfulReads = 0;
+            // Pair each folder with its corresponding ID using the index
             for (const [index, folder] of items.entries()) {
+                const id = ids[index]; // Get the corresponding ID using the index
                 await new Promise(resolve => {
                     const existingMenu = document.querySelector('[class*="contextMenu"]');
                     if (existingMenu) existingMenu.style.display = "none";

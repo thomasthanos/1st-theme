@@ -113,7 +113,6 @@ module.exports = class ThomasTCombined {
 
     // UI Injection
     injectIcon() {
-        console.log("[ThomasTCombined] Attempting to inject icon...");
         const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
         let pluginCard = null;
         pluginCards.forEach(card => {
