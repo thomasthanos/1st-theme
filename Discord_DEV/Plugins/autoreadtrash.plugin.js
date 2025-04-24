@@ -786,7 +786,7 @@ isNewerVersion(remote, local) {
 
 					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
 this._justUpdated = true;
-BdApi.Settings?.close?.();
+document.querySelectorAll(".layerContainer_da8173").forEach(el => el.remove());
 setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 				} catch (err) {
 					console.error("Update failed:", err);
