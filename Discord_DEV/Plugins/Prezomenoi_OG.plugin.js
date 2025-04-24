@@ -1,6 +1,6 @@
 /**
  * @name 1Prezomenoi_OG
- * @version 2.6.4
+ * @version 2.6.6
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -745,7 +745,7 @@ module.exports = class RenameChannel {
     }
 
     getVersion() {
-        return "2.6.4";
+        return "2.6.6";
     }
 
     showCustomToast(text, type = "info") {

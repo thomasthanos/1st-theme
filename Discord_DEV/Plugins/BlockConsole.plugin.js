@@ -1,6 +1,6 @@
 /**
  * @name 1BlockConsole
- * @version 1.3.0
+ * @version 1.3.4
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -387,7 +387,7 @@ class BlockConsole {
   }
 
   getVersion() {
-      return "1.3.0";
+      return "1.3.4";
   }
 
   showCustomToast(text, type = "info") {
