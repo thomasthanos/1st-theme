@@ -701,19 +701,27 @@ module.exports = class AutoReadTrash {
 	}
 
 	
+	
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
 			.then(content => {
-				const fs = BdApi.findModuleByProps("writeFile", "readFile");
-				const path = BdApi.Plugins.folder + "/autoreadtrash.plugin.js";
-				fs.writeFile(path, content, err => {
-					if (err) {
-						BdApi.showToast("Αποτυχία ενημέρωσης.", { type: "error" });
-					} else {
-						BdApi.showToast("Ενημερώθηκε! Κάνε reload το plugin (Ctrl+R).", { type: "success" });
-					}
-				});
+				try {
+					const fs = require("fs");
+					const path = require("path");
+					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
+
+					fs.writeFileSync(filePath, content, "utf8");
+
+					BdApi.showToast("✅ Ενημερώθηκε! Κάνε Ctrl+R για επανεκκίνηση.", { type: "success" });
+				} catch (err) {
+					console.error("Update failed:", err);
+					BdApi.showToast("❌ Αποτυχία ενημέρωσης.", { type: "error" });
+				}
+			})
+			.catch(() => {
+				BdApi.showToast("❌ Αποτυχία σύνδεσης για ενημέρωση.", { type: "error" });
 			});
 	}
+
 };
