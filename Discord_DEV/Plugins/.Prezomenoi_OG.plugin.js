@@ -1,5 +1,5 @@
 /**
- * @name 1Prezomenoi_OG
+ * @name .Prezomenoi_OG
  * @version 6.0.3
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
@@ -822,13 +822,12 @@ module.exports = class RenameChannel {
     }
 
     async checkAndUpdate(container) {
-        console.log("[Prezomenoi_OG] Checking and updating plugin...");
         const results = container ? container.querySelector("#update-results") : null;
         if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
 
-        const pluginName = "1Prezomenoi_OG";
+        const pluginName = "Prezomenoi_OG";
         const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js?t=" + Date.now();
-        const filename = "1Prezomenoi_OG.plugin.js";
+        const filename = "Prezomenoi_OG.plugin.js";
 
         try {
             const localPlugin = BdApi.Plugins.get(pluginName);

@@ -1,5 +1,5 @@
 /**
- * @name 1Combined_safe_console
+ * @name .Combined_safe_console
  * @version 2.0.3
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
