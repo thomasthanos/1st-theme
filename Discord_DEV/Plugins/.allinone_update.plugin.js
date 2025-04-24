@@ -20,13 +20,9 @@ module.exports = class UpdateAllMyPlugins {
                 filename: ".Prezomenoi_OG.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js"
             },
-            "1Prezomenoi_OG": {
-                filename: "1Prezomenoi_OG.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/Prezomenoi_OG.plugin.js"
-            },
             "1FolderManager": {
                 filename: ".FolderManager.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/discord_change.plugin.js"
+                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js"
             }
         };
         this.modal = null;
