@@ -1,12 +1,11 @@
 /**
  * @name FolderManager
- * @version 1.0.0
+ * @version 3.0.0
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/FolderManager.plugin.js
- * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/FolderManager.plugin.js
- * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/FolderManager.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js
  * @website https://github.com/thomasthanos
  */
 
@@ -1129,7 +1128,7 @@ module.exports = class FolderManager {
         if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
 
         const pluginName = "FolderManager";
-        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/FolderManager.plugin.js?t=" + Date.now();
+        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js?t=" + Date.now();
         const filename = "FolderManager.plugin.js";
 
         try {

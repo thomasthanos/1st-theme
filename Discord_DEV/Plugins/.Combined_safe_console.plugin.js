@@ -1,11 +1,10 @@
 /**
- * @name ThomasTCombined
- * @version 1.0.0
+ * @name Combined_safe_console
+ * @version 2.0.0
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
- * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/ThomasTCombined.plugin.js
- * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/ThomasTCombined.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js
  * @website https://github.com/thomasthanos
  */
 
@@ -558,7 +557,7 @@ module.exports = class ThomasTCombined {
         const results = container.querySelector("#update-results");
         if (results) results.innerHTML = "<b>Results:</b><br>";
 
-        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/ThomasTCombined.plugin.js?t=" + Date.now();
+        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js?t=" + Date.now();
         try {
             const code = await fetch(updateUrl).then(r => r.text());
             const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();

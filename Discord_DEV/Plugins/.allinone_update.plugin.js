@@ -1,11 +1,11 @@
 /**
  * @name UpdateAllMyPlugins
- * @version 1.0.15
+ * @version 2.5.1
  * @description Κάνει έλεγχο και αυτόματη ενημέρωση για όλα τα προσωπικά plugins του ThomasT με πλήρες custom UI.
  * @author ThomasT
  * @authorId 706932839907852389
- * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/UpdateAllMyPlugins.plugin.js
- * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/UpdateAllMyPlugins.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.allinone_update.plugin.js
+ * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.allinone_update.plugin.js
  */
 
 module.exports = class UpdateAllMyPlugins {
