@@ -784,8 +784,9 @@ isNewerVersion(remote, local) {
 
 					fs.writeFileSync(filePath, content, "utf8");
 
-					this.showCustomToast("✅ Ενημερώθηκε! Κάνε Ctrl+R για επανεκκίνηση.", "success");
+					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
 this._justUpdated = true;
+setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 				} catch (err) {
 					console.error("Update failed:", err);
 					this.showCustomToast("❌ Αποτυχία ενημέρωσης.", "error");
@@ -798,7 +799,7 @@ this._justUpdated = true;
 
 
 	getVersion() {
-		return "5.5.1";
+		return "5.5.0";
 	}
 
 
