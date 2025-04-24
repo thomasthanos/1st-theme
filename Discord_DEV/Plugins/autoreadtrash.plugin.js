@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.5.2
+ * @version 5.5.3
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -665,7 +665,7 @@ module.exports = class AutoReadTrash {
 
 	
 	checkForUpdate() {
-		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
+		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js?t=" + Date.now();
 		const currentVersion = this.getVersion();
 
 		fetch(updateUrl)
@@ -786,6 +786,7 @@ isNewerVersion(remote, local) {
 
 					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
 this._justUpdated = true;
+document.querySelector('[role="dialog"]')?.remove();
 setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 				} catch (err) {
 					console.error("Update failed:", err);
@@ -799,7 +800,7 @@ setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 
 
 	getVersion() {
-		return "5.5.2";
+		return "5.5.3";
 	}
 
 
