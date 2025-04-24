@@ -640,20 +640,20 @@ module.exports = class AutoReadTrash {
 		
         const updateButton = document.createElement("button");
         updateButton.textContent = "Έλεγχος για νέα έκδοση";
-        updateButton.style.padding = "10px 20px";
-        updateButton.style.margin = "0 auto";
-        updateButton.style.background = "linear-gradient(145deg, #00bcd4, #008ba3)";
-        updateButton.style.border = "none";
-        updateButton.style.borderRadius = "12px";
-        updateButton.style.color = "#fff";
-        updateButton.style.cursor = "pointer";
+        updateButton.style.padding = "12px 24px";
+        updateButton.style.marginTop = "16px";
+        updateButton.style.background = "#1e1e2f";
+        updateButton.style.color = "#ffffff";
+        updateButton.style.border = "1px solid #444";
+        updateButton.style.borderRadius = "8px";
         updateButton.style.fontSize = "14px";
-        updateButton.style.fontWeight = "bold";
-        updateButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
-        updateButton.onmouseenter = () => updateButton.style.opacity = "0.9";
-        updateButton.onmouseleave = () => updateButton.style.opacity = "1";
-        updateButton.onclick = () => this.checkForUpdate(); 
-
+        updateButton.style.fontWeight = "600";
+        updateButton.style.transition = "all 0.2s ease-in-out";
+        updateButton.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.5)";
+        updateButton.style.cursor = "pointer";
+        updateButton.onmouseenter = () => updateButton.style.background = "#2a2a3d";
+        updateButton.onmouseleave = () => updateButton.style.background = "#1e1e2f";
+        updateButton.onclick = () => this.checkForUpdate();
         panel.append(updateButton);
         return panel;
     
@@ -666,21 +666,26 @@ module.exports = class AutoReadTrash {
 	
 	checkForUpdate() {
 		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
-		const currentVersion = "5.5.1";
+		const currentVersion = this.getVersion();
 
 		fetch(updateUrl)
 			.then(res => res.text())
 			.then(code => {
 				const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
 				if (!remoteVersion) {
-					BdApi.showToast("⚠️ Δεν βρέθηκε απομακρυσμένη έκδοση.", { type: "error" });
+					this.showCustomToast("⚠️ Δεν βρέθηκε απομακρυσμένη έκδοση.", "error");
 					return;
 				}
 
 				if (this.isNewerVersion(remoteVersion, currentVersion)) {
+				if (this._justUpdated) {
+					this._justUpdated = false;
+					this.showCustomToast("✅ Είσαι ήδη ενημερωμένος!", "success");
+					return;
+				}
 					this.promptUpdate(updateUrl, remoteVersion);
 				} else {
-					BdApi.showToast("🔍 Έχεις ήδη την τελευταία έκδοση (" + currentVersion + ")", { type: "info" });
+					this.showCustomToast("🔍 Έχεις ήδη την τελευταία έκδοση (" + currentVersion + ")", "info");
 				}
 			})
 			.catch(err => {
@@ -698,18 +703,76 @@ isNewerVersion(remote, local) {
 		return false;
 	}
 
+	
+	
 	promptUpdate(url, newVersion) {
-		BdApi.showConfirmationModal("Ενημέρωση Plugin", `Υπάρχει νέα έκδοση (${newVersion}) του AutoReadTrash. Θέλεις να την εγκαταστήσεις τώρα;`, {
-			confirmText: "Ενημέρωση",
-			cancelText: "Όχι τώρα",
-			onConfirm: () => {
-				this.downloadUpdate(url);
-			}
-		});
+		const modal = document.createElement("div");
+		modal.style.position = "fixed";
+		modal.style.top = "0";
+		modal.style.left = "0";
+		modal.style.width = "100vw";
+		modal.style.height = "100vh";
+		modal.style.background = "rgba(0, 0, 0, 0.6)";
+		modal.style.display = "flex";
+		modal.style.alignItems = "center";
+		modal.style.justifyContent = "center";
+		modal.style.zIndex = "9999";
+
+		const box = document.createElement("div");
+		box.style.background = "#1e1e2f";
+		box.style.border = "1px solid #444";
+		box.style.borderRadius = "10px";
+		box.style.padding = "24px";
+		box.style.minWidth = "400px";
+		box.style.color = "#fff";
+		box.style.boxShadow = "0 8px 30px rgba(0,0,0,0.7)";
+		box.style.fontFamily = "Segoe UI, sans-serif";
+
+		const title = document.createElement("h2");
+		title.textContent = "✨ Νέα Έκδοση Διαθέσιμη";
+		title.style.marginBottom = "12px";
+		box.appendChild(title);
+
+		const desc = document.createElement("p");
+		desc.textContent = `Υπάρχει διαθέσιμη η έκδοση ${newVersion}. Θέλεις να κάνεις ενημέρωση τώρα;`;
+		desc.style.marginBottom = "20px";
+		box.appendChild(desc);
+
+		const buttons = document.createElement("div");
+		buttons.style.display = "flex";
+		buttons.style.justifyContent = "flex-end";
+		buttons.style.gap = "10px";
+
+		const cancel = document.createElement("button");
+		cancel.textContent = "Όχι τώρα";
+		cancel.style.padding = "8px 16px";
+		cancel.style.borderRadius = "6px";
+		cancel.style.border = "1px solid #555";
+		cancel.style.background = "#2a2a3d";
+		cancel.style.color = "#fff";
+		cancel.onclick = () => { document.body.removeChild(modal); };
+
+		const confirm = document.createElement("button");
+		confirm.textContent = "Ενημέρωση";
+		confirm.style.padding = "8px 16px";
+		confirm.style.borderRadius = "6px";
+		confirm.style.border = "1px solid #00bcd4";
+		confirm.style.background = "#00bcd4";
+		confirm.style.color = "#000";
+		confirm.onclick = () => {
+			document.body.removeChild(modal);
+			this.downloadUpdate(url);
+		};
+
+		buttons.appendChild(cancel);
+		buttons.appendChild(confirm);
+		box.appendChild(buttons);
+		modal.appendChild(box);
+		document.body.appendChild(modal);
 	}
 
-	
-	
+
+		
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
@@ -721,15 +784,46 @@ isNewerVersion(remote, local) {
 
 					fs.writeFileSync(filePath, content, "utf8");
 
-					BdApi.showToast("✅ Ενημερώθηκε! Κάνε Ctrl+R για επανεκκίνηση.", { type: "success" });
+					this.showCustomToast("✅ Ενημερώθηκε! Κάνε Ctrl+R για επανεκκίνηση.", "success");
+this._justUpdated = true;
 				} catch (err) {
 					console.error("Update failed:", err);
-					BdApi.showToast("❌ Αποτυχία ενημέρωσης.", { type: "error" });
+					this.showCustomToast("❌ Αποτυχία ενημέρωσης.", "error");
 				}
 			})
 			.catch(() => {
-				BdApi.showToast("❌ Αποτυχία σύνδεσης για ενημέρωση.", { type: "error" });
+				this.showCustomToast("❌ Αποτυχία σύνδεσης για ενημέρωση.", "error");
 			});
+	}
+
+
+	getVersion() {
+		return "5.5.1";
+	}
+
+
+
+	showCustomToast(text, type = "info") {
+		const toast = document.createElement("div");
+		toast.textContent = text;
+		toast.style.position = "fixed";
+		toast.style.bottom = "30px";
+		toast.style.left = "50%";
+		toast.style.transform = "translateX(-50%)";
+		toast.style.background = type === "error" ? "#ff4d4f" : type === "success" ? "#4caf50" : "#2f2f2f";
+		toast.style.color = "#fff";
+		toast.style.padding = "12px 20px";
+		toast.style.borderRadius = "8px";
+		toast.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.3)";
+		toast.style.zIndex = "9999";
+		toast.style.fontFamily = "Segoe UI, sans-serif";
+		toast.style.transition = "opacity 0.4s ease";
+
+		document.body.appendChild(toast);
+		setTimeout(() => {
+			toast.style.opacity = "0";
+			setTimeout(() => toast.remove(), 400);
+		}, 3000);
 	}
 
 };
