@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.5
+ * @version 5.6.8
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -583,7 +583,7 @@ module.exports = class AutoReadTrash {
         updateButton.textContent = "Έλεγχος για νέα έκδοση";
         updateButton.style.padding = "12px 24px";
         updateButton.style.marginTop = "16px";
-        updateButton.style.background = "#1e1e2f";
+        updateButton.style.background = "#181818";
         updateButton.style.color = "#ffffff";
         updateButton.style.border = "1px solid #444";
         updateButton.style.borderRadius = "8px";
@@ -592,8 +592,8 @@ module.exports = class AutoReadTrash {
         updateButton.style.transition = "all 0.2s ease-in-out";
         updateButton.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.5)";
         updateButton.style.cursor = "pointer";
-        updateButton.onmouseenter = () => updateButton.style.background = "#2a2a3d";
-        updateButton.onmouseleave = () => updateButton.style.background = "#1e1e2f";
+        updateButton.onmouseenter = () => updateButton.style.background = "#181818";
+        updateButton.onmouseleave = () => updateButton.style.background = "#141414";
         updateButton.onclick = () => this.checkForUpdate();
         panel.append(updateButton);
         return panel;
@@ -674,7 +674,7 @@ isNewerVersion(remote, local) {
     title.style = "margin: 0; font-size: 22px; color: #ffffff;";
 
     const desc = document.createElement("p");
-    desc.textContent = `Η έκδοση \${newVersion} είναι έτοιμη για εγκατάσταση. Θέλεις να προχωρήσεις;`;
+    desc.textContent = `Η έκδοση ${newVersion} είναι έτοιμη για εγκατάσταση. Θέλεις να προχωρήσεις;`;;
     desc.style = "margin: 0; font-size: 14px; color: #bbbbbb;";
 
     const buttons = document.createElement("div");
@@ -687,12 +687,12 @@ isNewerVersion(remote, local) {
 
     const cancel = document.createElement("button");
     cancel.textContent = "Όχι τώρα";
-    cancel.style = "padding: 10px 20px; border-radius: 8px; border: 1px solid #777; background: #181818; color: #ccc; font-weight: 500; cursor: pointer; transition: all 0.2s ease-in-out;";
+    cancel.style = `padding: 10px 20px; border-radius: 8px; border: 1px solid #888; background: #1e1e1e; color: #ddd; font-weight: 500; cursor: pointer; transition: all 0.2s ease-in-out;`;
     cancel.onclick = () => document.body.removeChild(modal);
 
     const confirm = document.createElement("button");
     confirm.textContent = "Ενημέρωση";
-    confirm.style = "padding: 10px 20px; border-radius: 8px; border: 1px solid #4caf50; background: #4caf50; color: #000; font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out;";
+    confirm.style = `padding: 10px 20px; border-radius: 8px; border: 1px solid #2e7d32; background: linear-gradient(145deg, #2e7d32, #1b5e20); color: #e0f2f1; font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.4);`;
     confirm.onclick = () => {
       document.body.removeChild(modal);
       if (this._updateInProgress) return;
@@ -746,7 +746,7 @@ try {
 			});
 	}
 	getVersion() {
-		return "5.6.5";
+		return "5.6.8";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
