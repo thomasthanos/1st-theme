@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.9
+ * @version 5.6.4
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -638,65 +638,89 @@ isNewerVersion(remote, local) {
 		return false;
 	}
 	promptUpdate(url, newVersion) {
-		const modal = document.createElement("div");
-		modal.style.position = "fixed";
-		modal.style.top = "0";
-		modal.style.left = "0";
-		modal.style.width = "100vw";
-		modal.style.height = "100vh";
-		modal.style.background = "rgba(0, 0, 0, 0.6)";
-		modal.style.display = "flex";
-		modal.style.alignItems = "center";
-		modal.style.justifyContent = "center";
-		modal.style.zIndex = "9999";
-		const box = document.createElement("div");
-		box.style.background = "#1e1e2f";
-		box.style.border = "1px solid #444";
-		box.style.borderRadius = "10px";
-		box.style.padding = "24px";
-		box.style.minWidth = "400px";
-		box.style.color = "#fff";
-		box.style.boxShadow = "0 8px 30px rgba(0,0,0,0.7)";
-		box.style.fontFamily = "Segoe UI, sans-serif";
-		const title = document.createElement("h2");
-		title.textContent = "✨ Νέα Έκδοση Διαθέσιμη";
-		title.style.marginBottom = "12px";
-		box.appendChild(title);
-		const desc = document.createElement("p");
-		desc.textContent = `Υπάρχει διαθέσιμη η έκδοση ${newVersion}. Θέλεις να κάνεις ενημέρωση τώρα;`;
-		desc.style.marginBottom = "20px";
-		box.appendChild(desc);
-		const buttons = document.createElement("div");
-		buttons.style.display = "flex";
-		buttons.style.justifyContent = "flex-end";
-		buttons.style.gap = "10px";
-		const cancel = document.createElement("button");
-		cancel.textContent = "Όχι τώρα";
-		cancel.style.padding = "8px 16px";
-		cancel.style.borderRadius = "6px";
-		cancel.style.border = "1px solid #555";
-		cancel.style.background = "#2a2a3d";
-		cancel.style.color = "#fff";
-		cancel.onclick = () => { document.body.removeChild(modal); };
-		const confirm = document.createElement("button");
-		confirm.textContent = "Ενημέρωση";
-		confirm.style.padding = "8px 16px";
-		confirm.style.borderRadius = "6px";
-		confirm.style.border = "1px solid #00bcd4";
-		confirm.style.background = "#00bcd4";
-		confirm.style.color = "#000";
-		confirm.onclick = () => {
-			document.body.removeChild(modal);
-			if (this._updateInProgress) return;
-			this._updateInProgress = true;
-			this.downloadUpdate(url);
-		};
-		buttons.appendChild(cancel);
-		buttons.appendChild(confirm);
-		box.appendChild(buttons);
-		modal.appendChild(box);
-		document.body.appendChild(modal);
-	}
+    const modal = document.createElement("div");
+    modal.style = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    `;
+
+    const box = document.createElement("div");
+    box.style = `
+      background: #181818;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 30px 32px;
+      min-width: 420px;
+      max-width: 90vw;
+      color: #e0e0e0;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      font-family: Segoe UI, sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    `;
+
+    const title = document.createElement("h2");
+    title.textContent = "✨ Νέα Έκδοση Διαθέσιμη";
+    title.style = "margin: 0; font-size: 22px; color: #ffffff;";
+
+    const desc = document.createElement("p");
+    desc.textContent = `Η έκδοση \${newVersion} είναι έτοιμη για εγκατάσταση. Θέλεις να προχωρήσεις;`;
+    desc.style = "margin: 0; font-size: 14px; color: #bbbbbb;";
+
+    const buttons = document.createElement("div");
+    buttons.style = `
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+    `;
+
+    const cancel = document.createElement("button");
+    cancel.textContent = "Όχι τώρα";
+    cancel.style = `
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #121214;
+      color: #eee;
+      font-weight: 500;
+      cursor: pointer;
+    `;
+    cancel.onclick = () => document.body.removeChild(modal);
+
+    const confirm = document.createElement("button");
+    confirm.textContent = "Ενημέρωση";
+    confirm.style = `
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #1A1A1E;
+      background: #1A1A1E;
+      color: #ffffff;
+      font-weight: 600;
+      cursor: pointer;
+    `;
+    confirm.onclick = () => {
+      document.body.removeChild(modal);
+      if (this._updateInProgress) return;
+      this._updateInProgress = true;
+      this.downloadUpdate(url);
+    };
+
+    buttons.append(cancel, confirm);
+    box.append(title, desc, buttons);
+    modal.appendChild(box);
+    document.body.appendChild(modal);
+}
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
@@ -738,7 +762,7 @@ try {
 			});
 	}
 	getVersion() {
-		return "5.6.9";
+		return "5.6.4";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
