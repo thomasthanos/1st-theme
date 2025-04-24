@@ -665,7 +665,7 @@ module.exports = class AutoReadTrash {
 
 	checkForUpdate() {
 		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
-		const currentVersion = "5.4.0"; // update this with each new version
+		const currentVersion = "5.5.0"; // update this with each new version
 
 		fetch(updateUrl)
 			.then(res => res.text())
