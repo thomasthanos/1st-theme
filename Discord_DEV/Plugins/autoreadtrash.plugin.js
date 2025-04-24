@@ -449,7 +449,7 @@ module.exports = class AutoReadTrash {
 
     checkForUpdate() {
         const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
-        const currentVersion = "5.4.8";
+        const currentVersion = "5.5.0";
         fetch(updateUrl)
             .then(res => res.text())
             .then(code => {
