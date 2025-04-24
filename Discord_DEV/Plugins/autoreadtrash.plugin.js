@@ -652,7 +652,7 @@ module.exports = class AutoReadTrash {
         updateButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
         updateButton.onmouseenter = () => updateButton.style.opacity = "0.9";
         updateButton.onmouseleave = () => updateButton.style.opacity = "1";
-        updateButton.onclick = () => 
+        updateButton.onclick = () => this.checkForUpdate(); 
 
         panel.append(updateButton);
         return panel;
