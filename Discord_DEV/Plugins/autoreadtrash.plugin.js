@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.8
+ * @version 5.6.9
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -714,7 +714,7 @@ isNewerVersion(remote, local) {
 					const path = require("path");
 					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
 					fs.writeFileSync(filePath, content, "utf8");
-					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
+					
 this._justUpdated = true;
 setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 
@@ -746,7 +746,7 @@ try {
 			});
 	}
 	getVersion() {
-		return "5.6.8";
+		return "5.6.9";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
