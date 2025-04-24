@@ -4,31 +4,28 @@
  * @description Κάνει έλεγχο και αυτόματη ενημέρωση για όλα τα προσωπικά plugins του ThomasT με πλήρες custom UI.
  * @author ThomasT
  * @authorId 706932839907852389
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/.allinone_update.plugin.js
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.allinone_update.plugin.js
- * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.allinone_update.plugin.js
+ * @website https://github.com/thomasthanos
  */
 
 module.exports = class UpdateAllMyPlugins {
     constructor() {
         this.plugins = {
-            "1BlockConsole": {
-                filename: "1BlockConsole.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/BlockConsole.plugin.js"
+            "1Combined_safe_console": {
+                filename: ".Combined_safe_console.plugin.js",
+                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js"
             },
-            "1HideFolders": {
-                filename: "1HideFolders.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/HideFolders.plugin.js"
+            "1Prezomenoi_OG": {
+                filename: ".Prezomenoi_OG.plugin.js",
+                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js"
             },
             "1Prezomenoi_OG": {
                 filename: "1Prezomenoi_OG.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/Prezomenoi_OG.plugin.js"
             },
-            "1AutoReadTrash": {
-                filename: "1autoreadtrash.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js"
-            },
-            "1DiscordChange": {
-                filename: "1discord_change.plugin.js",
+            "1FolderManager": {
+                filename: ".FolderManager.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/discord_change.plugin.js"
             }
         };

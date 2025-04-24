@@ -4,6 +4,7 @@
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/Combined_safe_console.plugin.js
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js
  * @website https://github.com/thomasthanos
  */
