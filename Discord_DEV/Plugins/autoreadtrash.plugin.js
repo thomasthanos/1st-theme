@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.7.1
+ * @version 5.7.2
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -601,63 +601,153 @@ module.exports = class AutoReadTrash {
 	log(...args) {
 		console.log("[AutoReadTrash]", ...args);
 	}
-	
-	async checkForUpdate() {
+	checkForUpdate() {
 		const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js?t=" + Date.now();
 		const currentVersion = this.getVersion();
-		try {
-			const res = await fetch(updateUrl);
-			const code = await res.text();
-			const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-			if (!remoteVersion) return;
-			if (this.isNewerVersion(remoteVersion, currentVersion)) {
+		fetch(updateUrl)
+			.then(res => res.text())
+			.then(code => {
+				const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
+				if (!remoteVersion) {
+					this.showCustomToast("⚠️ Δεν βρέθηκε απομακρυσμένη έκδοση.", "error");
+					return;
+				}
+				if (this.isNewerVersion(remoteVersion, currentVersion)) {
 				if (this._justUpdated) {
 					this._justUpdated = false;
-				} else {
-					this.promptUpdate(updateUrl, remoteVersion);
+					this.showCustomToast("✅ Είσαι ήδη ενημερωμένος!", "success");
+					return;
 				}
-			}
-		} catch (err) {
-			console.error("Update check failed:", err);
-			BdApi.showToast("❌ Σφάλμα σύνδεσης για έλεγχο ενημέρωσης.", { type: "error" });
+					this.promptUpdate(updateUrl, remoteVersion);
+				} else {
+					this.showCustomToast("🔍 Έχεις ήδη την τελευταία έκδοση (" + currentVersion + ")", "info");
+				}
+			})
+			.catch(err => {
+				console.error("Update check failed:", err);
+				BdApi.showToast("❌ Σφάλμα σύνδεσης για έλεγχο ενημέρωσης.", { type: "error" });
+			});
+};
+isNewerVersion(remote, local) {
+		const r = remote.split(".").map(n => parseInt(n));
+		const l = local.split(".").map(n => parseInt(n));
+		for (let i = 0; i < Math.max(r.length, l.length); i++) {
+			if ((r[i] || 0) > (l[i] || 0)) return true;
+			if ((r[i] || 0) < (l[i] || 0)) return false;
 		}
+		return false;
 	}
+	promptUpdate(url, newVersion) {
+    const modal = document.createElement("div");
+    modal.style = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    `;
 
+    const box = document.createElement("div");
+    box.style = `
+      background: #181818;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 30px 32px;
+      min-width: 420px;
+      max-width: 90vw;
+      color: #e0e0e0;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      font-family: Segoe UI, sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    `;
+
+    const title = document.createElement("h2");
+    title.textContent = "✨ Νέα Έκδοση Διαθέσιμη";
+    title.style = "margin: 0; font-size: 22px; color: #ffffff;";
+
+    const desc = document.createElement("p");
+    desc.textContent = `Η έκδοση ${newVersion} είναι έτοιμη για εγκατάσταση. Θέλεις να προχωρήσεις;`;;
+    desc.style = "margin: 0; font-size: 14px; color: #bbbbbb;";
+
+    const buttons = document.createElement("div");
+    buttons.style = `
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 10px;
+    `;
+
+    const cancel = document.createElement("button");
+    cancel.textContent = "Όχι τώρα";
+    cancel.style = `padding: 10px 20px; border-radius: 8px; border: 1px solid #888; background: #1e1e1e; color: #ddd; font-weight: 500; cursor: pointer; transition: all 0.2s ease-in-out;`;
+    cancel.onclick = () => document.body.removeChild(modal);
+
+    const confirm = document.createElement("button");
+    confirm.textContent = "Ενημέρωση";
+    confirm.style = `padding: 10px 20px; border-radius: 8px; border: 1px solid #2e7d32; background: linear-gradient(145deg, #2e7d32, #1b5e20); color: #e0f2f1; font-weight: 600; cursor: pointer; transition: all 0.2s ease-in-out; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6), 0 3px 6px rgba(0, 0, 0, 0.4);`;
+    confirm.onclick = () => {
+      document.body.removeChild(modal);
+      if (this._updateInProgress) return;
+      this._updateInProgress = true;
+      this.downloadUpdate(url);
+    };
+
+    buttons.append(cancel, confirm);
+    box.append(title, desc, buttons);
+    modal.appendChild(box);
+    document.body.appendChild(modal);
+}
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
 			.then(content => {
-				const fs = require("fs");
-				const path = require("path");
-				const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
-				fs.writeFileSync(filePath, content, "utf8");
-				this._justUpdated = true;
-				setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
 				try {
-					const btns = document.querySelectorAll("button");
-					for (const btn of btns) {
-						if (btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
-							btn.disabled = true;
-							btn.style.cursor = "not-allowed";
-							btn.textContent = "Ενημερώθηκε!";
-						}
-					}
-					const ModalStack = BdApi.findModuleByProps("push", "pop", "popWithKey");
-					ModalStack?.pop();
-				} catch (e) {
-					console.warn("❌ ModalStack pop failed:", e);
+					const fs = require("fs");
+					const path = require("path");
+					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
+					fs.writeFileSync(filePath, content, "utf8");
+					
+this._justUpdated = true;
+setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
+
+// Προσπάθησε να απενεργοποιήσεις το κουμπί ενημέρωσης
+try {
+    const btns = document.querySelectorAll("button");
+    for (const btn of btns) {
+        if (btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+            btn.textContent = "Ενημερώθηκε!";
+        }
+    }
+
+    // Κλείσε το modal των settings για να γίνει force reload
+    const ModalStack = BdApi.findModuleByProps("push", "pop", "popWithKey");
+    ModalStack?.pop();
+} catch (e) {
+    console.warn("❌ ModalStack pop failed:", e);
+}
+
+				} catch (err) {
+					console.error("Update failed:", err);
+					this.showCustomToast("❌ Αποτυχία ενημέρωσης.", "error");
 				}
 			})
-			.catch(err => {
-				console.error("Update failed:", err);
-				BdApi.showToast("❌ Η ενημέρωση απέτυχε.", { type: "error" });
+			.catch(() => {
+				this.showCustomToast("❌ Αποτυχία σύνδεσης για ενημέρωση.", "error");
 			});
 	}
-
 	getVersion() {
-		return "5.7.1";
+		return "5.7.2";
 	}
-
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
 		toast.textContent = text;
