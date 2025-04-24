@@ -1,6 +1,6 @@
 /**
  * @name AutoReadTrash
- * @version 5.6.0
+ * @version 5.6.1
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -707,27 +707,27 @@ isNewerVersion(remote, local) {
 					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
 					fs.writeFileSync(filePath, content, "utf8");
 					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
-					this._justUpdated = true;
-					
-					// Προσπάθησε να απενεργοποιήσεις το κουμπί
-					const btn = document.querySelector("button");
-					if (btn && btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
-						btn.disabled = true;
-						btn.style.cursor = "not-allowed";
-						btn.textContent = "Ενημερώθηκε!";
-					}
-					
-					// Κλείσε το modal panel με ModalStack (αν υπάρχει)
-					try {
-						const ModalStack = BdApi.findModuleByProps("push", "pop", "popWithKey");
-						ModalStack?.pop();
-					} catch (e) {
-						console.warn("Δεν βρέθηκε ModalStack για επανεκκίνηση panel:", e);
-					}
-					
-					// Reload το plugin
-					setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
-					
+this._justUpdated = true;
+setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
+
+// Προσπάθησε να απενεργοποιήσεις το κουμπί ενημέρωσης
+try {
+    const btns = document.querySelectorAll("button");
+    for (const btn of btns) {
+        if (btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+            btn.textContent = "Ενημερώθηκε!";
+        }
+    }
+
+    // Κλείσε το modal των settings για να γίνει force reload
+    const ModalStack = BdApi.findModuleByProps("push", "pop", "popWithKey");
+    ModalStack?.pop();
+} catch (e) {
+    console.warn("❌ ModalStack pop failed:", e);
+}
+
 				} catch (err) {
 					console.error("Update failed:", err);
 					this.showCustomToast("❌ Αποτυχία ενημέρωσης.", "error");
@@ -738,7 +738,7 @@ isNewerVersion(remote, local) {
 			});
 	}
 	getVersion() {
-		return "5.6.0";
+		return "5.6.1";
 	}
 	showCustomToast(text, type = "info") {
 		const toast = document.createElement("div");
