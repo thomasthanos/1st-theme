@@ -652,7 +652,7 @@ module.exports = class AutoReadTrash {
         updateButton.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
         updateButton.onmouseenter = () => updateButton.style.opacity = "0.9";
         updateButton.onmouseleave = () => updateButton.style.opacity = "1";
-        updateButton.onclick = () => this.checkForUpdate();
+        updateButton.onclick = () => 
 
         panel.append(updateButton);
         return panel;
@@ -700,6 +700,7 @@ module.exports = class AutoReadTrash {
 		});
 	}
 
+	
 	downloadUpdate(url) {
 		fetch(url)
 			.then(res => res.text())
@@ -710,10 +711,9 @@ module.exports = class AutoReadTrash {
 					if (err) {
 						BdApi.showToast("Αποτυχία ενημέρωσης.", { type: "error" });
 					} else {
-						BdApi.showToast("Ενημερώθηκε! Κάνε reload το plugin.", { type: "success" });
+						BdApi.showToast("Ενημερώθηκε! Κάνε reload το plugin (Ctrl+R).", { type: "success" });
 					}
 				});
 			});
 	}
-
 };
