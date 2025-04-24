@@ -1,6 +1,6 @@
 /**
- * @name AutoReadTrash
- * @version 5.7.2
+ * @name 1AutoReadTrash
+ * @version 5.7.4
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -9,6 +9,7 @@
  * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js
  * @website https://github.com/thomasthanos
  */
+
 module.exports = class AutoReadTrash {
 	defaultSettings = {
 		folderIds: "guildsnav___2512556488",

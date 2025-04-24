@@ -1,7 +1,13 @@
 /**
- * @name DiscordLinkSafe
- * @description Replaces Discord invite links with a safe label and highlights expired invites.
- * @version 1.4.0
+ * @name 1discord_change
+ * @version 1.7.4
+ * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
+ * @author ThomasT
+ * @authorId 706932839907852389
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/discord_change.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/discord_change.plugin.js
+ * @downloadUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/discord_change.plugin.js
+ * @website https://github.com/thomasthanos
  */
 
 module.exports = class DiscordLinkSafe {
