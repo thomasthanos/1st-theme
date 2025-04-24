@@ -1,6 +1,6 @@
 /**
  * @name 1Prezomenoi_OG
- * @version 6.0.1
+ * @version 6.0.3
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
