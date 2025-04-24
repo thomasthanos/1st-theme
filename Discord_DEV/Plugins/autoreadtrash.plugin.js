@@ -707,16 +707,27 @@ isNewerVersion(remote, local) {
 					const filePath = path.join(BdApi.Plugins.folder, "autoreadtrash.plugin.js");
 					fs.writeFileSync(filePath, content, "utf8");
 					this.showCustomToast("✅ Ενημερώθηκε! Γίνεται αυτόματη επανεκκίνηση...", "success");
-this._justUpdated = true;
-setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
-setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
-// Try disabling update button if still in the DOM
-const btn = document.querySelector("button");
-if (btn && btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
-    btn.disabled = true;
-    btn.style.cursor = "not-allowed";
-    btn.textContent = "Ενημερώθηκε!";
-}
+					this._justUpdated = true;
+					
+					// Προσπάθησε να απενεργοποιήσεις το κουμπί
+					const btn = document.querySelector("button");
+					if (btn && btn.textContent.includes("Έλεγχος για νέα έκδοση")) {
+						btn.disabled = true;
+						btn.style.cursor = "not-allowed";
+						btn.textContent = "Ενημερώθηκε!";
+					}
+					
+					// Κλείσε το modal panel με ModalStack (αν υπάρχει)
+					try {
+						const ModalStack = BdApi.findModuleByProps("push", "pop", "popWithKey");
+						ModalStack?.pop();
+					} catch (e) {
+						console.warn("Δεν βρέθηκε ModalStack για επανεκκίνηση panel:", e);
+					}
+					
+					// Reload το plugin
+					setTimeout(() => BdApi.Plugins.reload("AutoReadTrash"), 1000);
+					
 				} catch (err) {
 					console.error("Update failed:", err);
 					this.showCustomToast("❌ Αποτυχία ενημέρωσης.", "error");
