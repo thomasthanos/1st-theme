@@ -13,19 +13,18 @@ module.exports = class FolderManager {
     defaultSettings = {
         autoReadTrash: {
             enabled: true,
-            folderIds: "", // Changed to empty string
+            folderIds: "",
             intervalMinutes: 15,
             showCountdown: true
         },
         hideFolders: {
             enabled: true,
-            folderIds: "" // Already empty, kept for clarity
+            folderIds: ""
         }
     };
 
     constructor() {
         this.initializeSettings();
-        // AutoReadTrash properties
         this._notificationQueue = [];
         this._isShowingNotification = false;
         this._isRunning = false;
@@ -39,25 +38,19 @@ module.exports = class FolderManager {
         this.observer = null;
     }
 
-    // Initialize settings and ensure they are saved
     initializeSettings() {
-        // Load existing settings or use default if none exist
         let loadedSettings = BdApi.loadData("FolderManager", "settings");
         if (!loadedSettings) {
-            // If no settings exist, initialize with default and save
             this.log("No settings found, initializing with defaults...");
             this.settings = Object.assign({}, this.defaultSettings);
             this.saveSettings();
         } else {
-            // Merge loaded settings with defaults to ensure all keys exist
             this.settings = Object.assign({}, this.defaultSettings, loadedSettings);
             this.log("Settings loaded:", this.settings);
-            // Ensure the loaded settings are saved back to disk to confirm file creation
             this.saveSettings();
         }
     }
 
-    // Helper method to save settings and log the action
     saveSettings() {
         try {
             BdApi.saveData("FolderManager", "settings", this.settings);
@@ -81,9 +74,76 @@ module.exports = class FolderManager {
     }
 
     start() {
+        this.retryCount = 0;
+        this.tryAutoRead();
         if (this.settings.autoReadTrash.enabled) this.startAutoReadTrash();
         if (this.settings.hideFolders.enabled) this.startHideFolders();
         this.injectIcon();
+    }
+
+    async tryAutoRead() {
+        const success = await this.doAutoRead?.();
+        if (!success && this.retryCount < 5) {
+            this.retryCount++;
+            setTimeout(() => this.tryAutoRead(), 2000);
+        }
+    }
+
+    async doAutoRead() {
+        const raw = this.settings?.autoReadTrash?.folderIds || "";
+        const ids = raw.split(",").map(id => id.trim()).filter(Boolean);
+        if (!ids.length) {
+            this.log("❌ Δεν έχουν οριστεί folder IDs.");
+            return false;
+        }
+
+        const folders = [...document.querySelectorAll('div[role="treeitem"]')].filter(el => {
+            const id = el.getAttribute("data-list-item-id");
+            return ids.includes(id);
+        });
+
+        if (!folders.length) {
+            this.log("❌ Δεν βρέθηκαν φακέλοι:", ids);
+            return false;
+        }
+
+        let successfulReads = 0;
+        for (const [index, folder] of folders.entries()) {
+            try {
+                await new Promise(resolve => {
+                    const existingMenu = document.querySelector('[class*="contextMenu"]');
+                    if (existingMenu) existingMenu.style.display = "none";
+
+                    folder.dispatchEvent(new MouseEvent("contextmenu", {
+                        bubbles: true,
+                        cancelable: true,
+                        clientX: -9999,
+                        clientY: -9999
+                    }));
+
+                    setTimeout(async () => {
+                        const btn = document.querySelector('#guild-context-mark-folder-read');
+                        if (btn && btn.getAttribute("aria-disabled") !== "true") {
+                            btn.click();
+                            successfulReads++;
+                            this.log(`📬 Φάκελος ${folder.getAttribute("data-list-item-id")} μαρκαρίστηκε ως αναγνωσμένος`);
+                        } else {
+                            this.log(`⚠️ Το κουμπί mark-folder-read δεν βρέθηκε ή είναι απενεργοποιημένο για φάκελο ${folder.getAttribute("data-list-item-id")}`);
+                        }
+                        const menu = document.querySelector('[class*="contextMenu"]');
+                        if (menu) menu.style.display = "none";
+                        resolve();
+                    }, 250);
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+            } catch (error) {
+                this.log(`❌ Σφάλμα κατά το read του φακέλου ${folder.getAttribute("data-list-item-id")}:`, error.message);
+            }
+        }
+
+        this.log(`📁 Καθαρίστηκαν ${successfulReads} από ${folders.length} φάκελοι`);
+        this.queueNotification(successfulReads);
+        return successfulReads > 0;
     }
 
     stop() {
@@ -98,14 +158,19 @@ module.exports = class FolderManager {
 
     // --- AutoReadTrash Functionality ---
 
-    startAutoReadTrash() {
+    async startAutoReadTrash() {
         this._lastRun = Date.now();
         this.injectStyles();
-        this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]').then(() => {
-            this.debounceStartInterval();
-            this.startCountdown();
+        try {
+            await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+            setTimeout(() => this.runAutoReadTrash(), 2000);
+            this.startInterval();
+dog
+            if (this.settings.autoReadTrash.showCountdown) this.startCountdown();
             this.startUICheck();
-        }).catch(error => this.log("❌ Failed to find guilds wrapper:", error.message));
+        } catch (error) {
+            this.log("❌ Failed to find guilds wrapper:", error.message);
+        }
     }
 
     stopAutoReadTrash() {
@@ -153,10 +218,14 @@ module.exports = class FolderManager {
 
     startInterval() {
         this.clearInterval();
-        if (!this._isRunning) this.runAutoReadTrash();
-        this.interval = setInterval(() => {
-            if (!this._isRunning) this.runAutoReadTrash();
-        }, this.settings.autoReadTrash.intervalMinutes * 60 * 1000);
+        if (!this._isRunning) {
+            this.runAutoReadTrash();
+        }
+        if (!this.interval) {
+            this.interval = setInterval(() => {
+                if (!this._isRunning) this.runAutoReadTrash();
+            }, this.settings.autoReadTrash.intervalMinutes * 60 * 1000);
+        }
     }
 
     clearInterval() {
@@ -167,58 +236,23 @@ module.exports = class FolderManager {
     }
 
     async runAutoReadTrash() {
-        if (this._isRunning) return;
+        if (this._isRunning) {
+            this.log("⏳ AutoReadTrash ήδη σε εξέλιξη, παραλείπεται...");
+            return;
+        }
         this._isRunning = true;
         try {
-            const ids = this.settings.autoReadTrash.folderIds.split(",").map(id => id.trim()).filter(Boolean);
-            const items = await Promise.all(
-                ids.map(async id => {
-                    try {
-                        return await this.waitForElement(`[data-list-item-id="${id}"]`, 5000);
-                    } catch (error) {
-                        this.log(`❌ Failed to find folder with ID ${id}:`, error.message);
-                        return null;
-                    }
-                })
-            ).then(results => results.filter(Boolean));
-            if (!items.length) {
-                this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
-                this.queueNotification(0);
-                return;
+            const success = await this.doAutoRead();
+            if (success) {
+                this._lastRun = Date.now();
+                this.queueNotification(document.querySelectorAll('[data-list-item-id]').length);
+                this.startCountdown();
+            } else {
+                this.log("❌ Αποτυχία εκτέλεσης AutoReadTrash, θα γίνει retry...");
+                this.tryAutoRead();
             }
-            let successfulReads = 0;
-            // Pair each folder with its corresponding ID using the index
-            for (const [index, folder] of items.entries()) {
-                const id = ids[index]; // Get the corresponding ID using the index
-                await new Promise(resolve => {
-                    const existingMenu = document.querySelector('[class*="contextMenu"]');
-                    if (existingMenu) existingMenu.style.display = "none";
-                    setTimeout(() => {
-                        folder.dispatchEvent(new MouseEvent("contextmenu", {
-                            bubbles: true,
-                            cancelable: true,
-                            clientX: -9999,
-                            clientY: -9999
-                        }));
-                        setTimeout(() => {
-                            const btn = document.querySelector('#guild-context-mark-folder-read');
-                            if (btn) {
-                                if (btn.getAttribute("aria-disabled") !== "true") {
-                                    btn.click();
-                                    successfulReads++;
-                                    this.log(`📬 Φάκελος ${id} μαρκαρίστηκε ως αναγνωσμένος`);
-                                }
-                            }
-                            const menu = document.querySelector('[class*="contextMenu"]');
-                            if (menu) menu.style.display = "none";
-                            resolve();
-                        }, 250);
-                    }, index * 500);
-                });
-            }
-            this.queueNotification(successfulReads);
-            this._lastRun = Date.now();
-            this.updateCountdownUI?.();
+        } catch (error) {
+            this.log("❌ Σφάλμα στο AutoReadTrash:", error.message);
         } finally {
             this._isRunning = false;
         }
@@ -463,7 +497,6 @@ module.exports = class FolderManager {
         el.style.maxWidth = '48px';
         el.style.margin = '0 auto';
         el.style.right = '0';
-        // Create the structure once with a span for the time
         el.innerHTML = `
             <div class="art-countdown-title">
                 <div class="art-countdown-next">next</div>
@@ -478,13 +511,21 @@ module.exports = class FolderManager {
         const el = document.querySelector('.art-countdown');
         if (!el) return;
         const timerText = el.querySelector('.timer-text');
-        if (!timerText) return; // Ensure the timer text element exists
+        if (!timerText) return;
+
         const now = Date.now();
         const next = (this._lastRun || now) + this.settings.autoReadTrash.intervalMinutes * 60 * 1000;
         const diff = Math.max(0, Math.floor((next - now) / 1000));
+
+        if (diff <= 0) {
+            this.stopCountdown();
+            this.runAutoReadTrash();
+            return;
+        }
+
         const mins = Math.floor(diff / 60);
         const secs = diff % 60;
-        timerText.textContent = `${mins}' ${secs}"`; // Update only the text content
+        timerText.textContent = `${mins}' ${secs}"`;
     }
 
     // --- HideFolders Functionality ---
@@ -651,7 +692,7 @@ module.exports = class FolderManager {
             }
             .fm-section-content.expanded {
                 padding: 20px;
-                max-height: 500px; /* Adjust as needed */
+                max-height: 500px;
                 opacity: 1;
             }
             .custom-input, .custom-textarea {
@@ -738,12 +779,6 @@ module.exports = class FolderManager {
                 box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
                 margin: 10px auto;
                 display: block;
-            }
-            .custom-clear-button:hover {
-                background: linear-gradient(145deg, rgba(255, 85, 85, 0.4), rgba(204, 0, 0, 0.4));
-                transform: translateY(-2px);
-                box-shadow: 0 0 25px rgba(255, 85, 85, 0.8);
-            }
         `;
         document.head.appendChild(styleSheet);
         modalContent.appendChild(title);
