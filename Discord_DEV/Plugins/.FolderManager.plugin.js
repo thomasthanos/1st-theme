@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 11.0.8
+ * @version 11.0.9
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -44,7 +44,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "11.0.8";
+        return "11.0.9";
     }
 
     log(...args) {
@@ -120,12 +120,16 @@ module.exports = class FolderManager {
     }
 
     start() {
+        setTimeout(() => this._startPlugin(), 20000);
+    }
+
+    _startPlugin() {
         this._subscribedToContextClose = false;
-        this.injectIcon();
+                this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
-            this.startAutoReadTrash();
+                    this.startAutoReadTrash();
         }
-        if (this.settings.hideFolders.enabled) this.startHideFolders();
+        if (this.settings.hideFolders.enabled)         this.startHideFolders();
     }
 
     
@@ -608,8 +612,10 @@ module.exports = class FolderManager {
         if (!timerText) return;
 
         const now = Date.now();
-        const next = (this._lastRun || now) + this.settings.autoReadTrash.intervalMinutes * 60 * 1000;
-        const diff = Math.max(0, Math.floor((next - now) / 1000));
+        this._nextCountdownTarget = (this._lastRun || now) + this.settings.autoReadTrash.intervalMinutes * 60 * 1000;
+        const next = this._nextCountdownTarget;
+        if (!this._nextCountdownTarget || isNaN(this._nextCountdownTarget)) return;
+        const diff = Math.max(0, Math.floor((this._nextCountdownTarget - Date.now()) / 1000));
         if (!timerText._lastValue || timerText._lastValue !== diff) {
             timerText._lastValue = diff;
         } else {
@@ -1048,7 +1054,7 @@ module.exports = class FolderManager {
             hfToggleButton.className = `custom-toggle-button ${this.settings.hideFolders.enabled ? "" : "off"}`;
             hfToggleButton.textContent = this.settings.hideFolders.enabled ? "Ενεργό" : "Ανενεργό";
             if (this.settings.hideFolders.enabled) {
-                this.startHideFolders();
+                        this.startHideFolders();
             } else {
                 this.stopHideFolders();
             }
