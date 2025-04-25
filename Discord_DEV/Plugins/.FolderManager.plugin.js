@@ -12,13 +12,13 @@
 module.exports = class FolderManager {
     defaultSettings = {
         autoReadTrash: {
-            enabled: true,
+            enabled: false,
             folderIds: "",
-            intervalMinutes: 15,
-            showCountdown: true
+            intervalMinutes: 20,
+            showCountdown: false
         },
         hideFolders: {
-            enabled: true,
+            enabled: false,
             folderIds: ""
         },
         lastRun: 0
