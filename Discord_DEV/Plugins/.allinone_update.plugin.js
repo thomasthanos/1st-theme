@@ -1,6 +1,6 @@
 /**
- * @name .UpdateAllMyPlugins
- * @version 2.5.3
+ * @name UpdateAllMyPlugins
+ * @version 2.5.4
  * @description Κάνει έλεγχο και αυτόματη ενημέρωση για όλα τα προσωπικά plugins του ThomasT με πλήρες custom UI.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -12,15 +12,15 @@
 module.exports = class UpdateAllMyPlugins {
     constructor() {
         this.plugins = {
-            "1Combined_safe_console": {
+            "Combined_safe_console": {
                 filename: ".Combined_safe_console.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js"
             },
-            "1Prezomenoi_OG": {
+            "Prezomenoi_OG": {
                 filename: ".Prezomenoi_OG.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js"
             },
-            "1FolderManager": {
+            "FolderManager": {
                 filename: ".FolderManager.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js"
             }

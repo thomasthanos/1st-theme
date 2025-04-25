@@ -1,6 +1,6 @@
 /**
- * @name .Prezomenoi_OG
- * @version 6.0.3
+ * @name Prezomenoi_OG
+ * @version 6.0.4
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -429,7 +429,7 @@ module.exports = class RenameChannel {
         let pluginCard = null;
         pluginCards.forEach(card => {
             const titleElement = card.querySelector('[class*="bd-addon-header"]');
-            if (titleElement && titleElement.textContent.includes("1Prezomenoi_OG")) {
+            if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
                 pluginCard = card;
             }
         });
@@ -442,7 +442,7 @@ module.exports = class RenameChannel {
                 }
             }
         } else {
-            console.warn("[Prezomenoi_OG] 1Prezomenoi_OG plugin card not found");
+            console.warn("[Prezomenoi_OG] Prezomenoi_OG plugin card not found");
         }
 
         // Fallback interval to check every 500ms if the icon is missing
@@ -451,7 +451,7 @@ module.exports = class RenameChannel {
             let pluginCard = null;
             pluginCards.forEach(card => {
                 const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("1Prezomenoi_OG")) {
+                if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
                     pluginCard = card;
                 }
             });
@@ -481,7 +481,7 @@ module.exports = class RenameChannel {
             let pluginCard = null;
             pluginCards.forEach(card => {
                 const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("1Prezomenoi_OG")) {
+                if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
                     pluginCard = card;
                 }
             });
@@ -921,15 +921,15 @@ module.exports = class RenameChannel {
 
     downloadUpdate(plugin, code) {
         try {
-            BdApi.Plugins.disable("1Prezomenoi_OG");
+            BdApi.Plugins.disable("Prezomenoi_OG");
             const fs = require("fs");
             const path = require("path");
             const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
             fs.writeFileSync(filePath, code, "utf8");
             this._justUpdated = true;
-            setTimeout(() => BdApi.Plugins.reload("1Prezomenoi_OG"), 1000);
+            setTimeout(() => BdApi.Plugins.reload("Prezomenoi_OG"), 1000);
         } catch (err) {
-            BdApi.showToast(`Αποτυχία ενημέρωσης του 1Prezomenoi_OG: ${err.message}`, { type: "error" });
+            BdApi.showToast(`Αποτυχία ενημέρωσης του Prezomenoi_OG: ${err.message}`, { type: "error" });
             throw err;
         }
     }
