@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 11.0.9
+ * @version 12.0.0
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -78,7 +78,6 @@ module.exports = class FolderManager {
             this._isSaving = true;
             try {
                 BdApi.saveData("FolderManager", "settings", this.settings);
-                this.log("✅ Settings saved successfully:", JSON.stringify(this.settings));
             } catch (error) {
                 this.log("❌ Error saving settings:", error.message, error.stack);
             } finally {
