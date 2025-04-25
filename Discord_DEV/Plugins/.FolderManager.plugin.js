@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 10.0.5
+ * @version 11.0.8
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -44,7 +44,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "10.0.5";
+        return "11.0.8";
     }
 
     log(...args) {
@@ -120,6 +120,7 @@ module.exports = class FolderManager {
     }
 
     start() {
+        this._subscribedToContextClose = false;
         this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
             this.startAutoReadTrash();
@@ -1267,7 +1268,7 @@ module.exports = class FolderManager {
         if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
 
         const pluginName = "FolderManager";
-        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js?t=" + Date.now();
+        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js";
         const filename = ".FolderManager.plugin.js";
 
         try {
@@ -1359,7 +1360,7 @@ module.exports = class FolderManager {
             msg.style.animation = "terminalText 0.5s ease forwards";
             results.appendChild(msg);
         }
-        this.showCustomToast("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
+        this.showCustomToast2("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
     }
 
     isNewerVersion(remote, local) {
@@ -1519,7 +1520,7 @@ module.exports = class FolderManager {
 
     // --- Utility Methods ---
 
-    showCustomToast(text, type = "info") {
+    showCustomToast2(text, type = "info") {
         // Έλεγχος αν υπάρχει ήδη toast για να αποφευχθεί το spam
         const existingToast = document.querySelector('.fm-toast');
         if (existingToast) existingToast.remove();
