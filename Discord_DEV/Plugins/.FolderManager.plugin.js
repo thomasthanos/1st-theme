@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 3.0.8
+ * @version 10.0.0
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
