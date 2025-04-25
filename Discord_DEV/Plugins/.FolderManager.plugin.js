@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 10.0.0
+ * @version 10.0.1
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -44,7 +44,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "3.0.8";
+        return "10.0.1";
     }
 
     log(...args) {
