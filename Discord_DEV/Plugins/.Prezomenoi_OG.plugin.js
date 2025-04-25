@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 6.0.4
+ * @version 6.0.5
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -459,7 +459,6 @@ module.exports = class RenameChannel {
             if (pluginCard) {
                 const controls = pluginCard.querySelector('[class*="bd-controls"]');
                 if (controls && !controls.querySelector('[aria-label="Plugin Updater"]')) {
-                    console.log("[Prezomenoi_OG] Icon missing, re-injecting via interval...");
                     this.createAndInjectIcon(controls);
                 }
             }

@@ -1,6 +1,6 @@
 /**
  * @name UpdateAllMyPlugins
- * @version 2.5.4
+ * @version 2.5.5
  * @description Κάνει έλεγχο και αυτόματη ενημέρωση για όλα τα προσωπικά plugins του ThomasT με πλήρες custom UI.
  * @author ThomasT
  * @authorId 706932839907852389
