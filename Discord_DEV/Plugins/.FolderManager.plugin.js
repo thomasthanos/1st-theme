@@ -1268,7 +1268,7 @@ module.exports = class FolderManager {
 
         const pluginName = "FolderManager";
         const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js?t=" + Date.now();
-        const filename = "FolderManager.plugin.js";
+        const filename = ".FolderManager.plugin.js";
 
         try {
             const localPlugin = BdApi.Plugins.get(pluginName);
