@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 3.0.5
+ * @version 4.0.6
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -33,6 +33,8 @@ module.exports = class FolderManager {
         this._uiCheckInterval = null;
         this._updateInProgress = false;
         this._justUpdated = false;
+        this._pendingReads = 0;
+        this._notificationTimeout = null;
         this.modal = null;
         this.iconButton = null;
         this.observer = null;
@@ -60,6 +62,25 @@ module.exports = class FolderManager {
         }
     }
 
+    async retryUICreation() {
+        try {
+            const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 5000);
+            if (!document.querySelector('.art-countdown') && this.settings.autoReadTrash.showCountdown) {
+                await this.createCountdownUI();
+                this.log("✅ Countdown UI δημιουργήθηκε επιτυχώς");
+            }
+            if (!document.querySelector('.art-wrapper') && this._notificationQueue.length > 0) {
+                this.wrapper3d = null;
+                this.processNotificationQueue();
+                this.log("✅ Notification UI δημιουργήθηκε επιτυχώς");
+            }
+            return true;
+        } catch (error) {
+            this.log("❌ Αποτυχία δημιουργίας UI:", error.message);
+            return false;
+        }
+    }
+
     waitForElement(selector, timeout = 10000) {
         return new Promise((resolve, reject) => {
             const startTime = Date.now();
@@ -74,19 +95,11 @@ module.exports = class FolderManager {
     }
 
     start() {
-        this.retryCount = 0;
-        this.tryAutoRead();
-        if (this.settings.autoReadTrash.enabled) this.startAutoReadTrash();
-        if (this.settings.hideFolders.enabled) this.startHideFolders();
         this.injectIcon();
-    }
-
-    async tryAutoRead() {
-        const success = await this.doAutoRead?.();
-        if (!success && this.retryCount < 5) {
-            this.retryCount++;
-            setTimeout(() => this.tryAutoRead(), 2000);
+        if (this.settings.autoReadTrash.enabled) {
+            this.startAutoReadTrash();
         }
+        if (this.settings.hideFolders.enabled) this.startHideFolders();
     }
 
     async doAutoRead() {
@@ -97,23 +110,27 @@ module.exports = class FolderManager {
             return false;
         }
 
-        const folders = [...document.querySelectorAll('div[role="treeitem"]')].filter(el => {
+        const folders = [...document.querySelectorAll('div[data-list-item-id]')].filter(el => {
             const id = el.getAttribute("data-list-item-id");
-            return ids.includes(id);
+            return ids.includes(id) && el.closest('.wrapper_cc5dd2');
         });
 
         if (!folders.length) {
-            this.log("❌ Δεν βρέθηκαν φακέλοι:", ids);
+            this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
             return false;
         }
 
         let successfulReads = 0;
-        for (const [index, folder] of folders.entries()) {
+        for (const folder of folders) {
             try {
-                await new Promise(resolve => {
+                await new Promise((resolve, reject) => {
                     const existingMenu = document.querySelector('[class*="contextMenu"]');
-                    if (existingMenu) existingMenu.style.display = "none";
+                    if (existingMenu) {
+                        this.log(`🧹 Καθαρισμός υπάρχοντος context menu για φάκελο ${folder.getAttribute("data-list-item-id")}`);
+                        existingMenu.remove();
+                    }
 
+                    this.log(`🖱️ Ανοίγουμε context menu για φάκελο ${folder.getAttribute("data-list-item-id")}`);
                     folder.dispatchEvent(new MouseEvent("contextmenu", {
                         bubbles: true,
                         cancelable: true,
@@ -121,21 +138,36 @@ module.exports = class FolderManager {
                         clientY: -9999
                     }));
 
-                    setTimeout(async () => {
+                    let attempts = 0;
+                    const maxAttempts = 5;
+                    const checkMenu = () => {
                         const btn = document.querySelector('#guild-context-mark-folder-read');
                         if (btn && btn.getAttribute("aria-disabled") !== "true") {
+                            this.log(`✅ Βρέθηκε κουμπί mark-folder-read για φάκελο ${folder.getAttribute("data-list-item-id")}`);
                             btn.click();
                             successfulReads++;
                             this.log(`📬 Φάκελος ${folder.getAttribute("data-list-item-id")} μαρκαρίστηκε ως αναγνωσμένος`);
+                            const menu = document.querySelector('[class*="contextMenu"]');
+                            if (menu) {
+                                this.log(`🧹 Καθαρισμός context menu μετά το κλικ για φάκελο ${folder.getAttribute("data-list-item-id")}`);
+                                menu.remove();
+                            }
+                            resolve();
                         } else {
-                            this.log(`⚠️ Το κουμπί mark-folder-read δεν βρέθηκε ή είναι απενεργοποιημένο για φάκελο ${folder.getAttribute("data-list-item-id")}`);
+                            attempts++;
+                            if (attempts >= maxAttempts) {
+                                this.log(`❌ Το κουμπί mark-folder-read δεν βρέθηκε ή είναι απενεργοποιημένο για φάκελο ${folder.getAttribute("data-list-item-id")} μετά από ${maxAttempts} προσπάθειες`);
+                                reject(new Error(`Failed to find mark-folder-read button for folder ${folder.getAttribute("data-list-item-id")}`));
+                            } else {
+                                this.log(`⏳ Αναμονή για το κουμπί mark-folder-read (προσπάθεια ${attempts}/${maxAttempts}) για φάκελο ${folder.getAttribute("data-list-item-id")}`);
+                                setTimeout(checkMenu, 500);
+                            }
                         }
-                        const menu = document.querySelector('[class*="contextMenu"]');
-                        if (menu) menu.style.display = "none";
-                        resolve();
-                    }, 250);
+                    };
+
+                    setTimeout(checkMenu, 1000);
                 });
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 1500));
             } catch (error) {
                 this.log(`❌ Σφάλμα κατά το read του φακέλου ${folder.getAttribute("data-list-item-id")}:`, error.message);
             }
@@ -162,14 +194,16 @@ module.exports = class FolderManager {
         this._lastRun = Date.now();
         this.injectStyles();
         try {
-            await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+            await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 15000);
             setTimeout(() => this.runAutoReadTrash(), 2000);
             this.startInterval();
-dog
-            if (this.settings.autoReadTrash.showCountdown) this.startCountdown();
+            if (this.settings.autoReadTrash.showCountdown) {
+                await this.retryUICreation();
+                this.startCountdown();
+            }
             this.startUICheck();
         } catch (error) {
-            this.log("❌ Failed to find guilds wrapper:", error.message);
+            this.log("❌ Αποτυχία εύρεσης guilds wrapper:", error.message);
         }
     }
 
@@ -185,16 +219,10 @@ dog
     startUICheck() {
         if (this._uiCheckInterval) return;
         this._uiCheckInterval = setInterval(() => {
-            const guildsWrapper = document.querySelector('[class="wrapper_ef3116 guilds_c48ade"]');
-            if (!guildsWrapper) return;
-            if (!document.querySelector('.art-countdown') && this.settings.autoReadTrash.showCountdown) {
-                this.createCountdownUI().catch(error => this.log("❌ Error re-adding countdown:", error.message));
-            }
-            if (!document.querySelector('.art-wrapper') && this._notificationQueue.length > 0) {
-                this.wrapper3d = null;
-                this.processNotificationQueue();
-            }
-        }, 2000);
+            this.retryUICreation().catch(error => 
+                this.log("❌ Σφάλμα κατά την επανάληψη δημιουργίας UI:", error.message)
+            );
+        }, 5000);
     }
 
     stopUICheck() {
@@ -245,11 +273,9 @@ dog
             const success = await this.doAutoRead();
             if (success) {
                 this._lastRun = Date.now();
-                this.queueNotification(document.querySelectorAll('[data-list-item-id]').length);
                 this.startCountdown();
             } else {
-                this.log("❌ Αποτυχία εκτέλεσης AutoReadTrash, θα γίνει retry...");
-                this.tryAutoRead();
+                this.log("❌ Αποτυχία εκτέλεσης AutoReadTrash");
             }
         } catch (error) {
             this.log("❌ Σφάλμα στο AutoReadTrash:", error.message);
@@ -259,14 +285,27 @@ dog
     }
 
     queueNotification(successfulReads) {
-        if (this._notificationQueue.length < 3) this._notificationQueue.push(successfulReads);
-        if (!this._isShowingNotification) this.processNotificationQueue();
+        if (successfulReads <= 0) {
+            this.log("⏩ Παράλειψη notification για 0 reads");
+            return;
+        }
+
+        if (!this._pendingReads) this._pendingReads = 0;
+        this._pendingReads += successfulReads;
+
+        if (this._notificationTimeout) clearTimeout(this._notificationTimeout);
+        this._notificationTimeout = setTimeout(() => {
+            this._notificationQueue.push(this._pendingReads);
+            this._pendingReads = 0;
+            if (!this._isShowingNotification) this.processNotificationQueue();
+        }, 1000);
     }
 
     processNotificationQueue() {
         if (!this._notificationQueue.length || this._isShowingNotification) return;
         this._isShowingNotification = true;
-        const successfulReads = this._notificationQueue.shift();
+        const successfulReads = this._notificationQueue.reduce((sum, reads) => sum + reads, 0);
+        this._notificationQueue = [];
         this.showDiscordNotification(successfulReads);
     }
 
@@ -486,7 +525,11 @@ dog
             this.log("❌ Guilds wrapper not found for countdown");
             throw new Error("Guilds wrapper not found");
         }
-        if (document.querySelector('.art-countdown')) return;
+        let existingCountdown = document.querySelector('.art-countdown');
+        if (existingCountdown) {
+            this.log("ℹ️ Countdown UI υπάρχει ήδη, παραλείπεται η δημιουργία");
+            return;
+        }
         const el = document.createElement('div');
         el.className = 'art-countdown';
         el.style.position = 'absolute';
@@ -505,6 +548,7 @@ dog
             </div>
         `;
         guildsWrapper.appendChild(el);
+        this.log("✅ Countdown UI δημιουργήθηκε");
     }
 
     updateCountdownUI() {
@@ -779,6 +823,7 @@ dog
                 box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
                 margin: 10px auto;
                 display: block;
+            }
         `;
         document.head.appendChild(styleSheet);
         modalContent.appendChild(title);
@@ -1391,7 +1436,12 @@ dog
     // --- Utility Methods ---
 
     showCustomToast(text, type = "info") {
+        // Έλεγχος αν υπάρχει ήδη toast για να αποφευχθεί το spam
+        const existingToast = document.querySelector('.fm-toast');
+        if (existingToast) existingToast.remove();
+
         const toast = document.createElement("div");
+        toast.className = 'fm-toast';
         toast.textContent = text;
         toast.style.position = "fixed";
         toast.style.bottom = "30px";
@@ -1402,12 +1452,23 @@ dog
         toast.style.padding = "12px 20px";
         toast.style.borderRadius = "8px";
         toast.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.3)";
-        toast.style.zIndex = "9999";
-        toast.style.fontFamily = "Segoe UI, sans-serif";
-        toast.style.transition = "opacity 0.4s ease";
+        toast.style.zIndex = "10000";
+        toast.style.fontFamily = "'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+        toast.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(-50%) translateY(20px)";
+
         document.body.appendChild(toast);
+
+        // Animation για εμφάνιση
+        requestAnimationFrame(() => {
+            toast.style.opacity = "1";
+            toast.style.transform = "translateX(-50%) translateY(0)";
+        });
+
         setTimeout(() => {
             toast.style.opacity = "0";
+            toast.style.transform = "translateX(-50%) translateY(20px)";
             setTimeout(() => toast.remove(), 400);
         }, 3000);
     }
