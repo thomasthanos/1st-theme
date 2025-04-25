@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 4.0.6
+ * @version 3.0.8
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -20,7 +20,8 @@ module.exports = class FolderManager {
         hideFolders: {
             enabled: true,
             folderIds: ""
-        }
+        },
+        lastRun: 0
     };
 
     constructor() {
@@ -34,32 +35,56 @@ module.exports = class FolderManager {
         this._updateInProgress = false;
         this._justUpdated = false;
         this._pendingReads = 0;
-        this._notificationTimeout = null;
+        this._notificationDebounce = null;
+        this._isSaving = false;
+        this._saveDebounce = null;
         this.modal = null;
         this.iconButton = null;
         this.observer = null;
     }
 
+    getVersion() {
+        return "3.0.8";
+    }
+
+    log(...args) {
+        console.log(`%c[FolderManager v${this.getVersion()}]`, "color: #00ffcc; font-weight: bold;", ...args);
+    }
+
     initializeSettings() {
         let loadedSettings = BdApi.loadData("FolderManager", "settings");
         if (!loadedSettings) {
-            this.log("No settings found, initializing with defaults...");
-            this.settings = Object.assign({}, this.defaultSettings);
+            this.log("⚠️ No settings found, initializing with defaults...");
+            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
+            this.settings.lastRun = 0;
             this.saveSettings();
         } else {
-            this.settings = Object.assign({}, this.defaultSettings, loadedSettings);
-            this.log("Settings loaded:", this.settings);
-            this.saveSettings();
+            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
+            Object.assign(this.settings, loadedSettings);
+            this._lastRun = this.settings.lastRun || 0;
+            this.log("✅ Settings loaded:", JSON.stringify(this.settings));
         }
     }
 
     saveSettings() {
-        try {
-            BdApi.saveData("FolderManager", "settings", this.settings);
-            this.log("Settings saved successfully:", this.settings);
-        } catch (error) {
-            this.log("❌ Error saving settings:", error.message);
+        if (this._isSaving) {
+            this.log("⏳ SaveSettings ήδη σε εξέλιξη, παραλείπεται...");
+            return;
         }
+        if (this._saveDebounce) {
+            clearTimeout(this._saveDebounce);
+        }
+        this._saveDebounce = setTimeout(() => {
+            this._isSaving = true;
+            try {
+                BdApi.saveData("FolderManager", "settings", this.settings);
+                this.log("✅ Settings saved successfully:", JSON.stringify(this.settings));
+            } catch (error) {
+                this.log("❌ Error saving settings:", error.message, error.stack);
+            } finally {
+                this._isSaving = false;
+            }
+        }, 300);
     }
 
     async retryUICreation() {
@@ -191,7 +216,7 @@ module.exports = class FolderManager {
     // --- AutoReadTrash Functionality ---
 
     async startAutoReadTrash() {
-        this._lastRun = Date.now();
+        this._lastRun = this.settings.lastRun || Date.now();
         this.injectStyles();
         try {
             await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 15000);
@@ -273,6 +298,8 @@ module.exports = class FolderManager {
             const success = await this.doAutoRead();
             if (success) {
                 this._lastRun = Date.now();
+                this.settings.lastRun = this._lastRun;
+                this.saveSettings();
                 this.startCountdown();
             } else {
                 this.log("❌ Αποτυχία εκτέλεσης AutoReadTrash");
@@ -293,18 +320,18 @@ module.exports = class FolderManager {
         if (!this._pendingReads) this._pendingReads = 0;
         this._pendingReads += successfulReads;
 
-        if (this._notificationTimeout) clearTimeout(this._notificationTimeout);
-        this._notificationTimeout = setTimeout(() => {
-            this._notificationQueue.push(this._pendingReads);
+        if (this._notificationDebounce) clearTimeout(this._notificationDebounce);
+        this._notificationDebounce = setTimeout(() => {
+            this._notificationQueue = [this._pendingReads];
             this._pendingReads = 0;
             if (!this._isShowingNotification) this.processNotificationQueue();
-        }, 1000);
+        }, 2500);
     }
 
     processNotificationQueue() {
         if (!this._notificationQueue.length || this._isShowingNotification) return;
         this._isShowingNotification = true;
-        const successfulReads = this._notificationQueue.reduce((sum, reads) => sum + reads, 0);
+        const successfulReads = this._notificationQueue[0];
         this._notificationQueue = [];
         this.showDiscordNotification(successfulReads);
     }
@@ -333,6 +360,7 @@ module.exports = class FolderManager {
             }
             const notif = document.createElement('div');
             notif.className = 'art-notif';
+            notif.style.opacity = '0';
             notif.innerHTML = `
                 <div class="art-notif-message">
                     <div class="art-notif-number">${successfulReads}</div>
@@ -340,8 +368,15 @@ module.exports = class FolderManager {
                 </div>
             `;
             this.wrapper3d.appendChild(notif);
-            requestAnimationFrame(() => notif.classList.add('show'));
+            requestAnimationFrame(() => {
+                notif.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+                notif.style.opacity = '0.95';
+                notif.style.transform = 'translateY(0)';
+                notif.classList.add('show');
+            });
             const hideNotification = () => {
+                notif.style.opacity = '0';
+                notif.style.transform = 'translateY(5px)';
                 notif.classList.remove('show');
                 notif.classList.add('hide');
                 notif.addEventListener('transitionend', () => {
@@ -351,13 +386,14 @@ module.exports = class FolderManager {
                 }, { once: true });
             };
             clearTimeout(this._hide3d);
-            this._hide3d = setTimeout(hideNotification, 3000);
+            this._hide3d = setTimeout(hideNotification, 6000);
             notif.addEventListener('mouseenter', () => clearTimeout(this._hide3d));
             notif.addEventListener('mouseleave', () => {
-                this._hide3d = setTimeout(hideNotification, 1000);
+                this._hide3d = setTimeout(hideNotification, 2000);
             });
         } catch (error) {
             this.log("❌ Error showing notification:", error.message);
+            this._isShowingNotification = false;
         }
     }
 
@@ -399,13 +435,13 @@ module.exports = class FolderManager {
                 font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
                 z-index: 9999;
-                opacity: 0.9;
-                transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+                opacity: 0.95;
+                transition: transform 0.7s ease, opacity 0.7s ease, box-shadow 0.2s ease;
                 margin: 0 auto;
                 right: 0;
             }
             .art-notif.show {
-                opacity: 0.9;
+                opacity: 0.95;
                 transform: translateY(0);
             }
             .art-notif.hide {
@@ -883,7 +919,8 @@ module.exports = class FolderManager {
         artFolderIdsInput.value = this.settings.autoReadTrash.folderIds;
         artFolderIdsInput.placeholder = "π.χ. guildsnav___123, guildsnav___456";
         artFolderIdsInput.oninput = () => {
-            this.settings.autoReadTrash.folderIds = artFolderIdsInput.value;
+            this.settings.autoReadTrash.folderIds = artFolderIdsInput.value.trim();
+            this.log("📝 Ενημέρωση folderIds:", this.settings.autoReadTrash.folderIds);
             this.saveSettings();
             this.debounceStartInterval();
         };
@@ -911,6 +948,7 @@ module.exports = class FolderManager {
             }
             artIntervalInput.value = v;
             this.settings.autoReadTrash.intervalMinutes = v;
+            this.log("📝 Ενημέρωση intervalMinutes:", this.settings.autoReadTrash.intervalMinutes);
             this.saveSettings();
             this.debounceStartInterval();
         };
@@ -1010,7 +1048,8 @@ module.exports = class FolderManager {
         hfFolderIdsInput.value = this.settings.hideFolders.folderIds;
         hfFolderIdsInput.placeholder = "π.χ. guildsnav___123, guildsnav___456";
         hfFolderIdsInput.oninput = () => {
-            this.settings.hideFolders.folderIds = hfFolderIdsInput.value;
+            this.settings.hideFolders.folderIds = hfFolderIdsInput.value.trim();
+            this.log("📝 Ενημέρωση hideFolders folderIds:", this.settings.hideFolders.folderIds);
             this.saveSettings();
             this.showWrappers();
             setTimeout(() => this.hideWrappers(), 100);
@@ -1321,13 +1360,40 @@ module.exports = class FolderManager {
             const fs = require("fs");
             const path = require("path");
             const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
-            fs.writeFileSync(filePath, code, "utf8");
+            fs.writeFileSync(filePath, code);
+            BdApi.Plugins.enable("FolderManager");
             this._justUpdated = true;
-            setTimeout(() => BdApi.Plugins.reload("FolderManager"), 1000);
         } catch (err) {
-            this.showCustomToast(`Αποτυχία ενημέρωσης του FolderManager: ${err.message}`, "error");
+            this.log("❌ Error downloading update:", err.message);
             throw err;
         }
+    }
+
+    showCustomToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.style.position = "fixed";
+        toast.style.bottom = "20px";
+        toast.style.right = "20px";
+        toast.style.padding = "10px 20px";
+        toast.style.background = type === "success" ? "rgba(0, 255, 204, 0.2)" : "rgba(255, 85, 85, 0.2)";
+        toast.style.color = type === "success" ? "#00ffcc" : "#ff5555";
+        toast.style.border = `2px solid ${type === "success" ? "#00ffcc" : "#ff5555"}`;
+        toast.style.borderRadius = "8px";
+        toast.style.boxShadow = `0 0 10px ${type === "success" ? "rgba(0, 255, 204, 0.5)" : "rgba(255, 85, 85, 0.5)"}`;
+        toast.style.zIndex = "10000";
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.3s ease";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = "1";
+        }, 10);
+
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     // --- Icon Injection ---
