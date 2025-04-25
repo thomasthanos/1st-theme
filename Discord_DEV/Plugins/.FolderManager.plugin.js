@@ -120,13 +120,19 @@ module.exports = class FolderManager {
     }
 
     start() {
-        this.injectIcon();
+        setTimeout(() => this._startPlugin(), 20000);
+    }
+
+    _startPlugin() {
+                this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
             this.startAutoReadTrash();
         }
         if (this.settings.hideFolders.enabled) this.startHideFolders();
     }
 
+    
+    
     async doAutoRead() {
         const raw = this.settings?.autoReadTrash?.folderIds || "";
         const ids = raw.split(",").map(id => id.trim()).filter(Boolean);
@@ -135,7 +141,17 @@ module.exports = class FolderManager {
             return false;
         }
 
-        const folders = [...document.querySelectorAll('div[data-list-item-id]')].filter(el => {
+        const waitForFolders = async (attempts = 0, maxAttempts = 20) => {
+            const visibleFolders = [...document.querySelectorAll('div[data-list-item-id]')];
+            const foundIds = visibleFolders.map(el => el.getAttribute("data-list-item-id")).filter(Boolean);
+            const allFound = ids.every(id => foundIds.includes(id));
+            if (allFound || attempts >= maxAttempts) return visibleFolders;
+            await new Promise(r => setTimeout(r, 500));
+            return waitForFolders(attempts + 1, maxAttempts);
+        };
+
+        const allVisibleFolders = await waitForFolders();
+        const folders = allVisibleFolders.filter(el => {
             const id = el.getAttribute("data-list-item-id");
             return ids.includes(id) && el.closest('.wrapper_cc5dd2');
         });
@@ -149,52 +165,54 @@ module.exports = class FolderManager {
         for (const folder of folders) {
             try {
                 await new Promise((resolve, reject) => {
-                    const existingMenu = document.querySelector('[class*="contextMenu"]');
-                    if (existingMenu) {
-                        this.log(`🧹 Καθαρισμός υπάρχοντος context menu για φάκελο ${folder.getAttribute("data-list-item-id")}`);
-                        existingMenu.remove();
-                    }
+                    const tryContextClick = () => {
+                        const existingMenu = document.querySelector('[class*="contextMenu"]');
+                        if (existingMenu) existingMenu.remove();
 
-                    this.log(`🖱️ Ανοίγουμε context menu για φάκελο ${folder.getAttribute("data-list-item-id")}`);
-                    folder.dispatchEvent(new MouseEvent("contextmenu", {
-                        bubbles: true,
-                        cancelable: true,
-                        clientX: -9999,
-                        clientY: -9999
-                    }));
+                        folder.dispatchEvent(new MouseEvent("contextmenu", {
+                            bubbles: true,
+                            cancelable: true,
+                            clientX: -9999,
+                            clientY: -9999
+                        }));
+                    };
+
+                    tryContextClick();
 
                     let attempts = 0;
-                    const maxAttempts = 5;
+                    const maxAttempts = 10;
                     const checkMenu = () => {
                         const btn = document.querySelector('#guild-context-mark-folder-read');
-                        if (btn && btn.getAttribute("aria-disabled") !== "true") {
-                            this.log(`✅ Βρέθηκε κουμπί mark-folder-read για φάκελο ${folder.getAttribute("data-list-item-id")}`);
-                            btn.click();
+                        const disabled = btn?.getAttribute("aria-disabled") === "true";
+
+                        if (btn && !disabled) {
+                            btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
                             successfulReads++;
-                            this.log(`📬 Φάκελος ${folder.getAttribute("data-list-item-id")} μαρκαρίστηκε ως αναγνωσμένος`);
                             const menu = document.querySelector('[class*="contextMenu"]');
-                            if (menu) {
-                                this.log(`🧹 Καθαρισμός context menu μετά το κλικ για φάκελο ${folder.getAttribute("data-list-item-id")}`);
-                                menu.remove();
-                            }
+                            if (menu) menu.remove();
                             resolve();
+                        } else if (btn && disabled) {
+                            this.log(`ℹ️ Ο φάκελος ${folder.getAttribute("data-list-item-id")} δεν χρειάζεται read (ήδη καθαρός)`);
+                            const menu = document.querySelector('[class*="contextMenu"]');
+                            if (menu) menu.remove();
+                            resolve(); // Don't reject, just skip
                         } else {
                             attempts++;
                             if (attempts >= maxAttempts) {
-                                this.log(`❌ Το κουμπί mark-folder-read δεν βρέθηκε ή είναι απενεργοποιημένο για φάκελο ${folder.getAttribute("data-list-item-id")} μετά από ${maxAttempts} προσπάθειες`);
-                                reject(new Error(`Failed to find mark-folder-read button for folder ${folder.getAttribute("data-list-item-id")}`));
+                                this.log(`❌ Το κουμπί δεν βρέθηκε για ${folder.getAttribute("data-list-item-id")}`);
+                                reject(new Error("Mark-read button not found"));
                             } else {
-                                this.log(`⏳ Αναμονή για το κουμπί mark-folder-read (προσπάθεια ${attempts}/${maxAttempts}) για φάκελο ${folder.getAttribute("data-list-item-id")}`);
-                                setTimeout(checkMenu, 500);
+                                tryContextClick(); // Retry opening context menu
+                                setTimeout(checkMenu, 750);
                             }
                         }
                     };
 
                     setTimeout(checkMenu, 1000);
                 });
-                await new Promise(resolve => setTimeout(resolve, 1500));
-            } catch (error) {
-                this.log(`❌ Σφάλμα κατά το read του φακέλου ${folder.getAttribute("data-list-item-id")}:`, error.message);
+                await new Promise(r => setTimeout(r, 1200));
+            } catch (err) {
+                this.log(`❌ Σφάλμα στο φάκελο ${folder.getAttribute("data-list-item-id")}:`, err.message);
             }
         }
 
@@ -202,6 +220,8 @@ module.exports = class FolderManager {
         this.queueNotification(successfulReads);
         return successfulReads > 0;
     }
+
+
 
     stop() {
         this.stopAutoReadTrash();
@@ -296,13 +316,11 @@ module.exports = class FolderManager {
         this._isRunning = true;
         try {
             const success = await this.doAutoRead();
-            if (success) {
+            if (true) {
                 this._lastRun = Date.now();
                 this.settings.lastRun = this._lastRun;
                 this.saveSettings();
                 this.startCountdown();
-            } else {
-                this.log("❌ Αποτυχία εκτέλεσης AutoReadTrash");
             }
         } catch (error) {
             this.log("❌ Σφάλμα στο AutoReadTrash:", error.message);
@@ -596,6 +614,7 @@ module.exports = class FolderManager {
         const now = Date.now();
         const next = (this._lastRun || now) + this.settings.autoReadTrash.intervalMinutes * 60 * 1000;
         const diff = Math.max(0, Math.floor((next - now) / 1000));
+        if (!timerText._lastValue || timerText._lastValue !== diff) timerText._lastValue = diff;
 
         if (diff <= 0) {
             this.stopCountdown();
