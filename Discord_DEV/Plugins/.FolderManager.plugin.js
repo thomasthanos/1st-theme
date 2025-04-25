@@ -44,7 +44,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "11.0.9";
+        return "12.0.0";
     }
 
     log(...args) {
