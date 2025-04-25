@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 10.0.0
+ * @version 3.0.8
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -1269,7 +1269,7 @@ module.exports = class FolderManager {
 
         const pluginName = "FolderManager";
         const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js?t=" + Date.now();
-        const filename = "FolderManager.plugin.js";
+        const filename = ".FolderManager.plugin.js";
 
         try {
             const localPlugin = BdApi.Plugins.get(pluginName);
