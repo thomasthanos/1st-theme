@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 10.0.2
+ * @version 10.0.5
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -12,13 +12,13 @@
 module.exports = class FolderManager {
     defaultSettings = {
         autoReadTrash: {
-            enabled: false,
+            enabled: true,
             folderIds: "",
-            intervalMinutes: 20,
-            showCountdown: false
+            intervalMinutes: 15,
+            showCountdown: true
         },
         hideFolders: {
-            enabled: false,
+            enabled: true,
             folderIds: ""
         },
         lastRun: 0
@@ -44,7 +44,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "10.0.2";
+        return "10.0.5";
     }
 
     log(...args) {
@@ -120,11 +120,7 @@ module.exports = class FolderManager {
     }
 
     start() {
-        setTimeout(() => this._startPlugin(), 20000);
-    }
-
-    _startPlugin() {
-                this.injectIcon();
+        this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
             this.startAutoReadTrash();
         }
@@ -315,13 +311,11 @@ module.exports = class FolderManager {
         }
         this._isRunning = true;
         try {
-            const success = await this.doAutoRead();
-            if (true) {
-                this._lastRun = Date.now();
-                this.settings.lastRun = this._lastRun;
-                this.saveSettings();
-                this.startCountdown();
-            }
+            await this.doAutoRead(); // δεν μας νοιάζει αν πέτυχε ή όχι
+            this._lastRun = Date.now();
+            this.settings.lastRun = this._lastRun;
+            this.saveSettings();
+            this.startCountdown();
         } catch (error) {
             this.log("❌ Σφάλμα στο AutoReadTrash:", error.message);
         } finally {
@@ -566,6 +560,7 @@ module.exports = class FolderManager {
 
     stopCountdown() {
         if (this.countdownInterval) {
+            this.log("🛑 Countdown stopped");
             clearInterval(this.countdownInterval);
             this.countdownInterval = null;
         }
@@ -614,8 +609,11 @@ module.exports = class FolderManager {
         const now = Date.now();
         const next = (this._lastRun || now) + this.settings.autoReadTrash.intervalMinutes * 60 * 1000;
         const diff = Math.max(0, Math.floor((next - now) / 1000));
-        if (timerText._lastValue === diff) return;
-        if (!timerText._lastValue || timerText._lastValue !== diff) timerText._lastValue = diff;
+        if (!timerText._lastValue || timerText._lastValue !== diff) {
+            timerText._lastValue = diff;
+        } else {
+            return; // Prevent flicker when value hasn't changed
+        }
 
         if (diff <= 0) {
             this.stopCountdown();
@@ -1270,7 +1268,7 @@ module.exports = class FolderManager {
 
         const pluginName = "FolderManager";
         const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js?t=" + Date.now();
-        const filename = ".FolderManager.plugin.js";
+        const filename = "FolderManager.plugin.js";
 
         try {
             const localPlugin = BdApi.Plugins.get(pluginName);
