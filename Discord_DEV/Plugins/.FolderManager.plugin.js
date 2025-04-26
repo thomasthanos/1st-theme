@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.1
+ * @version 12.0.4
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -11,16 +11,8 @@
 
 module.exports = class FolderManager {
     defaultSettings = {
-        autoReadTrash: {
-            enabled: true,
-            folderIds: "",
-            intervalMinutes: 15,
-            showCountdown: true
-        },
-        hideFolders: {
-            enabled: true,
-            folderIds: ""
-        },
+        autoReadTrash: { enabled: true, folderIds: "", intervalMinutes: 15, showCountdown: true },
+        hideFolders: { enabled: true, folderIds: "" },
         lastRun: 0
     };
 
@@ -41,45 +33,48 @@ module.exports = class FolderManager {
         this.modal = null;
         this.iconButton = null;
         this.observer = null;
+        this._interval = null;
     }
 
-    getVersion() {
-        return "12.0.1";
+    getVersion() { return "12.0.4"; }
+
+    validateFolderId(id) {
+        return typeof id === "string" && /^guildsnav___\d+$/.test(id.trim());
     }
 
-    log(...args) {
-        console.log(`%c[FolderManager v${this.getVersion()}]`, "color: #00ffcc; font-weight: bold;", ...args);
+    clearAllTimeouts() {
+        if (this._startTimeout) clearTimeout(this._startTimeout);
+        if (this._interval) clearInterval(this._interval);
+        if (this._uiCheckInterval) clearInterval(this._uiCheckInterval);
+        if (this._notificationDebounce) clearTimeout(this._notificationDebounce);
+        if (this._saveDebounce) clearTimeout(this._saveDebounce);
+        this._startTimeout = null;
+        this._interval = null;
+        this._uiCheckInterval = null;
+        this._notificationDebounce = null;
+        this._saveDebounce = null;
     }
 
     initializeSettings() {
-        let loadedSettings = BdApi.loadData("FolderManager", "settings");
-        if (!loadedSettings) {
-            this.log("⚠️ No settings found, initializing with defaults...");
-            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
-            this.settings.lastRun = 0;
-            this.saveSettings();
-        } else {
-            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
-            Object.assign(this.settings, loadedSettings);
-            this._lastRun = this.settings.lastRun || 0;
-            this.log("✅ Settings loaded:", JSON.stringify(this.settings));
+        try {
+            const loaded = BdApi.loadData("FolderManager", "settings");
+            this.settings = Object.assign({}, this.defaultSettings, loaded || {});
+        } catch (e) {
+            this.log("❌ Error loading settings:", e.message);
+            this.settings = { ...this.defaultSettings };
         }
     }
 
     saveSettings() {
-        if (this._isSaving) {
-            this.log("⏳ SaveSettings ήδη σε εξέλιξη, παραλείπεται...");
-            return;
-        }
-        if (this._saveDebounce) {
-            clearTimeout(this._saveDebounce);
-        }
+        if (this._isSaving) return;
+        this._isSaving = true;
+        if (this._saveDebounce) clearTimeout(this._saveDebounce);
         this._saveDebounce = setTimeout(() => {
-            this._isSaving = true;
             try {
                 BdApi.saveData("FolderManager", "settings", this.settings);
-            } catch (error) {
-                this.log("❌ Error saving settings:", error.message, error.stack);
+                this.log("💾 Settings saved.");
+            } catch (e) {
+                this.log("❌ Error saving settings:", e.message);
             } finally {
                 this._isSaving = false;
             }
@@ -110,8 +105,14 @@ module.exports = class FolderManager {
             const startTime = Date.now();
             const checkElement = () => {
                 const element = document.querySelector(selector);
-                if (element) return resolve(element);
-                if (Date.now() - startTime > timeout) return reject(new Error(`Timeout waiting for element: ${selector}`));
+                if (element) {
+                    resolve(element);
+                    return;
+                }
+                if (Date.now() - startTime > timeout) {
+                    reject(new Error(`Timeout waiting for element: ${selector}`));
+                    return;
+                }
                 setTimeout(checkElement, 500);
             };
             checkElement();
@@ -119,126 +120,162 @@ module.exports = class FolderManager {
     }
 
     start() {
-        setTimeout(() => this._startPlugin(), 20000);
+        this.stop();
+        this._startTimeout = setTimeout(() => this._startPlugin(), 15000);
     }
 
     _startPlugin() {
         this._subscribedToContextClose = false;
-                this.injectIcon();
+        this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
-                    this.startAutoReadTrash();
+            this.startAutoReadTrash();
         }
-        if (this.settings.hideFolders.enabled)         this.startHideFolders();
+        if (this.settings.hideFolders.enabled) {
+            this.startHideFolders();
+        }
     }
 
-    
-    
     async doAutoRead() {
-        const raw = this.settings?.autoReadTrash?.folderIds || "";
-        const ids = raw.split(",").map(id => id.trim()).filter(Boolean);
-        if (!ids.length) {
-            this.log("❌ Δεν έχουν οριστεί folder IDs.");
-            return false;
-        }
+        try {
+            const raw = this.settings?.autoReadTrash?.folderIds || "";
+            const ids = raw.split(",").map(id => id.trim()).filter(id => this.validateFolderId(id));
 
-        const waitForFolders = async (attempts = 0, maxAttempts = 20) => {
-            const visibleFolders = [...document.querySelectorAll('div[data-list-item-id]')];
-            const foundIds = visibleFolders.map(el => el.getAttribute("data-list-item-id")).filter(Boolean);
-            const allFound = ids.every(id => foundIds.includes(id));
-            if (allFound || attempts >= maxAttempts) return visibleFolders;
-            await new Promise(r => setTimeout(r, 500));
-            return waitForFolders(attempts + 1, maxAttempts);
-        };
-
-        const allVisibleFolders = await waitForFolders();
-        const folders = allVisibleFolders.filter(el => {
-            const id = el.getAttribute("data-list-item-id");
-            return ids.includes(id) && el.closest('.wrapper_cc5dd2');
-        });
-
-        if (!folders.length) {
-            this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
-            return false;
-        }
-
-        let successfulReads = 0;
-        for (const folder of folders) {
-            try {
-                await new Promise((resolve, reject) => {
-                    const tryContextClick = () => {
-                        const existingMenu = document.querySelector('[class*="contextMenu"]');
-                        if (existingMenu) existingMenu.remove();
-
-                        folder.dispatchEvent(new MouseEvent("contextmenu", {
-                            bubbles: true,
-                            cancelable: true,
-                            clientX: -9999,
-                            clientY: -9999
-                        }));
-                    };
-
-                    tryContextClick();
-
-                    let attempts = 0;
-                    const maxAttempts = 10;
-                    const checkMenu = () => {
-                        const btn = document.querySelector('#guild-context-mark-folder-read');
-                        const disabled = btn?.getAttribute("aria-disabled") === "true";
-
-                        if (btn && !disabled) {
-                            btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
-                            successfulReads++;
-                            const menu = document.querySelector('[class*="contextMenu"]');
-                            if (menu) menu.remove();
-                            resolve();
-                        } else if (btn && disabled) {
-                            this.log(`ℹ️ Ο φάκελος ${folder.getAttribute("data-list-item-id")} δεν χρειάζεται read (ήδη καθαρός)`);
-                            const menu = document.querySelector('[class*="contextMenu"]');
-                            if (menu) menu.remove();
-                            resolve(); // Don't reject, just skip
-                        } else {
-                            attempts++;
-                            if (attempts >= maxAttempts) {
-                                this.log(`❌ Το κουμπί δεν βρέθηκε για ${folder.getAttribute("data-list-item-id")}`);
-                                reject(new Error("Mark-read button not found"));
-                            } else {
-                                tryContextClick(); // Retry opening context menu
-                                setTimeout(checkMenu, 750);
-                            }
-                        }
-                    };
-
-                    setTimeout(checkMenu, 1000);
-                });
-                await new Promise(r => setTimeout(r, 1200));
-            } catch (err) {
-                this.log(`❌ Σφάλμα στο φάκελο ${folder.getAttribute("data-list-item-id")}:`, err.message);
+            if (!ids.length) {
+                this.log("❌ Δεν έχουν οριστεί folder IDs.");
+                return false;
             }
+
+            const targetIds = [...ids];
+
+            const waitForFolders = async (attempts = 0, maxAttempts = 20) => {
+                const visibleFolders = [...document.querySelectorAll('div[data-list-item-id]')];
+                const foundIds = visibleFolders.map(el => el.getAttribute("data-list-item-id")).filter(Boolean);
+                const allFound = targetIds.every(id => foundIds.includes(id));
+                if (allFound || attempts >= maxAttempts) return visibleFolders;
+                await new Promise(r => setTimeout(r, 500));
+                return waitForFolders(attempts + 1, maxAttempts);
+            };
+
+            const allVisibleFolders = await waitForFolders();
+            const folders = allVisibleFolders.filter(el => {
+                const id = el.getAttribute("data-list-item-id");
+                return targetIds.includes(id) && el.closest('.wrapper_cc5dd2');
+            });
+
+            if (!folders.length) {
+                this.log("❌ Δεν βρέθηκαν φάκελοι:", ids);
+                return false;
+            }
+
+            let successfulReads = 0;
+            for (const folder of folders) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        const tryContextClick = () => {
+                            const existingMenu = document.querySelector('[class*="contextMenu"]');
+                            if (existingMenu) {
+                                existingMenu.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true, cancelable: true }));
+                                existingMenu.remove();
+                            }
+
+                            folder.dispatchEvent(new MouseEvent("contextmenu", {
+                                bubbles: true,
+                                cancelable: true,
+                                clientX: -9999,
+                                clientY: -9999
+                            }));
+                        };
+
+                        tryContextClick();
+
+                        let attempts = 0;
+                        const maxAttempts = 10;
+                        const checkMenu = () => {
+                            const btn = document.querySelector('#guild-context-mark-folder-read');
+                            const disabled = btn?.getAttribute("aria-disabled") === "true";
+
+                            const cleanContextMenu = () => {
+                                const menu = document.querySelector('[class*="contextMenu"]');
+                                if (menu) {
+                                    menu.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true, cancelable: true }));
+                                    menu.remove();
+                                }
+                            };
+
+                            if (btn && !disabled) {
+                                btn.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+                                successfulReads++;
+                                cleanContextMenu();
+                                resolve();
+                            } else if (btn && disabled) {
+                                this.log(`ℹ️ Ο φάκελος ${folder.getAttribute("data-list-item-id")} δεν χρειάζεται read (ήδη καθαρός)`);
+                                cleanContextMenu();
+                                resolve();
+                            } else {
+                                attempts++;
+                                if (attempts >= maxAttempts) {
+                                    this.log(`❌ Το κουμπί δεν βρέθηκε για ${folder.getAttribute("data-list-item-id")}`);
+                                    cleanContextMenu();
+                                    reject(new Error("Mark-read button not found"));
+                                } else {
+                                    tryContextClick();
+                                    setTimeout(checkMenu, 750);
+                                }
+                            }
+                        };
+
+                        setTimeout(checkMenu, 1000);
+                    });
+                    await new Promise(r => setTimeout(r, 1200));
+                } catch (err) {
+                    this.log(`❌ Σφάλμα στο φάκελο ${folder.getAttribute("data-list-item-id")}:`, err.message);
+                }
+            }
+
+            this.log(`📁 Καθαρίστηκαν ${successfulReads} από ${folders.length} φάκελοι`);
+            this.queueNotification(successfulReads);
+            return successfulReads > 0;
+        } catch (error) {
+            this.log("❌ Σφάλμα στο doAutoRead:", error.message);
+            return false;
         }
-
-        this.log(`📁 Καθαρίστηκαν ${successfulReads} από ${folders.length} φάκελοι`);
-        this.queueNotification(successfulReads);
-        return successfulReads > 0;
     }
-
-
 
     stop() {
         this.stopAutoReadTrash();
         this.stopHideFolders();
         this.removeIcon();
+        this.clearAllTimeouts();
+        this.clearStartTimeout();
+        this.stopUICheck();
+        this.clearNotifications();
+        this.stopCountdown();
+
         if (this.modal) {
             this.modal.remove();
             this.modal = null;
         }
+
+        if (this.observer) {
+            this.observer.disconnect();
+            this.observer = null;
+        }
+
+        if (this._saveDebounce) {
+            clearTimeout(this._saveDebounce);
+            this._saveDebounce = null;
+        }
+
+        if (this._style3d) {
+            this._style3d.remove();
+            this._style3d = null;
+        }
     }
 
-    // --- AutoReadTrash Functionality ---
-
     async startAutoReadTrash() {
-        this._lastRun = this.settings.lastRun || Date.now();
-        this.injectStyles();
         try {
+            this._lastRun = this.settings.lastRun || Date.now();
+            this.injectStyles();
             await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 15000);
             setTimeout(() => this.runAutoReadTrash(), 2000);
             this.startInterval();
@@ -263,10 +300,12 @@ module.exports = class FolderManager {
 
     startUICheck() {
         if (this._uiCheckInterval) return;
-        this._uiCheckInterval = setInterval(() => {
-            this.retryUICreation().catch(error => 
-                this.log("❌ Σφάλμα κατά την επανάληψη δημιουργίας UI:", error.message)
-            );
+        this._uiCheckInterval = setInterval(async () => {
+            try {
+                await this.retryUICreation();
+            } catch (error) {
+                this.log("❌ Σφάλμα κατά την επανάληψη δημιουργίας UI:", error.message);
+            }
         }, 5000);
     }
 
@@ -294,17 +333,17 @@ module.exports = class FolderManager {
         if (!this._isRunning) {
             this.runAutoReadTrash();
         }
-        if (!this.interval) {
-            this.interval = setInterval(() => {
+        if (!this._interval && this.settings?.autoReadTrash?.intervalMinutes) {
+            this._interval = setInterval(() => {
                 if (!this._isRunning) this.runAutoReadTrash();
             }, this.settings.autoReadTrash.intervalMinutes * 60 * 1000);
         }
     }
 
     clearInterval() {
-        if (this.interval) {
-            clearInterval(this.interval);
-            this.interval = null;
+        if (this._interval) {
+            clearInterval(this._interval);
+            this._interval = null;
         }
     }
 
@@ -315,11 +354,13 @@ module.exports = class FolderManager {
         }
         this._isRunning = true;
         try {
-            await this.doAutoRead(); // δεν μας νοιάζει αν πέτυχε ή όχι
-            this._lastRun = Date.now();
-            this.settings.lastRun = this._lastRun;
-            this.saveSettings();
-            this.startCountdown();
+            const success = await this.doAutoRead();
+            if (success) {
+                this._lastRun = Date.now();
+                this.settings.lastRun = this._lastRun;
+                this.saveSettings();
+                this.startCountdown();
+            }
         } catch (error) {
             this.log("❌ Σφάλμα στο AutoReadTrash:", error.message);
         } finally {
@@ -338,23 +379,29 @@ module.exports = class FolderManager {
 
         if (this._notificationDebounce) clearTimeout(this._notificationDebounce);
         this._notificationDebounce = setTimeout(() => {
-            this._notificationQueue = [this._pendingReads];
+            this._notificationQueue.push(this._pendingReads);
             this._pendingReads = 0;
             if (!this._isShowingNotification) this.processNotificationQueue();
         }, 2500);
     }
 
-    processNotificationQueue() {
+    async processNotificationQueue() {
         if (!this._notificationQueue.length || this._isShowingNotification) return;
         this._isShowingNotification = true;
-        const successfulReads = this._notificationQueue[0];
-        this._notificationQueue = [];
-        this.showDiscordNotification(successfulReads);
+        const successfulReads = this._notificationQueue.shift();
+        await this.showDiscordNotification(successfulReads);
+        this._isShowingNotification = false;
+        if (this._notificationQueue.length) this.processNotificationQueue();
     }
 
     clearNotifications() {
         this._notificationQueue = [];
+        this._pendingReads = 0;
         this._isShowingNotification = false;
+        if (this._notificationDebounce) {
+            clearTimeout(this._notificationDebounce);
+            this._notificationDebounce = null;
+        }
         if (this.wrapper3d) {
             this.wrapper3d.innerHTML = '';
             this.wrapper3d.remove();
@@ -551,9 +598,9 @@ module.exports = class FolderManager {
     }
 
     async startCountdown() {
-        this.stopCountdown();
-        if (!this.settings.autoReadTrash.showCountdown) return;
         try {
+            this.stopCountdown();
+            if (!this.settings.autoReadTrash.showCountdown) return;
             await this.createCountdownUI();
             this.countdownInterval = setInterval(() => this.updateCountdownUI(), 1000);
             this.updateCountdownUI();
@@ -618,7 +665,7 @@ module.exports = class FolderManager {
         if (!timerText._lastValue || timerText._lastValue !== diff) {
             timerText._lastValue = diff;
         } else {
-            return; // Prevent flicker when value hasn't changed
+            return;
         }
 
         if (diff <= 0) {
@@ -631,8 +678,6 @@ module.exports = class FolderManager {
         const secs = diff % 60;
         timerText.textContent = `${mins}' ${secs}"`;
     }
-
-    // --- HideFolders Functionality ---
 
     startHideFolders() {
         this.hideWrappers();
@@ -661,8 +706,6 @@ module.exports = class FolderManager {
             if (wrapper) wrapper.style.display = "";
         });
     }
-
-    // --- Custom Modal UI with Collapsible Sections ---
 
     openModal() {
         if (this.modal) {
@@ -899,7 +942,6 @@ module.exports = class FolderManager {
         description.style.animation = "slideUp 0.6s ease forwards 0.3s";
         modalContent.appendChild(description);
 
-        // --- AutoReadTrash Section ---
         const autoReadTrashSection = document.createElement("div");
         autoReadTrashSection.className = "fm-section";
 
@@ -916,7 +958,6 @@ module.exports = class FolderManager {
         const artContent = document.createElement("div");
         artContent.className = "fm-section-content";
 
-        // AutoReadTrash Enable Toggle
         const artToggleWrapper = document.createElement("div");
         artToggleWrapper.className = "custom-toggle";
         const artToggleButton = document.createElement("button");
@@ -932,7 +973,6 @@ module.exports = class FolderManager {
         artToggleWrapper.appendChild(artToggleButton);
         artContent.appendChild(artToggleWrapper);
 
-        // AutoReadTrash Folder IDs
         const artFolderIdsWrapper = document.createElement("div");
         artFolderIdsWrapper.style.marginBottom = "20px";
         const artFolderIdsLabel = document.createElement("div");
@@ -952,7 +992,6 @@ module.exports = class FolderManager {
         artFolderIdsWrapper.appendChild(artFolderIdsInput);
         artContent.appendChild(artFolderIdsWrapper);
 
-        // AutoReadTrash Interval
         const artIntervalWrapper = document.createElement("div");
         artIntervalWrapper.style.marginBottom = "20px";
         const artIntervalLabel = document.createElement("div");
@@ -980,7 +1019,6 @@ module.exports = class FolderManager {
         artIntervalWrapper.appendChild(artIntervalInput);
         artContent.appendChild(artIntervalWrapper);
 
-        // AutoReadTrash Show Countdown Toggle
         const artCountdownToggleWrapper = document.createElement("div");
         artCountdownToggleWrapper.className = "custom-toggle";
         const artCountdownToggleButton = document.createElement("button");
@@ -996,7 +1034,6 @@ module.exports = class FolderManager {
         artCountdownToggleWrapper.appendChild(artCountdownToggleButton);
         artContent.appendChild(artCountdownToggleWrapper);
 
-        // AutoReadTrash Clear Button
         const artClearButton = document.createElement("button");
         artClearButton.className = "custom-clear-button";
         artClearButton.textContent = "Καθαρισμός AutoReadTrash IDs";
@@ -1008,7 +1045,6 @@ module.exports = class FolderManager {
         };
         artContent.appendChild(artClearButton);
 
-        // Toggle functionality for AutoReadTrash section
         artHeader.onclick = () => {
             const isExpanded = artContent.classList.contains("expanded");
             if (isExpanded) {
@@ -1024,7 +1060,6 @@ module.exports = class FolderManager {
         autoReadTrashSection.appendChild(artContent);
         modalContent.appendChild(autoReadTrashSection);
 
-        // --- HideFolders Section ---
         const hideFoldersSection = document.createElement("div");
         hideFoldersSection.className = "fm-section";
 
@@ -1041,7 +1076,6 @@ module.exports = class FolderManager {
         const hfContent = document.createElement("div");
         hfContent.className = "fm-section-content";
 
-        // HideFolders Enable Toggle
         const hfToggleWrapper = document.createElement("div");
         hfToggleWrapper.className = "custom-toggle";
         const hfToggleButton = document.createElement("button");
@@ -1053,7 +1087,7 @@ module.exports = class FolderManager {
             hfToggleButton.className = `custom-toggle-button ${this.settings.hideFolders.enabled ? "" : "off"}`;
             hfToggleButton.textContent = this.settings.hideFolders.enabled ? "Ενεργό" : "Ανενεργό";
             if (this.settings.hideFolders.enabled) {
-                        this.startHideFolders();
+                this.startHideFolders();
             } else {
                 this.stopHideFolders();
             }
@@ -1061,7 +1095,6 @@ module.exports = class FolderManager {
         hfToggleWrapper.appendChild(hfToggleButton);
         hfContent.appendChild(hfToggleWrapper);
 
-        // HideFolders Folder IDs
         const hfFolderIdsWrapper = document.createElement("div");
         hfFolderIdsWrapper.style.marginBottom = "20px";
         const hfFolderIdsLabel = document.createElement("div");
@@ -1082,7 +1115,6 @@ module.exports = class FolderManager {
         hfFolderIdsWrapper.appendChild(hfFolderIdsInput);
         hfContent.appendChild(hfFolderIdsWrapper);
 
-        // HideFolders Clear Button
         const hfClearButton = document.createElement("button");
         hfClearButton.className = "custom-clear-button";
         hfClearButton.textContent = "Καθαρισμός HideFolders IDs";
@@ -1095,7 +1127,6 @@ module.exports = class FolderManager {
         };
         hfContent.appendChild(hfClearButton);
 
-        // Toggle functionality for HideFolders section
         hfHeader.onclick = () => {
             const isExpanded = hfContent.classList.contains("expanded");
             if (isExpanded) {
@@ -1111,7 +1142,6 @@ module.exports = class FolderManager {
         hideFoldersSection.appendChild(hfContent);
         modalContent.appendChild(hideFoldersSection);
 
-        // Update Button
         const buttonWrapper = document.createElement("div");
         buttonWrapper.style.position = "relative";
         buttonWrapper.style.display = "flex";
@@ -1266,8 +1296,6 @@ module.exports = class FolderManager {
         };
     }
 
-    // --- Update Functionality ---
-
     async checkAndUpdate(container) {
         const results = container ? container.querySelector("#update-results") : null;
         if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
@@ -1290,7 +1318,11 @@ module.exports = class FolderManager {
                 return;
             }
 
-            const code = await fetch(updateUrl).then(r => r.text());
+            const response = await fetch(updateUrl);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const code = await response.text();
             const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
             const localVersion = localPlugin.version;
 
@@ -1352,20 +1384,20 @@ module.exports = class FolderManager {
                 msg.style.animation = "terminalText 0.5s ease forwards";
                 results.appendChild(msg);
             }
+        } finally {
+            if (results) {
+                const msg = document.createElement("div");
+                msg.innerHTML = `<br><b>Ο έλεγχος ολοκληρώθηκε!</b>`;
+                msg.style.color = "linear-gradient(90deg, #66ffff, #00ccff)";
+                msg.style.textAlign = "center";
+                msg.style.display = "block";
+                msg.style.marginTop = "10px";
+                msg.style.opacity = "0";
+                msg.style.animation = "terminalText 0.5s ease forwards";
+                results.appendChild(msg);
+            }
+            this.showCustomToast2("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
         }
-
-        if (results) {
-            const msg = document.createElement("div");
-            msg.innerHTML = `<br><b>Ο έλεγχος ολοκληρώθηκε!</b>`;
-            msg.style.color = "linear-gradient(90deg, #66ffff, #00ccff)";
-            msg.style.textAlign = "center";
-            msg.style.display = "block";
-            msg.style.marginTop = "10px";
-            msg.style.opacity = "0";
-            msg.style.animation = "terminalText 0.5s ease forwards";
-            results.appendChild(msg);
-        }
-        this.showCustomToast2("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
     }
 
     isNewerVersion(remote, local) {
@@ -1378,14 +1410,14 @@ module.exports = class FolderManager {
         return false;
     }
 
-    downloadUpdate(plugin, code) {
+    async downloadUpdate(plugin, code) {
         try {
-            BdApi.Plugins.disable("FolderManager");
+            if (BdApi.Plugins) BdApi.Plugins.disable("FolderManager");
             const fs = require("fs");
             const path = require("path");
             const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
             fs.writeFileSync(filePath, code);
-            BdApi.Plugins.enable("FolderManager");
+            if (BdApi.Plugins) BdApi.Plugins.enable("FolderManager");
             this._justUpdated = true;
         } catch (err) {
             this.log("❌ Error downloading update:", err.message);
@@ -1420,8 +1452,6 @@ module.exports = class FolderManager {
         }, 3000);
     }
 
-    // --- Icon Injection ---
-
     injectIcon() {
         const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
         let pluginCard = null;
@@ -1443,23 +1473,32 @@ module.exports = class FolderManager {
     }
 
     startObserver() {
-        if (this.observer) return;
+        if (this.observer) {
+            this.observer.disconnect();
+            this.observer = null;
+        }
+
         const targetNode = document.body;
         const config = { childList: true, subtree: true };
-        this.observer = new MutationObserver((mutations, observer) => {
-            const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
-            let pluginCard = null;
-            pluginCards.forEach(card => {
-                const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("FolderManager")) {
-                    pluginCard = card;
-                }
-            });
 
-            if (pluginCard) {
-                const controls = pluginCard.querySelector('[class*="bd-controls"]');
-                if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
-                    this.createAndInjectIcon(controls);
+        this.observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
+                    let pluginCard = null;
+                    pluginCards.forEach(card => {
+                        const titleElement = card.querySelector('[class*="bd-addon-header"]');
+                        if (titleElement && titleElement.textContent.includes("FolderManager")) {
+                            pluginCard = card;
+                        }
+                    });
+
+                    if (pluginCard) {
+                        const controls = pluginCard.querySelector('[class*="bd-controls"]');
+                        if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
+                            this.createAndInjectIcon(controls);
+                        }
+                    }
                 }
             }
         });
@@ -1523,10 +1562,7 @@ module.exports = class FolderManager {
         }
     }
 
-    // --- Utility Methods ---
-
     showCustomToast2(text, type = "info") {
-        // Έλεγχος αν υπάρχει ήδη toast για να αποφευχθεί το spam
         const existingToast = document.querySelector('.fm-toast');
         if (existingToast) existingToast.remove();
 
@@ -1550,7 +1586,6 @@ module.exports = class FolderManager {
 
         document.body.appendChild(toast);
 
-        // Animation για εμφάνιση
         requestAnimationFrame(() => {
             toast.style.opacity = "1";
             toast.style.transform = "translateX(-50%) translateY(0)";
@@ -1564,6 +1599,6 @@ module.exports = class FolderManager {
     }
 
     log(...args) {
-        console.log("[FolderManager]", ...args);
+        console.log(`%c[FolderManager v${this.getVersion()}]`, "color: #00ffcc; font-weight: bold;", ...args);
     }
 };
