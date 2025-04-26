@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.8
+ * @version 12.0.2
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.0.8";
+        return "12.0.2";
     }
 
     initializeSettings() {
@@ -69,9 +69,9 @@ module.exports = class FolderManager {
 
     saveSettings() {
         if (this._isSaving) {
-            this.log("⏳ SaveSettings ήδη σε εξέλιξη, παραλείπεται...");
+            this.log("⏳ Αποφεύχθηκε διπλός καθαρισμός λόγω ενεργού αποθήκευσης.");
             return;
-        }
+         }         
         if (this._saveDebounce) {
             clearTimeout(this._saveDebounce);
         }
@@ -982,8 +982,9 @@ module.exports = class FolderManager {
         artFolderIdsInput.oninput = () => {
             this.settings.autoReadTrash.folderIds = artFolderIdsInput.value.trim();
             this.log("📝 Ενημέρωση folderIds:", this.settings.autoReadTrash.folderIds);
-            this.saveSettings();
-            this.debounceStartInterval();
+            if (this._saveDebounceInput) clearTimeout(this._saveDebounceInput);
+            this._saveDebounceInput = setTimeout(() => this.saveSettings(), 1000);
+            
         };
         artFolderIdsWrapper.appendChild(artFolderIdsLabel);
         artFolderIdsWrapper.appendChild(artFolderIdsInput);
@@ -1001,18 +1002,43 @@ module.exports = class FolderManager {
         artIntervalInput.min = 5;
         artIntervalInput.max = 120;
         artIntervalInput.value = this.settings.autoReadTrash.intervalMinutes;
+        let typingTimer;
         artIntervalInput.oninput = () => {
-            const parsed = parseInt(artIntervalInput.value.trim()) || 5;
-            const v = Math.max(5, Math.min(parsed, 120));
-            if (parsed !== v) {
-                this.showCustomToast(parsed < 5 ? "Το ελάχιστο είναι 5 λεπτά" : "Το μέγιστο είναι 120 λεπτά", "error");
-            }
-            artIntervalInput.value = v;
-            this.settings.autoReadTrash.intervalMinutes = v;
-            this.log("📝 Ενημέρωση intervalMinutes:", this.settings.autoReadTrash.intervalMinutes);
-            this.saveSettings();
-            this.debounceStartInterval();
+            clearTimeout(typingTimer);
+        
+            typingTimer = setTimeout(() => {
+                let inputValue = artIntervalInput.value.trim();
+        
+                // Αν είναι άδειο ή 0, το θεωρούμε άκυρο και το γυρνάμε στο προεπιλεγμένο (π.χ. 5)
+                if (inputValue === "" || parseInt(inputValue) === 0) {
+                    this.showCustomToast("Πρέπει να εισάγετε έναν αριθμό 5-120.", "error");
+                    artIntervalInput.value = 5;
+                    this.settings.autoReadTrash.intervalMinutes = 5;
+                    this.saveSettings();
+                    this.debounceStartInterval();
+                    return;
+                }
+        
+                const parsed = parseInt(inputValue);
+                if (isNaN(parsed)) {
+                    this.showCustomToast("Πρέπει να είναι αριθμός!", "error");
+                    artIntervalInput.value = this.settings.autoReadTrash.intervalMinutes;
+                    return;
+                }
+        
+                const v = Math.max(5, Math.min(parsed, 120));
+                if (parsed !== v) {
+                    this.showCustomToast(parsed < 5 ? "Το ελάχιστο είναι 5 λεπτά" : "Το μέγιστο είναι 120 λεπτά", "error");
+                }
+        
+                artIntervalInput.value = v;
+                this.settings.autoReadTrash.intervalMinutes = v;
+                this.saveSettings();
+                this.debounceStartInterval();
+            }, 2000); // Περιμένει 2000ms μετά το τελευταίο γράψιμο
         };
+        
+        
         artIntervalWrapper.appendChild(artIntervalLabel);
         artIntervalWrapper.appendChild(artIntervalInput);
         artContent.appendChild(artIntervalWrapper);
@@ -1115,6 +1141,8 @@ module.exports = class FolderManager {
             this.showWrappers();
             setTimeout(() => this.hideWrappers(), 100);
         };
+        this.showWrappers();
+            setTimeout(() => this.hideWrappers(), 50);
         hfFolderIdsWrapper.appendChild(hfFolderIdsLabel);
         hfFolderIdsWrapper.appendChild(hfFolderIdsInput);
         hfContent.appendChild(hfFolderIdsWrapper);
@@ -1287,6 +1315,8 @@ module.exports = class FolderManager {
         };
         closeButton.onclick = () => {
             modalOverlay.style.opacity = "0";
+            const updateButton = modalOverlay.querySelector("button");
+                if (updateButton) updateButton.remove();
             setTimeout(() => modalOverlay.remove(), 500);
         };
 
@@ -1298,6 +1328,8 @@ module.exports = class FolderManager {
         modalOverlay.onclick = (e) => {
             if (e.target === modalOverlay) {
                 modalOverlay.style.opacity = "0";
+                const updateButton = modalOverlay.querySelector("button");
+                if (updateButton) updateButton.remove();
                 setTimeout(() => modalOverlay.remove(), 500);
             }
         };
@@ -1484,9 +1516,19 @@ module.exports = class FolderManager {
     }
 
     startObserver() {
-        if (this.observer) return;
+        if (this._observerActive) {
+            this.log("ℹ️ Observer ήδη ενεργός, παράλειψη δημιουργίας");
+            return;
+        }
+    
+        if (this.observer) {
+            this.observer.disconnect();
+            this.observer = null;
+        }
+    
         const targetNode = document.body;
         const config = { childList: true, subtree: true };
+    
         this.observer = new MutationObserver((mutations, observer) => {
             try {
                 const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
@@ -1497,7 +1539,7 @@ module.exports = class FolderManager {
                         pluginCard = card;
                     }
                 });
-
+    
                 if (pluginCard) {
                     const controls = pluginCard.querySelector('[class*="bd-controls"]');
                     if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
@@ -1505,12 +1547,15 @@ module.exports = class FolderManager {
                     }
                 }
             } catch (error) {
-                this.log("❌ Error in observer:", error.message);
+                this.log("❌ Σφάλμα στο observer:", error.message);
             }
         });
-
+    
         this.observer.observe(targetNode, config);
+        this._observerActive = true;
+        this.log("✅ Ο observer ενεργοποιήθηκε");
     }
+    
 
     createAndInjectIcon(controls) {
         const iconButton = document.createElement("button");
