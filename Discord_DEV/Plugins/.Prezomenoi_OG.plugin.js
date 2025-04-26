@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 6.0.5
+ * @version 6.0.9
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -20,7 +20,7 @@ module.exports = class RenameChannel {
     }
 
     start() {
-        console.log("[Prezomenoi_OG] Starting plugin...");
+        console.log("[Prezomenoi_OG] Plugin activated");
         const style = document.createElement('style');
         style.id = 'prezomenoi-og-style';
         style.textContent = `
@@ -404,7 +404,7 @@ module.exports = class RenameChannel {
     }
 
     stop() {
-        console.log("[Prezomenoi_OG] Stopping plugin...");
+        console.log("[Prezomenoi_OG] Plugin deactivated");
         if (this.observer) {
             this.observer.disconnect();
             this.observer = null;
@@ -441,11 +441,8 @@ module.exports = class RenameChannel {
                     this.createAndInjectIcon(controls);
                 }
             }
-        } else {
-            console.warn("[Prezomenoi_OG] Prezomenoi_OG plugin card not found");
         }
 
-        // Fallback interval to check every 500ms if the icon is missing
         this.iconCheckInterval = setInterval(() => {
             const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
             let pluginCard = null;
@@ -491,8 +488,6 @@ module.exports = class RenameChannel {
                     if (!controls.querySelector('[aria-label="Plugin Updater"]')) {
                         this.createAndInjectIcon(controls);
                     }
-                } else {
-                    console.warn("[Prezomenoi_OG] Controls section not found in plugin card via observer");
                 }
             }
         });
@@ -551,14 +546,13 @@ module.exports = class RenameChannel {
             this.iconButton = null;
         }
         if (this.iconCheckInterval) {
-            console.log("[Prezomenoi_OG] Stopping icon check interval...");
             clearInterval(this.iconCheckInterval);
             this.iconCheckInterval = null;
         }
     }
 
     openModal() {
-        console.log("[Prezomenoi_OG] Opening modal...");
+        console.log("[Prezomenoi_OG] Opening updater modal");
         if (this.modal) {
             this.modal.remove();
         }
