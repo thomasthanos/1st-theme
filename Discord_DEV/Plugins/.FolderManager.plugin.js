@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.2
+ * @version 12.0.9
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.0.2";
+        return "12.0.9";
     }
 
     initializeSettings() {
@@ -1521,33 +1521,30 @@ module.exports = class FolderManager {
             return;
         }
     
-        if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
-        }
-    
         const targetNode = document.body;
         const config = { childList: true, subtree: true };
     
         this.observer = new MutationObserver((mutations, observer) => {
-            try {
-                const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
-                let pluginCard = null;
-                pluginCards.forEach(card => {
-                    const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                    if (titleElement && titleElement.textContent.includes("FolderManager")) {
-                        pluginCard = card;
-                    }
-                });
-    
-                if (pluginCard) {
-                    const controls = pluginCard.querySelector('[class*="bd-controls"]');
-                    if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
-                        this.createAndInjectIcon(controls);
-                    }
+            const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
+            let pluginCard = null;
+            pluginCards.forEach(card => {
+                const titleElement = card.querySelector('[class*="bd-addon-header"]');
+                if (titleElement && titleElement.textContent.includes("FolderManager")) {
+                    pluginCard = card;
                 }
-            } catch (error) {
-                this.log("❌ Σφάλμα στο observer:", error.message);
+            });
+    
+            if (pluginCard) {
+                const controls = pluginCard.querySelector('[class*="bd-controls"]');
+                if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
+                    this.createAndInjectIcon(controls);
+    
+                    // 🔥 Μόλις βάλουμε το εικονίδιο ➔ σταματάμε τον observer
+                    this.observer.disconnect();
+                    this.observer = null;
+                    this._observerActive = false;
+                    this.log("✅ Observer απενεργοποιήθηκε αφού ολοκληρώθηκε το inject.");
+                }
             }
         });
     
@@ -1555,6 +1552,7 @@ module.exports = class FolderManager {
         this._observerActive = true;
         this.log("✅ Ο observer ενεργοποιήθηκε");
     }
+    
     
 
     createAndInjectIcon(controls) {
