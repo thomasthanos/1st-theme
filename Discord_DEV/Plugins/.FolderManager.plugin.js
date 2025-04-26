@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.4
+ * @version 12.0.6
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -36,7 +36,7 @@ module.exports = class FolderManager {
         this._interval = null;
     }
 
-    getVersion() { return "12.0.4"; }
+    getVersion() { return "12.0.6"; }
 
     validateFolderId(id) {
         return typeof id === "string" && /^guildsnav___\d+$/.test(id.trim());
@@ -121,19 +121,26 @@ module.exports = class FolderManager {
 
     start() {
         this.stop();
+        this.clearInterval(); // Καθάρισε παλιά intervals άμεσα
         this._startTimeout = setTimeout(() => this._startPlugin(), 15000);
     }
+    
 
     _startPlugin() {
         this._subscribedToContextClose = false;
         this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
             this.startAutoReadTrash();
+            this._lastRun = Date.now();
+            this.settings.lastRun = this._lastRun;
+
+            this.startInterval(); // Ξεκίνα νέο timer κατευθείαν
         }
         if (this.settings.hideFolders.enabled) {
             this.startHideFolders();
         }
     }
+    
 
     async doAutoRead() {
         try {
@@ -1003,18 +1010,27 @@ module.exports = class FolderManager {
         artIntervalInput.min = 5;
         artIntervalInput.max = 120;
         artIntervalInput.value = this.settings.autoReadTrash.intervalMinutes;
+// Ελεύθερη πληκτρολόγηση, χωρίς validation στο oninput
         artIntervalInput.oninput = () => {
-            const parsed = parseInt(artIntervalInput.value.trim()) || 5;
-            const v = Math.max(5, Math.min(parsed, 120));
-            if (parsed !== v) {
-                this.showCustomToast(parsed < 5 ? "Το ελάχιστο είναι 5 λεπτά" : "Το μέγιστο είναι 120 λεπτά", "error");
-            }
-            artIntervalInput.value = v;
-            this.settings.autoReadTrash.intervalMinutes = v;
-            this.log("📝 Ενημέρωση intervalMinutes:", this.settings.autoReadTrash.intervalMinutes);
+            this.settings.autoReadTrash.intervalMinutes = artIntervalInput.value.trim(); // προσωρινά αποθηκεύεις όπως είναι
             this.saveSettings();
-            this.debounceStartInterval();
         };
+
+        artIntervalInput.onblur = () => {
+            let parsed = parseInt(artIntervalInput.value.trim());
+            if (isNaN(parsed)) parsed = 5;
+            parsed = Math.max(5, Math.min(parsed, 120));
+            artIntervalInput.value = parsed;
+            this.settings.autoReadTrash.intervalMinutes = parsed;
+        
+            this.clearInterval();
+            this.startInterval();
+
+            this.startCountdown();
+            this.saveSettings(); // Εδώ ΜΟΝΟ σώζεις σωστή τιμή
+        };
+        
+
         artIntervalWrapper.appendChild(artIntervalLabel);
         artIntervalWrapper.appendChild(artIntervalInput);
         artContent.appendChild(artIntervalWrapper);
