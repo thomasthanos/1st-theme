@@ -450,76 +450,73 @@ module.exports = class FolderManager {
         const style = document.createElement('style');
         style.textContent = `
             .art-wrapper {
-                position: absolute !important;
-                bottom: 85px;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 48px;
-                max-width: 48px;
+                position: absolute;
+                bottom: 135px;
+                left: 55%;
+                transform: translateX(-50%);
                 display: flex;
                 flex-direction: column;
-                gap: 6px;
+                gap: 8px;
+                width: 60px;
                 z-index: 9999;
-                margin: 0 auto;
-                right: 0;
             }
+
             .art-notif {
-                position: absolute !important;
-                bottom: 50px;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 48px !important;
-                max-width: 48px;
-                height: 50px;
+                position: relative;
+                width: 51px;
+                height: 51px;
+                background:rgb(33, 37, 41);
+                backdrop-filter: blur(10px);
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: 2px;
-                background: linear-gradient(145deg, #2f3136, #36393f);
-                color: #dcddde;
-                border-radius: 4px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #e0e0e0;
                 font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-                z-index: 9999;
-                opacity: 0.95;
-                transition: transform 0.7s ease, opacity 0.7s ease, box-shadow 0.2s ease;
-                margin: 0 auto;
-                right: 0;
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(49, 60, 66, 0.42);
+                opacity: 0;
+                transform: translateY(10px) scale(0.95);
+                transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
             }
+
             .art-notif.show {
-                opacity: 0.95;
-                transform: translateY(0);
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
+
             .art-notif.hide {
                 opacity: 0;
-                transform: translateY(5px);
+                transform: translateY(5px) scale(0.95);
             }
+
             .art-notif:hover {
-                opacity: 1;
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-                background: linear-gradient(145deg, #36393f, #40444b);
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(100, 200, 255, 0.6);
+                background: rgba(50, 50, 80, 0.7);
             }
+
             .art-notif-message {
                 display: flex;
                 flex-direction: column;
-                justify-content: center;
                 align-items: center;
                 text-align: center;
             }
+
             .art-notif-number {
-                font-size: 12px;
-                font-weight: 600;
-                color: #dcddde;
-                line-height: 1;
-                margin-bottom: 2px;
+                font-size: 18px;
+                font-weight: 700;
+                color: #ffffff;
+                text-shadow: 0 0 5px rgba(100, 200, 255, 0.5);
+                margin-bottom: 4px;
             }
+
             .art-notif-read {
-                font-size: 10px;
-                color: #b9bbbe;
-                line-height: 1;
+                font-size: 12px;
+                color: #cccccc;
+                letter-spacing: 0.5px;
             }
+
             .art-countdown {
                 position: absolute !important;
                 bottom: 75px !important;
@@ -533,22 +530,25 @@ module.exports = class FolderManager {
                 justify-content: center;
                 align-items: center;
                 padding: 2px;
-                background: linear-gradient(145deg, #2f3136, #36393f);
-                color: #dcddde;
-                border-radius: 4px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(33, 37, 41, 0.9);
+                backdrop-filter: blur(8px);
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
                 font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), 0 0 8px rgba(49, 60, 66, 0.4);
                 z-index: 9999;
                 opacity: 0.9;
-                transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+                transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
                 margin: 0 auto;
                 right: 0;
             }
+
             .art-countdown:hover {
-                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(100, 200, 255, 0.6);
+                background: rgba(50, 50, 80, 0.75);
                 opacity: 1;
             }
+
             .art-countdown-title {
                 display: flex;
                 flex-direction: column;
@@ -556,14 +556,8 @@ module.exports = class FolderManager {
                 align-items: center;
                 text-align: center;
             }
-            .art-countdown-next {
-                font-size: 7px;
-                font-weight: 600;
-                color: #b9bbbe;
-                text-transform: uppercase;
-                line-height: 1;
-                margin-bottom: 2px;
-            }
+
+            .art-countdown-next,
             .art-countdown-clear {
                 font-size: 7px;
                 font-weight: 600;
@@ -571,12 +565,17 @@ module.exports = class FolderManager {
                 text-transform: uppercase;
                 line-height: 1;
                 margin-bottom: 2px;
+                letter-spacing: 0.5px;
             }
+
             .art-countdown-time {
                 font-size: 13px;
-                color: #dcddde;
+                font-weight: 700;
+                color: #ffffff;
+                text-shadow: 0 0 4px rgba(100, 200, 255, 0.5);
                 line-height: 1;
             }
+
         `;
         document.head.appendChild(style);
         this._style3d = style;
