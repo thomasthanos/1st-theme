@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 2.0.5
+ * @version 3.0.0
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -32,7 +32,7 @@ module.exports = class ThomasTCombined {
             "[RunningGameStore]", "[ReadStateStore]", "[RTCControlSocket(stream)]",
             "[RTCControlSocket(default)]", "[DirectVideo]", "[HDStreamingConsumableModal]",
             "[ConnectionEventFramerateReducer]", "[OverlayRenderStore]",
-            "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]"
+            "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]", "[MessageQueue]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 
@@ -561,7 +561,7 @@ module.exports = class ThomasTCombined {
         try {
             const code = await fetch(updateUrl).then(r => r.text());
             const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-            const localVersion = "1.0.0";
+            const localVersion = "3.0.0";
 
             if (!remoteVersion) {
                 if (results) {
