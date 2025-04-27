@@ -632,6 +632,16 @@ Table of Contents
     position: relative;
     top: 30px; left: 0px;
 }
+#app-mount .wrapper__2ea32 {
+	padding: 1px 0 0 0;
+	margin: 0px;
+}
+
+.wrapper__29444 {
+	padding-left: 8px;
+	padding-right: 0;
+	transition: all .3s ease-in-out;
+}
 .users_a5bc92, .total_a5bc92 {
     background-color: #000 !important;
     color: rgba(255, 208, 0, 0.377) !important;
