@@ -1,6 +1,3 @@
-/* Import Orbitron font for modal */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
-
 /* Guild and User Styles */
 [data-list-item-id="guildsnav___1216757265391161537"] img {
     content: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
@@ -18,18 +15,6 @@
 .prezomenoi-og-active [class*="voiceUser"] [class*="name"] {
     font-size: 14.5px !important;
 }
-
-/* User-specific color classes */
-.prezomenoi-user-akrivos { color: #1F8249 !important; }
-.prezomenoi-user-mpillias { color: #734986 !important; }
-.prezomenoi-user-giannhs { color: #1F8249 !important; }
-.prezomenoi-user-petros { color: #206694 !important; }
-.prezomenoi-user-eirini { color: #FF69B4 !important; }
-.prezomenoi-user-flavibot { color: #FFD700 !important; }
-.prezomenoi-user-simplepoll { color: #FFD700 !important; }
-.prezomenoi-user-andreas { color: #8B0000 !important; }
-.prezomenoi-user-petros-fallback { color: #FF4500 !important; } /* Different color for Petros fallback */
-.prezomenoi-user-default { color: #C0C0C0 !important; }
 
 /* Animations */
 @keyframes neonGlow {
@@ -198,19 +183,6 @@
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.5), transparent);
     animation: terminalText 3s linear infinite;
-}
-#update-results .result-message {
-    opacity: 0;
-    animation: terminalText 0.5s ease forwards;
-}
-#update-results .result-error {
-    color: #ff5555;
-}
-#update-results .result-complete {
-    color: linear-gradient(90deg, #66ffff, #00ccff);
-    text-align: center;
-    display: block;
-    margin-top: 10px;
 }
 .prezomenoi-modal-close-button {
     position: absolute;
