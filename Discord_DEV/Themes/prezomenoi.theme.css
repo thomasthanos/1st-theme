@@ -1,0 +1,261 @@
+/* Guild and User Styles */
+[data-list-item-id="guildsnav___1216757265391161537"] img {
+    content: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
+    object-fit: cover;
+    border-radius: 20% !important;
+    background-color: #000 !important;
+    transform: scale(2) translateX(0px) translateY(8px);
+}
+.prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
+    background-image: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
+    background-size: cover !important;
+    border-radius: 20% !important;
+}
+.prezomenoi-og-active [class*="voiceUser"] [class*="username"],
+.prezomenoi-og-active [class*="voiceUser"] [class*="name"] {
+    font-size: 14.5px !important;
+}
+
+/* Animations */
+@keyframes neonGlow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.3);
+    }
+    to {
+        text-shadow: 0 0 15px rgba(0, 255, 204, 1), 0 0 30px rgba(0, 255, 204, 0.7), 0 0 50px rgba(0, 255, 204, 0.5);
+    }
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(0, 255, 204, 0.8), 0 0 25px rgba(0, 255, 204, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
+}
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes holographicFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+@keyframes particleGlow {
+    0% { transform: translate(0, 0); opacity: 0.5; }
+    50% { transform: translate(5px, -5px); opacity: 1; }
+    100% { transform: translate(0, 0); opacity: 0.5; }
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes terminalText {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Modal Styles */
+.prezomenoi-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.prezomenoi-modal-overlay.visible {
+    opacity: 1;
+}
+.prezomenoi-modal-content {
+    padding: 30px;
+    background: rgba(25, 25, 35, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    max-width: 550px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.prezomenoi-modal-content.visible {
+    transform: scale(1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+.prezomenoi-modal-title {
+    text-align: center;
+    color: #00ffcc;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5);
+    letter-spacing: 1px;
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+.prezomenoi-modal-description {
+    text-align: center;
+    font-size: 16px;
+    color: #a0a0c0;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: slideUp 0.6s ease forwards 0.3s;
+}
+.prezomenoi-modal-button-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    width: fit-content;
+}
+.prezomenoi-modal-button {
+    padding: 14px 32px;
+    background: linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2));
+    color: #00ffcc;
+    border: 2px solid #00ffcc;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+    overflow: hidden;
+    animation: holographicFlicker 2s ease infinite;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+}
+.prezomenoi-modal-button:hover {
+    background: linear-gradient(145deg, rgba(0, 255, 204, 0.4), rgba(0, 204, 153, 0.4));
+    transform: translateY(-4px);
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.8);
+}
+.prezomenoi-modal-button span.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #00ffcc;
+    border-radius: 50%;
+    opacity: 0.5;
+}
+.prezomenoi-modal-button span.particle:nth-child(1) { animation: particleGlow 2s ease-in-out infinite; }
+.prezomenoi-modal-button span.particle:nth-child(2) { animation: particleGlow 2.5s ease-in-out infinite; }
+.prezomenoi-modal-button span.particle:nth-child(3) { animation: particleGlow 3s ease-in-out infinite; }
+.prezomenoi-modal-button span.particle:nth-child(4) { animation: particleGlow 3.5s ease-in-out infinite; }
+.prezomenoi-modal-button span.particle:nth-child(5) { animation: particleGlow 4s ease-in-out infinite; }
+#update-results {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(15, 15, 25, 0.9);
+    border: 2px solid rgba(0, 255, 204, 0.3);
+    border-radius: 12px;
+    font-size: 14px;
+    color: #00ffcc;
+    line-height: 1.6;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: slideUp 0.6s ease forwards 0.5s;
+    font-family: 'Courier New', monospace;
+    box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2);
+    background-image: linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+#update-results:hover {
+    border-color: rgba(0, 255, 204, 0.6);
+    box-shadow: inset 0 0 15px rgba(0, 255, 204, 0.4);
+}
+#update-results .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.5), transparent);
+    animation: terminalText 3s linear infinite;
+}
+.prezomenoi-modal-close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: #e0e0e0;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.prezomenoi-modal-close-button:hover {
+    color: #ff5555;
+    border-color: #ff5555;
+    box-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
+}
+
+/* Icon Button */
+.prezomenoi-icon-button {
+    cursor: pointer;
+    padding: 0;
+    margin-left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+    z-index: 1000;
+}
+.prezomenoi-icon-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.prezomenoi-icon-button svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Custom Toast */
+.prezomenoi-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.4s ease;
+}
+.prezomenoi-toast.success {
+    background: #4caf50;
+    color: #fff;
+}
+.prezomenoi-toast.error {
+    background: #ff4d4f;
+    color: #fff;
+}
+.prezomenoi-toast.info {
+    background: #2f2f2f;
+    color: #fff;
+}
