@@ -1456,7 +1456,8 @@ body {
     color: #e0e0e0;
     text-decoration: none;
 }
-/* Modern MP3/Audio Embed Styling */
+
+/* Modern MP3/Audio Embed Styling 
 .wrapperAudio_cf09d8 {
     background: linear-gradient(145deg, #1e1f22, #0f1012);
     border-radius: 12px;
@@ -1469,7 +1470,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Title + size */
+/* Title + size 
 .metadataDownload_cf09d8 {
     font-weight: 600;
     color: #ddd;
@@ -1486,7 +1487,7 @@ body {
     margin-top: 2px;
 }
 
-/* Play button */
+/* Play button 
 .mediaButton__606b9 {
     background: #3b49df;
     color: #fff;
@@ -1500,7 +1501,7 @@ body {
     background: #2a34ac;
     transform: scale(1.05);
 }
-/* Time label */
+/* Time label 
 .durationTimeWrapper_cf09d8 {
     display: flex;
     justify-content: space-between;
@@ -1515,6 +1516,7 @@ body {
     height: 40px;
     width: 24px;
 }
+/*
 /* BOT Tag Styling */
 .botTag__82f07,
 .botTagCozy_c19a55 {
