@@ -1,7 +1,7 @@
 /**
  * @name FolderManager
- * @version 12.1.10
- * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections. Added changelog dialog on updates.
+ * @version 12.0.9
+ * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/FolderManager.plugin.js
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.1.10";
+        return "12.0.9";
     }
 
     initializeSettings() {
@@ -1077,8 +1077,6 @@ module.exports = class FolderManager {
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
                 }
-                // Show changelog dialog after successful update
-                this.showChangelogDialog(remoteVersion);
             } else {
                 if (results) {
                     const msg = document.createElement("div");
@@ -1111,90 +1109,6 @@ module.exports = class FolderManager {
             results.appendChild(msg);
         }
         this.showCustomToast2("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
-    }
-
-    showChangelogDialog(version) {
-        const dialogOverlay = document.createElement("div");
-        dialogOverlay.className = "fm-changelog-overlay";
-        dialogOverlay.style.opacity = "0";
-        dialogOverlay.style.transition = "opacity 0.5s ease";
-
-        setTimeout(() => {
-            dialogOverlay.style.opacity = "1";
-        }, 10);
-
-        const dialogContent = document.createElement("div");
-        dialogContent.className = "fm-changelog-content";
-        dialogContent.style.transform = "scale(0.9)";
-        dialogContent.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-
-        setTimeout(() => {
-            dialogContent.style.transform = "scale(1)";
-            dialogContent.style.boxShadow = "0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1)";
-        }, 100);
-
-        const title = document.createElement("h2");
-        title.textContent = "📢 FolderManager Updated!";
-        title.className = "fm-changelog-title";
-        dialogContent.appendChild(title);
-
-        const infoContainer = document.createElement("div");
-        infoContainer.className = "fm-changelog-info";
-
-        const versionInfo = document.createElement("p");
-        versionInfo.className = "fm-changelog-version";
-        versionInfo.innerHTML = `<strong>Version:</strong> ${version}`;
-        infoContainer.appendChild(versionInfo);
-
-        const dateInfo = document.createElement("p");
-        dateInfo.className = "fm-changelog-date";
-        const today = new Date().toLocaleDateString("el-GR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
-        });
-        dateInfo.innerHTML = `<strong>Date:</strong> ${today}`;
-        infoContainer.appendChild(dateInfo);
-
-        dialogContent.appendChild(infoContainer);
-
-        const changelogSection = document.createElement("div");
-        changelogSection.className = "fm-changelog-section";
-
-        const changelogTitle = document.createElement("h3");
-        changelogTitle.textContent = "What's New";
-        changelogTitle.className = "fm-changelog-subtitle";
-        changelogSection.appendChild(changelogTitle);
-
-        const changelog = document.createElement("ul");
-        changelog.className = "fm-changelog-list";
-        changelog.innerHTML = `
-            <li>Added changelog dialog to display version, date, and changes on manual updates.</li>
-            <li>Improved UI consistency with neon-themed styling.</li>
-            <li>Fixed minor bugs in notification queue processing.</li>
-        `;
-        changelogSection.appendChild(changelog);
-
-        dialogContent.appendChild(changelogSection);
-
-        const closeButton = document.createElement("button");
-        closeButton.className = "fm-changelog-close";
-        closeButton.textContent = "✕";
-        closeButton.onclick = () => {
-            dialogOverlay.style.opacity = "0";
-            setTimeout(() => dialogOverlay.remove(), 500);
-        };
-        dialogContent.appendChild(closeButton);
-
-        dialogOverlay.appendChild(dialogContent);
-        document.body.appendChild(dialogOverlay);
-
-        dialogOverlay.onclick = (e) => {
-            if (e.target === dialogOverlay) {
-                dialogOverlay.style.opacity = "0";
-                setTimeout(() => dialogOverlay.remove(), 500);
-            }
-        };
     }
 
     isNewerVersion(remote, local) {
