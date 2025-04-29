@@ -21,27 +21,11 @@ module.exports = class RenameChannel {
 
     start() {
         console.log("[Prezomenoi_OG] Plugin activated");
-        const style = document.createElement('style');
-        style.id = 'prezomenoi-og-style';
-        style.textContent = `
-            [data-list-item-id="guildsnav___1216757265391161537"] img {
-                content: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
-                object-fit: cover;
-                border-radius: 20% !important;
-                background-color: #000 !important;
-                transform: scale(2) translateX(0px) translateY(8px);
-            }
-            .prezomenoi-og-active .icon_f34534.guildIcon__85643.iconSizeMini_f34534.iconActiveMini_f34534 {
-                background-image: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
-                background-size: cover !important;
-                border-radius: 20% !important;
-            }
-            .prezomenoi-og-active [class*="voiceUser"] [class*="username"],
-            .prezomenoi-og-active [class*="voiceUser"] [class*="name"] {
-                font-size: 14.5px !important;
-            }
-        `;
-        document.head.appendChild(style);
+        const link = document.createElement('link');
+        link.id = 'prezomenoi-og-style';
+        link.rel = 'stylesheet';
+        link.href = 'https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/prezomenoi.theme.css?t=' + Date.now();
+        document.head.appendChild(link);
 
         this.renameAll();
 
@@ -498,35 +482,12 @@ module.exports = class RenameChannel {
     createAndInjectIcon(controls) {
         const iconButton = document.createElement("button");
         iconButton.setAttribute("aria-label", "Plugin Updater");
-        iconButton.className = "bd-button bd-button-filled bd-addon-button bd-button-color-brand";
-        iconButton.style.cursor = "pointer";
-        iconButton.style.padding = "0";
-        iconButton.style.marginLeft = "0px";
-        iconButton.style.display = "flex";
-        iconButton.style.alignItems = "center";
-        iconButton.style.justifyContent = "center";
-        iconButton.style.width = "30px";
-        iconButton.style.height = "30px";
-        iconButton.style.borderRadius = "50%";
-        iconButton.style.transition = "background 0.2s ease";
-        iconButton.style.zIndex = "1000";
-
-        iconButton.onmouseover = () => {
-            iconButton.style.background = "rgba(255, 255, 255, 0.1)";
-        };
-        iconButton.onmouseout = () => {
-            iconButton.style.background = "none";
-        };
+        iconButton.className = "bd-button bd-button-filled bd-addon-button bd-button-color-brand prezomenoi-icon-button";
 
         const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgIcon.setAttribute("width", "16");
         svgIcon.setAttribute("height", "16");
         svgIcon.setAttribute("viewBox", "0 0 24 24");
-        svgIcon.setAttribute("fill", "none");
-        svgIcon.setAttribute("stroke", "currentColor");
-        svgIcon.setAttribute("stroke-width", "2");
-        svgIcon.setAttribute("stroke-linecap", "round");
-        svgIcon.setAttribute("stroke-linejoin", "round");
         svgIcon.innerHTML = `
             <path d="M12 2a10 10 0 0 1 10 10c0 2.5-1 4.8-2.6 6.5l-3.5-3.5"></path>
             <path d="M12 22a10 10 0 0 1-10-10c0-2.5 1-4.8 2.6-6.5l3.5 3.5"></path>
@@ -558,157 +519,42 @@ module.exports = class RenameChannel {
         }
 
         const modalOverlay = document.createElement("div");
-        modalOverlay.style.position = "fixed";
-        modalOverlay.style.top = "0";
-        modalOverlay.style.left = "0";
-        modalOverlay.style.width = "100%";
-        modalOverlay.style.height = "100%";
-        modalOverlay.style.background = "linear-gradient(180deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%)";
-        modalOverlay.style.backdropFilter = "blur(5px)";
-        modalOverlay.style.display = "flex";
-        modalOverlay.style.alignItems = "center";
-        modalOverlay.style.justifyContent = "center";
-        modalOverlay.style.zIndex = "1000";
-        modalOverlay.style.opacity = "0";
-        modalOverlay.style.transition = "opacity 0.5s ease";
-
+        modalOverlay.className = "prezomenoi-modal-overlay";
         setTimeout(() => {
-            modalOverlay.style.opacity = "1";
+            modalOverlay.classList.add("visible");
         }, 10);
 
         const modalContent = document.createElement("div");
-        modalContent.style.padding = "30px";
-        modalContent.style.background = "rgba(25, 25, 35, 0.7)";
-        modalContent.style.border = "1px solid rgba(255, 255, 255, 0.1)";
-        modalContent.style.borderRadius = "20px";
-        modalContent.style.backdropFilter = "blur(15px)";
-        modalContent.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.05)";
-        modalContent.style.color = "#e0e0e0";
-        modalContent.style.fontFamily = "'Orbitron', 'Segoe UI', sans-serif";
-        modalContent.style.maxWidth = "550px";
-        modalContent.style.width = "90%";
-        modalContent.style.maxHeight = "85vh";
-        modalContent.style.overflowY = "auto";
-        modalContent.style.position = "relative";
-        modalContent.style.transform = "scale(0.9)";
-        modalContent.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-
+        modalContent.className = "prezomenoi-modal-content";
         setTimeout(() => {
-            modalContent.style.transform = "scale(1)";
-            modalContent.style.boxShadow = "0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1)";
+            modalContent.classList.add("visible");
         }, 100);
 
         const title = document.createElement("h2");
+        title.className = "prezomenoi-modal-title";
         title.textContent = "🔧 Prezomenoi OG Updater";
-        title.style.textAlign = "center";
-        title.style.color = "#00ffcc";
-        title.style.fontSize = "28px";
-        title.style.fontWeight = "600";
-        title.style.marginBottom = "20px";
-        title.style.textShadow = "0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5)";
-        title.style.letterSpacing = "1px";
-        title.style.animation = "neonGlow 1.5s ease-in-out infinite alternate";
-
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = `
-            @keyframes neonGlow {
-                from {
-                    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.3);
-                }
-                to {
-                    text-shadow: 0 0 15px rgba(0, 255, 204, 1), 0 0 30px rgba(0, 255, 204, 0.7), 0 0 50px rgba(0, 255, 204, 0.5);
-                }
-            }
-            @keyframes pulseGlow {
-                0% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-                50% { box-shadow: 0 0 15px rgba(0, 255, 204, 0.8), 0 0 25px rgba(0, 255, 204, 0.5); }
-                100% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-            }
-            @keyframes slideUp {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-            @keyframes holographicFlicker {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.8; }
-            }
-            @keyframes particleGlow {
-                0% { transform: translate(0, 0); opacity: 0.5; }
-                50% { transform: translate(5px, -5px); opacity: 1; }
-                100% { transform: translate(0, 0); opacity: 0.5; }
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            @keyframes terminalText {
-                from { transform: translateY(10px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(styleSheet);
         modalContent.appendChild(title);
 
         const description = document.createElement("p");
+        description.className = "prezomenoi-modal-description";
         description.textContent = "Έλεγχος και ενημέρωση του Prezomenoi OG plugin με ένα κλικ.";
-        description.style.textAlign = "center";
-        description.style.fontSize = "16px";
-        description.style.color = "#a0a0c0";
-        description.style.marginBottom = "30px";
-        description.style.lineHeight = "1.6";
-        description.style.opacity = "0";
-        description.style.animation = "slideUp 0.6s ease forwards 0.3s";
         modalContent.appendChild(description);
 
         const buttonWrapper = document.createElement("div");
-        buttonWrapper.style.position = "relative";
-        buttonWrapper.style.display = "flex";
-        buttonWrapper.style.justifyContent = "center";
-        buttonWrapper.style.margin = "0 auto";
-        buttonWrapper.style.width = "fit-content";
+        buttonWrapper.className = "prezomenoi-modal-button-wrapper";
 
         const button = document.createElement("button");
+        button.className = "prezomenoi-modal-button";
         button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
-        button.style.padding = "14px 32px";
-        button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2))";
-        button.style.color = "#00ffcc";
-        button.style.border = "2px solid #00ffcc";
-        button.style.borderRadius = "12px";
-        button.style.fontSize = "16px";
-        button.style.fontWeight = "600";
-        button.style.cursor = "pointer";
-        button.style.transition = "all 0.3s ease";
-        button.style.textTransform = "uppercase";
-        button.style.letterSpacing = "1.5px";
-        button.style.position = "relative";
-        button.style.overflow = "hidden";
-        button.style.animation = "holographicFlicker 2s ease infinite";
-        button.style.boxShadow = "0 0 15px rgba(0, 255, 204, 0.5)";
 
         for (let i = 0; i < 5; i++) {
             const particle = document.createElement("span");
-            particle.style.position = "absolute";
-            particle.style.width = "4px";
-            particle.style.height = "4px";
-            particle.style.background = "#00ffcc";
-            particle.style.borderRadius = "50%";
-            particle.style.opacity = "0.5";
-            particle.style.animation = `particleGlow ${2 + i * 0.5}s ease-in-out infinite`;
+            particle.className = "particle";
             particle.style.left = `${Math.random() * 100}%`;
             particle.style.top = `${Math.random() * 100}%`;
             button.appendChild(particle);
         }
 
-        button.onmouseover = () => {
-            button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.4), rgba(0, 204, 153, 0.4))";
-            button.style.transform = "translateY(-4px)";
-            button.style.boxShadow = "0 0 25px rgba(0, 255, 204, 0.8)";
-        };
-        button.onmouseout = () => {
-            button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2))";
-            button.style.transform = "translateY(0)";
-            button.style.boxShadow = "0 0 15px rgba(0, 255, 204, 0.5)";
-        };
         button.onclick = async () => {
             if (this._updateInProgress) return;
             this._updateInProgress = true;
@@ -718,7 +564,7 @@ module.exports = class RenameChannel {
             await this.checkAndUpdate(modalContent);
             this._updateInProgress = false;
             button.style.pointerEvents = "auto";
-            button.style.animation = "holographicFlicker 2s ease infinite";
+            button.style.animation = "";
             button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
         };
 
@@ -727,88 +573,29 @@ module.exports = class RenameChannel {
 
         const resultBox = document.createElement("div");
         resultBox.id = "update-results";
-        resultBox.style.marginTop = "30px";
-        resultBox.style.padding = "20px";
-        resultBox.style.background = "rgba(15, 15, 25, 0.9)";
-        resultBox.style.border = "2px solid rgba(0, 255, 204, 0.3)";
-        resultBox.style.borderRadius = "12px";
-        resultBox.style.fontSize = "14px";
-        resultBox.style.color = "#00ffcc";
-        resultBox.style.lineHeight = "1.6";
-        resultBox.style.position = "relative";
-        resultBox.style.overflow = "hidden";
-        resultBox.style.opacity = "0";
-        resultBox.style.animation = "slideUp 0.6s ease forwards 0.5s";
-        resultBox.style.fontFamily = "'Courier New', monospace";
-        resultBox.style.boxShadow = "inset 0 0 10px rgba(0, 255, 204, 0.2)";
-
-        resultBox.style.backgroundImage = "linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px)";
-        resultBox.style.backgroundSize = "20px 20px";
-
-        const scanLine = document.createElement("div");
-        scanLine.style.position = "absolute";
-        scanLine.style.top = "0";
-        scanLine.style.left = "0";
-        scanLine.style.width = "100%";
-        scanLine.style.height = "2px";
-        scanLine.style.background = "linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.5), transparent)";
-        scanLine.style.animation = "terminalText 3s linear infinite";
-        resultBox.appendChild(scanLine);
-
         resultBox.innerHTML = "<b>Αποτελέσματα:</b><br>Πατήστε το κουμπί για να ξεκινήσει ο έλεγχος.";
-
-        resultBox.onmouseover = () => {
-            resultBox.style.borderColor = "rgba(0, 255, 204, 0.6)";
-            resultBox.style.boxShadow = "inset 0 0 15px rgba(0, 255, 204, 0.4)";
-        };
-        resultBox.onmouseout = () => {
-            resultBox.style.borderColor = "rgba(0, 255, 204, 0.3)";
-            resultBox.style.boxShadow = "inset 0 0 10px rgba(0, 255, 204, 0.2)";
-        };
-
         modalContent.appendChild(resultBox);
 
-        const closeButton = document.createElement("button");
-        closeButton.textContent = "✕";
-        closeButton.style.position = "absolute";
-        closeButton.style.top = "15px";
-        closeButton.style.right = "15px";
-        closeButton.style.background = "none";
-        closeButton.style.border = "1px solid rgba(255, 255, 255, 0.2)";
-        closeButton.style.borderRadius = "50%";
-        closeButton.style.width = "30px";
-        closeButton.style.height = "30px";
-        closeButton.style.color = "#e0e0e0";
-        closeButton.style.fontSize = "16px";
-        closeButton.style.cursor = "pointer";
-        closeButton.style.display = "flex";
-        closeButton.style.alignItems = "center";
-        closeButton.style.justifyContent = "center";
-        closeButton.style.transition = "all 0.3s ease";
+        const scanLine = document.createElement("div");
+        scanLine.className = "scan-line";
+        resultBox.appendChild(scanLine);
 
-        closeButton.onmouseover = () => {
-            closeButton.style.color = "#ff5555";
-            closeButton.style.borderColor = "#ff5555";
-            closeButton.style.boxShadow = "0 0 10px rgba(255, 85, 85, 0.5)";
-        };
-        closeButton.onmouseout = () => {
-            closeButton.style.color = "#e0e0e0";
-            closeButton.style.borderColor = "rgba(255, 255, 255, 0.2)";
-            closeButton.style.boxShadow = "none";
-        };
+        const closeButton = document.createElement("button");
+        closeButton.className = "prezomenoi-modal-close-button";
+        closeButton.textContent = "✕";
         closeButton.onclick = () => {
-            modalOverlay.style.opacity = "0";
+            modalOverlay.classList.remove("visible");
             setTimeout(() => modalOverlay.remove(), 500);
         };
-
         modalContent.appendChild(closeButton);
+
         modalOverlay.appendChild(modalContent);
         document.body.appendChild(modalOverlay);
         this.modal = modalOverlay;
 
         modalOverlay.onclick = (e) => {
             if (e.target === modalOverlay) {
-                modalOverlay.style.opacity = "0";
+                modalOverlay.classList.remove("visible");
                 setTimeout(() => modalOverlay.remove(), 500);
             }
         };
@@ -819,8 +606,8 @@ module.exports = class RenameChannel {
         if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
 
         const pluginName = "Prezomenoi_OG";
-        const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js?t=" + Date.now();
-        const filename = "Prezomenoi_OG.plugin.js";
+        const updateUrl = "https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/prezomenoi.theme.css?t=" + Date.now();
+        const filename = ".Prezomenoi_OG.plugin.js";
 
         try {
             const localPlugin = BdApi.Plugins.get(pluginName);
@@ -899,7 +686,7 @@ module.exports = class RenameChannel {
             msg.style.animation = "terminalText 0.5s ease forwards";
             results.appendChild(msg);
         }
-        BdApi.showToast("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", { type: "success" });
+        this.showCustomToast("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
     }
 
     isNewerVersion(remote, local) {
@@ -922,7 +709,7 @@ module.exports = class RenameChannel {
             this._justUpdated = true;
             setTimeout(() => BdApi.Plugins.reload("Prezomenoi_OG"), 1000);
         } catch (err) {
-            BdApi.showToast(`Αποτυχία ενημέρωσης του Prezomenoi_OG: ${err.message}`, { type: "error" });
+            this.showCustomToast(`Αποτυχία ενημέρωσης του Prezomenoi_OG: ${err.message}`, "error");
             throw err;
         }
     }
@@ -930,18 +717,7 @@ module.exports = class RenameChannel {
     showCustomToast(text, type = "info") {
         const toast = document.createElement("div");
         toast.textContent = text;
-        toast.style.position = "fixed";
-        toast.style.bottom = "30px";
-        toast.style.left = "50%";
-        toast.style.transform = "translateX(-50%)";
-        toast.style.background = type === "error" ? "#ff4d4f" : type === "success" ? "#4caf50" : "#2f2f2f";
-        toast.style.color = "#fff";
-        toast.style.padding = "12px 20px";
-        toast.style.borderRadius = "8px";
-        toast.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.3)";
-        toast.style.zIndex = "9999";
-        toast.style.fontFamily = "Segoe UI, sans-serif";
-        toast.style.transition = "opacity 0.4s ease";
+        toast.className = `prezomenoi-toast ${type}`;
         document.body.appendChild(toast);
         setTimeout(() => {
             toast.style.opacity = "0";

@@ -32,7 +32,9 @@ module.exports = class ThomasTCombined {
             "[RunningGameStore]", "[ReadStateStore]", "[RTCControlSocket(stream)]",
             "[RTCControlSocket(default)]", "[DirectVideo]", "[HDStreamingConsumableModal]",
             "[ConnectionEventFramerateReducer]", "[OverlayRenderStore]",
-            "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]", "[MessageQueue]"
+            "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]", "[MessageQueue]",
+            "[Connection(default)]", "[RTCConnection(1366118296042340453, stream)]", "[RTCLatencyTestManager]", "[FetchBlockedDomain]",
+            "[AVError]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 
