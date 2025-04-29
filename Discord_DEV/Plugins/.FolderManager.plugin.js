@@ -1,7 +1,7 @@
 /**
  * @name FolderManager
- * @version 12.0.9
- * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
+ * @version 12.1.10
+ * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections. Added changelog dialog on updates.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/FolderManager.plugin.js
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.0.9";
+        return "12.1.10";
     }
 
     initializeSettings() {
@@ -71,7 +71,7 @@ module.exports = class FolderManager {
         if (this._isSaving) {
             this.log("⏳ Αποφεύχθηκε διπλός καθαρισμός λόγω ενεργού αποθήκευσης.");
             return;
-         }         
+        }         
         if (this._saveDebounce) {
             clearTimeout(this._saveDebounce);
         }
@@ -84,7 +84,7 @@ module.exports = class FolderManager {
             } finally {
                 this._isSaving = false;
             }
-        }, 1500); // Increased debounce to 1.5 seconds
+        }, 1500);
     }
 
     async retryUICreation() {
@@ -196,14 +196,14 @@ module.exports = class FolderManager {
                             this.log(`ℹ️ Ο φάκελος ${folder.getAttribute("data-list-item-id")} δεν χρειάζεται read (ήδη καθαρός)`);
                             const menu = document.querySelector('[class*="contextMenu"]');
                             if (menu) menu.remove();
-                            resolve(); // Don't reject, just skip
+                            resolve();
                         } else {
                             attempts++;
                             if (attempts >= maxAttempts) {
                                 this.log(`❌ Το κουμπί δεν βρέθηκε για ${folder.getAttribute("data-list-item-id")}`);
                                 reject(new Error("Mark-read button not found"));
                             } else {
-                                tryContextClick(); // Retry opening context menu
+                                tryContextClick();
                                 setTimeout(checkMenu, 750);
                             }
                         }
@@ -223,7 +223,6 @@ module.exports = class FolderManager {
     }
 
     stop() {
-        // Clear all timers, intervals, and observers
         this.clearInterval();
         this.clearStartTimeout();
         this.stopCountdown();
@@ -233,7 +232,6 @@ module.exports = class FolderManager {
         this.stopHideFolders();
         this.removeIcon();
 
-        // Remove modal and styles
         if (this.modal) {
             this.modal.remove();
             this.modal = null;
@@ -243,7 +241,6 @@ module.exports = class FolderManager {
             this._style3d = null;
         }
 
-        // Reset state
         this._isRunning = false;
         this._isShowingNotification = false;
         this._notificationQueue = [];
@@ -257,8 +254,6 @@ module.exports = class FolderManager {
             this._saveDebounce = null;
         }
     }
-
-    // --- AutoReadTrash Functionality ---
 
     async startAutoReadTrash() {
         this._lastRun = this.settings.lastRun || Date.now();
@@ -447,136 +442,9 @@ module.exports = class FolderManager {
 
     injectStyles() {
         if (this._style3d) return;
-        const style = document.createElement('style');
-        style.textContent = `
-            .art-wrapper {
-                position: absolute;
-                bottom: 135px;
-                left: 55%;
-                transform: translateX(-50%);
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                width: 60px;
-                z-index: 9999;
-            }
-
-            .art-notif {
-                position: relative;
-                width: 51px;
-                height: 51px;
-                background:rgb(33, 37, 41);
-                backdrop-filter: blur(10px);
-                border-radius: 16px;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                color: #e0e0e0;
-                font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(49, 60, 66, 0.42);
-                opacity: 0;
-                transform: translateY(10px) scale(0.95);
-                transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
-            }
-
-            .art-notif.show {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-
-            .art-notif.hide {
-                opacity: 0;
-                transform: translateY(5px) scale(0.95);
-            }
-
-            .art-notif:hover {
-                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(100, 200, 255, 0.6);
-                background: rgba(50, 50, 80, 0.7);
-            }
-
-            .art-notif-message {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .art-notif-number {
-                font-size: 18px;
-                font-weight: 700;
-                color: #ffffff;
-                text-shadow: 0 0 5px rgba(100, 200, 255, 0.5);
-                margin-bottom: 4px;
-            }
-
-            .art-notif-read {
-                font-size: 12px;
-                color: #cccccc;
-                letter-spacing: 0.5px;
-            }
-
-            .art-countdown {
-                position: absolute !important;
-                bottom: 75px !important;
-                left: 50% !important;
-                transform: translateX(-50%) !important;
-                width: 48px !important;
-                max-width: 48px;
-                height: 50px;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                padding: 2px;
-                background: rgba(33, 37, 41, 0.9);
-                backdrop-filter: blur(8px);
-                border-radius: 16px;
-                border: 1px solid rgba(255, 255, 255, 0.08);
-                font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), 0 0 8px rgba(49, 60, 66, 0.4);
-                z-index: 9999;
-                opacity: 0.9;
-                transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
-                margin: 0 auto;
-                right: 0;
-            }
-
-            .art-countdown:hover {
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 12px rgba(100, 200, 255, 0.6);
-                background: rgba(50, 50, 80, 0.75);
-                opacity: 1;
-            }
-
-            .art-countdown-title {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-            }
-
-            .art-countdown-next,
-            .art-countdown-clear {
-                font-size: 7px;
-                font-weight: 600;
-                color: #b9bbbe;
-                text-transform: uppercase;
-                line-height: 1;
-                margin-bottom: 2px;
-                letter-spacing: 0.5px;
-            }
-
-            .art-countdown-time {
-                font-size: 13px;
-                font-weight: 700;
-                color: #ffffff;
-                text-shadow: 0 0 4px rgba(100, 200, 255, 0.5);
-                line-height: 1;
-            }
-
-        `;
+        const style = document.createElement('link');
+        style.rel = 'stylesheet';
+        style.href = 'https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/folder.theme.css';
         document.head.appendChild(style);
         this._style3d = style;
     }
@@ -668,8 +536,6 @@ module.exports = class FolderManager {
         timerText.textContent = `${mins}' ${secs}"`;
     }
 
-    // --- HideFolders Functionality ---
-
     startHideFolders() {
         this.hideWrappers();
     }
@@ -697,8 +563,6 @@ module.exports = class FolderManager {
             if (wrapper) wrapper.style.display = "";
         });
     }
-
-    // --- Custom Modal UI with Collapsible Sections ---
 
     openModal() {
         if (this.modal) {
@@ -757,171 +621,6 @@ module.exports = class FolderManager {
         title.style.letterSpacing = "1px";
         title.style.animation = "neonGlow 1.5s ease-in-out infinite alternate";
 
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = `
-            @keyframes neonGlow {
-                from {
-                    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.3);
-                }
-                to {
-                    text-shadow: 0 0 15px rgba(0, 255, 204, 1), 0 0 30px rgba(0, 255, 204, 0.7), 0 0 50px rgba(0, 255, 204, 0.5);
-                }
-            }
-            @keyframes pulseGlow {
-                0% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-                50% { box-shadow: 0 0 15px rgba(0, 255, 204, 0.8), 0 0 25px rgba(0, 255, 204, 0.5); }
-                100% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-            }
-            @keyframes slideUp {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-            @keyframes holographicFlicker {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.8; }
-            }
-            @keyframes particleGlow {
-                0% { transform: translate(0, 0); opacity: 0.5; }
-                50% { transform: translate(5px, -5px); opacity: 1; }
-                100% { transform: translate(0, 0); opacity: 0.5; }
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            @keyframes terminalText {
-                from { transform: translateY(10px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-            .fm-section {
-                margin-bottom: 10px;
-                background: rgba(15, 15, 25, 0.5);
-                border-radius: 12px;
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-                overflow: hidden;
-            }
-            .fm-section-header {
-                padding: 15px 20px;
-                background: linear-gradient(145deg, rgba(0, 255, 204, 0.1), rgba(0, 204, 153, 0.1));
-                color: #00ffcc;
-                font-size: 18px;
-                font-weight: 600;
-                cursor: pointer;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
-                transition: background 0.3s ease;
-            }
-            .fm-section-header:hover {
-                background: linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2));
-            }
-            .fm-section-chevron {
-                font-size: 16px;
-                transition: transform 0.3s ease;
-            }
-            .fm-section-chevron.expanded {
-                transform: rotate(180deg);
-            }
-            .fm-section-content {
-                padding: 0 20px;
-                max-height: 0;
-                opacity: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
-            }
-            .fm-section-content.expanded {
-                padding: 20px;
-                max-height: 500px;
-                opacity: 1;
-            }
-            .custom-input, .custom-textarea {
-                width: 90%;
-                max-width: 500px;
-                margin: 0 auto;
-                padding: 12px 16px;
-                border-radius: 12px;
-                background: rgba(15, 15, 25, 0.9);
-                color: #e0e0e0;
-                border: 2px solid rgba(0, 255, 204, 0.3);
-                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-                font-size: 14px;
-                font-family: 'Courier New', monospace;
-                transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            }
-            .custom-input:focus, .custom-textarea:focus {
-                border-color: rgba(0, 255, 204, 0.6);
-                box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
-                outline: none;
-            }
-            .custom-textarea {
-                min-height: 80px;
-                resize: vertical;
-                scrollbar-width: none;
-            }
-            .custom-textarea::-webkit-scrollbar {
-                display: none;
-            }
-            .custom-label {
-                font-size: 14px;
-                color: #a0a0c0;
-                margin-bottom: 8px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                text-align: center;
-            }
-            .custom-toggle {
-                display: flex;
-                justify-content: center;
-                margin: 20px 0;
-            }
-            .custom-toggle-button {
-                padding: 10px 20px;
-                background: linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2));
-                color: #00ffcc;
-                border: 2px solid #00ffcc;
-                border-radius: 12px;
-                font-size: 14px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-            }
-            .custom-toggle-button.off {
-                background: linear-gradient(145deg, rgba(100, 100, 100, 0.2), rgba(80, 80, 80, 0.2));
-                border: 2px solid #a0a0c0;
-                color: #a0a0c0;
-                box-shadow: 0 0 10px rgba(160, 160, 192, 0.3);
-            }
-            .custom-toggle-button:hover {
-                background: linear-gradient(145deg, rgba(0, 255, 204, 0.4), rgba(0, 204, 153, 0.4));
-                transform: translateY(-2px);
-                box-shadow: 0 0 25px rgba(0, 255, 204, 0.8);
-            }
-            .custom-toggle-button.off:hover {
-                background: linear-gradient(145deg, rgba(120, 120, 120, 0.4), rgba(100, 100, 100, 0.4));
-                box-shadow: 0 0 15px rgba(160, 160, 192, 0.5);
-            }
-            .custom-clear-button {
-                padding: 10px 20px;
-                background: linear-gradient(145deg, rgba(255, 85, 85, 0.2), rgba(204, 0, 0, 0.2));
-                color: #ff5555;
-                border: 2px solid #ff5555;
-                border-radius: 12px;
-                font-size: 14px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                text-transform: uppercase;
-                letter-spacing: 1.5px;
-                box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
-                margin: 10px auto;
-                display: block;
-            }
-        `;
-        document.head.appendChild(styleSheet);
         modalContent.appendChild(title);
 
         const description = document.createElement("p");
@@ -935,7 +634,6 @@ module.exports = class FolderManager {
         description.style.animation = "slideUp 0.6s ease forwards 0.3s";
         modalContent.appendChild(description);
 
-        // --- AutoReadTrash Section ---
         const autoReadTrashSection = document.createElement("div");
         autoReadTrashSection.className = "fm-section";
 
@@ -952,7 +650,6 @@ module.exports = class FolderManager {
         const artContent = document.createElement("div");
         artContent.className = "fm-section-content";
 
-        // AutoReadTrash Enable Toggle
         const artToggleWrapper = document.createElement("div");
         artToggleWrapper.className = "custom-toggle";
         const artToggleButton = document.createElement("button");
@@ -968,7 +665,6 @@ module.exports = class FolderManager {
         artToggleWrapper.appendChild(artToggleButton);
         artContent.appendChild(artToggleWrapper);
 
-        // AutoReadTrash Folder IDs
         const artFolderIdsWrapper = document.createElement("div");
         artFolderIdsWrapper.style.marginBottom = "20px";
         const artFolderIdsLabel = document.createElement("div");
@@ -983,13 +679,11 @@ module.exports = class FolderManager {
             this.log("📝 Ενημέρωση folderIds:", this.settings.autoReadTrash.folderIds);
             if (this._saveDebounceInput) clearTimeout(this._saveDebounceInput);
             this._saveDebounceInput = setTimeout(() => this.saveSettings(), 1000);
-            
         };
         artFolderIdsWrapper.appendChild(artFolderIdsLabel);
         artFolderIdsWrapper.appendChild(artFolderIdsInput);
         artContent.appendChild(artFolderIdsWrapper);
 
-        // AutoReadTrash Interval
         const artIntervalWrapper = document.createElement("div");
         artIntervalWrapper.style.marginBottom = "20px";
         const artIntervalLabel = document.createElement("div");
@@ -1004,11 +698,8 @@ module.exports = class FolderManager {
         let typingTimer;
         artIntervalInput.oninput = () => {
             clearTimeout(typingTimer);
-        
             typingTimer = setTimeout(() => {
                 let inputValue = artIntervalInput.value.trim();
-        
-                // Αν είναι άδειο ή 0, το θεωρούμε άκυρο και το γυρνάμε στο προεπιλεγμένο (π.χ. 5)
                 if (inputValue === "" || parseInt(inputValue) === 0) {
                     this.showCustomToast("Πρέπει να εισάγετε έναν αριθμό 5-120.", "error");
                     artIntervalInput.value = 5;
@@ -1017,32 +708,26 @@ module.exports = class FolderManager {
                     this.debounceStartInterval();
                     return;
                 }
-        
                 const parsed = parseInt(inputValue);
                 if (isNaN(parsed)) {
                     this.showCustomToast("Πρέπει να είναι αριθμός!", "error");
                     artIntervalInput.value = this.settings.autoReadTrash.intervalMinutes;
                     return;
                 }
-        
                 const v = Math.max(5, Math.min(parsed, 120));
                 if (parsed !== v) {
                     this.showCustomToast(parsed < 5 ? "Το ελάχιστο είναι 5 λεπτά" : "Το μέγιστο είναι 120 λεπτά", "error");
                 }
-        
                 artIntervalInput.value = v;
                 this.settings.autoReadTrash.intervalMinutes = v;
                 this.saveSettings();
                 this.debounceStartInterval();
-            }, 2000); // Περιμένει 2000ms μετά το τελευταίο γράψιμο
+            }, 2000);
         };
-        
-        
         artIntervalWrapper.appendChild(artIntervalLabel);
         artIntervalWrapper.appendChild(artIntervalInput);
         artContent.appendChild(artIntervalWrapper);
 
-        // AutoReadTrash Show Countdown Toggle
         const artCountdownToggleWrapper = document.createElement("div");
         artCountdownToggleWrapper.className = "custom-toggle";
         const artCountdownToggleButton = document.createElement("button");
@@ -1058,7 +743,6 @@ module.exports = class FolderManager {
         artCountdownToggleWrapper.appendChild(artCountdownToggleButton);
         artContent.appendChild(artCountdownToggleWrapper);
 
-        // AutoReadTrash Clear Button
         const artClearButton = document.createElement("button");
         artClearButton.className = "custom-clear-button";
         artClearButton.textContent = "Καθαρισμός AutoReadTrash IDs";
@@ -1070,7 +754,6 @@ module.exports = class FolderManager {
         };
         artContent.appendChild(artClearButton);
 
-        // Toggle functionality for AutoReadTrash section
         artHeader.onclick = () => {
             const isExpanded = artContent.classList.contains("expanded");
             if (isExpanded) {
@@ -1086,7 +769,6 @@ module.exports = class FolderManager {
         autoReadTrashSection.appendChild(artContent);
         modalContent.appendChild(autoReadTrashSection);
 
-        // --- HideFolders Section ---
         const hideFoldersSection = document.createElement("div");
         hideFoldersSection.className = "fm-section";
 
@@ -1103,7 +785,6 @@ module.exports = class FolderManager {
         const hfContent = document.createElement("div");
         hfContent.className = "fm-section-content";
 
-        // HideFolders Enable Toggle
         const hfToggleWrapper = document.createElement("div");
         hfToggleWrapper.className = "custom-toggle";
         const hfToggleButton = document.createElement("button");
@@ -1123,7 +804,6 @@ module.exports = class FolderManager {
         hfToggleWrapper.appendChild(hfToggleButton);
         hfContent.appendChild(hfToggleWrapper);
 
-        // HideFolders Folder IDs
         const hfFolderIdsWrapper = document.createElement("div");
         hfFolderIdsWrapper.style.marginBottom = "20px";
         const hfFolderIdsLabel = document.createElement("div");
@@ -1141,12 +821,11 @@ module.exports = class FolderManager {
             setTimeout(() => this.hideWrappers(), 100);
         };
         this.showWrappers();
-            setTimeout(() => this.hideWrappers(), 50);
+        setTimeout(() => this.hideWrappers(), 50);
         hfFolderIdsWrapper.appendChild(hfFolderIdsLabel);
         hfFolderIdsWrapper.appendChild(hfFolderIdsInput);
         hfContent.appendChild(hfFolderIdsWrapper);
 
-        // HideFolders Clear Button
         const hfClearButton = document.createElement("button");
         hfClearButton.className = "custom-clear-button";
         hfClearButton.textContent = "Καθαρισμός HideFolders IDs";
@@ -1159,7 +838,6 @@ module.exports = class FolderManager {
         };
         hfContent.appendChild(hfClearButton);
 
-        // Toggle functionality for HideFolders section
         hfHeader.onclick = () => {
             const isExpanded = hfContent.classList.contains("expanded");
             if (isExpanded) {
@@ -1175,7 +853,6 @@ module.exports = class FolderManager {
         hideFoldersSection.appendChild(hfContent);
         modalContent.appendChild(hideFoldersSection);
 
-        // Update Button
         const buttonWrapper = document.createElement("div");
         buttonWrapper.style.position = "relative";
         buttonWrapper.style.display = "flex";
@@ -1315,7 +992,7 @@ module.exports = class FolderManager {
         closeButton.onclick = () => {
             modalOverlay.style.opacity = "0";
             const updateButton = modalOverlay.querySelector("button");
-                if (updateButton) updateButton.remove();
+            if (updateButton) updateButton.remove();
             setTimeout(() => modalOverlay.remove(), 500);
         };
 
@@ -1333,8 +1010,6 @@ module.exports = class FolderManager {
             }
         };
     }
-
-    // --- Update Functionality ---
 
     async checkAndUpdate(container) {
         const results = container ? container.querySelector("#update-results") : null;
@@ -1402,6 +1077,8 @@ module.exports = class FolderManager {
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
                 }
+                // Show changelog dialog after successful update
+                this.showChangelogDialog(remoteVersion);
             } else {
                 if (results) {
                     const msg = document.createElement("div");
@@ -1434,6 +1111,83 @@ module.exports = class FolderManager {
             results.appendChild(msg);
         }
         this.showCustomToast2("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
+    }
+
+    showChangelogDialog(version) {
+        const dialogOverlay = document.createElement("div");
+        dialogOverlay.className = "fm-changelog-overlay";
+        dialogOverlay.style.opacity = "0";
+        dialogOverlay.style.transition = "opacity 0.5s ease";
+
+        setTimeout(() => {
+            dialogOverlay.style.opacity = "1";
+        }, 10);
+
+        const dialogContent = document.createElement("div");
+        dialogContent.className = "fm-changelog-content";
+        dialogContent.style.transform = "scale(0.9)";
+        dialogContent.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
+
+        setTimeout(() => {
+            dialogContent.style.transform = "scale(1)";
+            dialogContent.style.boxShadow = "0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1)";
+        }, 100);
+
+        const title = document.createElement("h2");
+        title.textContent = "📢 FolderManager Updated!";
+        title.style.animation = "neonGlow 1.5s ease-in-out infinite alternate";
+
+        dialogContent.appendChild(title);
+
+        const versionInfo = document.createElement("p");
+        versionInfo.className = "fm-changelog-version";
+        versionInfo.innerHTML = `<strong>Version:</strong> ${version}`;
+        dialogContent.appendChild(versionInfo);
+
+        const dateInfo = document.createElement("p");
+        dateInfo.className = "fm-changelog-date";
+        const today = new Date().toLocaleDateString("el-GR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric"
+        });
+        dateInfo.innerHTML = `<strong>Date:</strong> ${today}`;
+        dialogContent.appendChild(dateInfo);
+
+        const changelogTitle = document.createElement("h3");
+        changelogTitle.textContent = "What's New";
+        changelogTitle.style.color = "#00ffcc";
+        changelogTitle.style.marginTop = "20px";
+        changelogTitle.style.marginBottom = "10px";
+        dialogContent.appendChild(changelogTitle);
+
+        const changelog = document.createElement("ul");
+        changelog.className = "fm-changelog-list";
+        changelog.innerHTML = `
+            <li>Added changelog dialog to display version, date, and changes on manual updates.</li>
+            <li>Improved UI consistency with neon-themed styling.</li>
+            <li>Fixed minor bugs in notification queue processing.</li>
+        `;
+        dialogContent.appendChild(changelog);
+
+        const closeButton = document.createElement("button");
+        closeButton.className = "fm-changelog-close";
+        closeButton.textContent = "✕";
+        closeButton.onclick = () => {
+            dialogOverlay.style.opacity = "0";
+            setTimeout(() => dialogOverlay.remove(), 500);
+        };
+        dialogContent.appendChild(closeButton);
+
+        dialogOverlay.appendChild(dialogContent);
+        document.body.appendChild(dialogOverlay);
+
+        dialogOverlay.onclick = (e) => {
+            if (e.target === dialogOverlay) {
+                dialogOverlay.style.opacity = "0";
+                setTimeout(() => dialogOverlay.remove(), 500);
+            }
+        };
     }
 
     isNewerVersion(remote, local) {
@@ -1488,8 +1242,6 @@ module.exports = class FolderManager {
         }, 3000);
     }
 
-    // --- Icon Injection ---
-
     injectIcon() {
         try {
             const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
@@ -1538,7 +1290,6 @@ module.exports = class FolderManager {
                 if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
                     this.createAndInjectIcon(controls);
     
-                    // 🔥 Μόλις βάλουμε το εικονίδιο ➔ σταματάμε τον observer
                     this.observer.disconnect();
                     this.observer = null;
                     this._observerActive = false;
@@ -1551,8 +1302,6 @@ module.exports = class FolderManager {
         this._observerActive = true;
         this.log("✅ Ο observer ενεργοποιήθηκε");
     }
-    
-    
 
     createAndInjectIcon(controls) {
         const iconButton = document.createElement("button");
@@ -1609,8 +1358,6 @@ module.exports = class FolderManager {
             this.observer = null;
         }
     }
-
-    // --- Utility Methods ---
 
     showCustomToast2(text, type = "info") {
         const existingToast = document.querySelector('.fm-toast');
