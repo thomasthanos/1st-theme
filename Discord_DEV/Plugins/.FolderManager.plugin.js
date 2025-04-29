@@ -1135,14 +1135,16 @@ module.exports = class FolderManager {
 
         const title = document.createElement("h2");
         title.textContent = "📢 FolderManager Updated!";
-        title.style.animation = "neonGlow 1.5s ease-in-out infinite alternate";
-
+        title.className = "fm-changelog-title";
         dialogContent.appendChild(title);
+
+        const infoContainer = document.createElement("div");
+        infoContainer.className = "fm-changelog-info";
 
         const versionInfo = document.createElement("p");
         versionInfo.className = "fm-changelog-version";
         versionInfo.innerHTML = `<strong>Version:</strong> ${version}`;
-        dialogContent.appendChild(versionInfo);
+        infoContainer.appendChild(versionInfo);
 
         const dateInfo = document.createElement("p");
         dateInfo.className = "fm-changelog-date";
@@ -1152,14 +1154,17 @@ module.exports = class FolderManager {
             year: "numeric"
         });
         dateInfo.innerHTML = `<strong>Date:</strong> ${today}`;
-        dialogContent.appendChild(dateInfo);
+        infoContainer.appendChild(dateInfo);
+
+        dialogContent.appendChild(infoContainer);
+
+        const changelogSection = document.createElement("div");
+        changelogSection.className = "fm-changelog-section";
 
         const changelogTitle = document.createElement("h3");
         changelogTitle.textContent = "What's New";
-        changelogTitle.style.color = "#00ffcc";
-        changelogTitle.style.marginTop = "20px";
-        changelogTitle.style.marginBottom = "10px";
-        dialogContent.appendChild(changelogTitle);
+        changelogTitle.className = "fm-changelog-subtitle";
+        changelogSection.appendChild(changelogTitle);
 
         const changelog = document.createElement("ul");
         changelog.className = "fm-changelog-list";
@@ -1168,7 +1173,9 @@ module.exports = class FolderManager {
             <li>Improved UI consistency with neon-themed styling.</li>
             <li>Fixed minor bugs in notification queue processing.</li>
         `;
-        dialogContent.appendChild(changelog);
+        changelogSection.appendChild(changelog);
+
+        dialogContent.appendChild(changelogSection);
 
         const closeButton = document.createElement("button");
         closeButton.className = "fm-changelog-close";
