@@ -126,120 +126,6 @@
     line-height: 1;
 }
 
-.fm-changelog-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-}
-
-.fm-changelog-content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 30px;
-    background: linear-gradient(145deg, rgba(25, 25, 35, 0.9), rgba(15, 15, 25, 0.9));
-    border: 2px solid rgba(0, 255, 204, 0.3);
-    border-radius: 20px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.05);
-    color: #e0e0e0;
-    font-family: 'Orbitron', 'Segoe UI', sans-serif;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    background-image: linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-}
-
-.fm-changelog-title {
-    text-align: center;
-    color: #00ffcc;
-    font-size: 28px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5);
-    letter-spacing: 1px;
-    animation: neonGlow 1.5s ease-in-out infinite alternate;
-}
-
-.fm-changelog-info {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.fm-changelog-version,
-.fm-changelog-date {
-    font-size: 16px;
-    color: #a0a0c0;
-    margin: 5px 0;
-    opacity: 0;
-    animation: slideUp 0.6s ease forwards 0.3s;
-}
-
-.fm-changelog-section {
-    background: rgba(15, 15, 25, 0.7);
-    border-radius: 12px;
-    padding: 15px;
-    border: 1px solid rgba(0, 255, 204, 0.2);
-    box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.1);
-}
-
-.fm-changelog-subtitle {
-    color: #00ffcc;
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
-}
-
-.fm-changelog-list {
-    font-size: 14px;
-    color: #e0e0e0;
-    line-height: 1.6;
-    margin: 0;
-    padding-left: 20px;
-    opacity: 0;
-    animation: slideUp 0.6s ease forwards 0.5s;
-}
-
-.fm-changelog-list li {
-    margin-bottom: 8px;
-}
-
-.fm-changelog-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    color: #e0e0e0;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-}
-
-.fm-changelog-close:hover {
-    color: #ff5555;
-    border-color: #ff5555;
-    box-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
-}
-
 @keyframes neonGlow {
     from {
         text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.3);
@@ -347,5 +233,213 @@
 
 .custom-input:focus, .custom-textarea:focus {
     border-color: rgba(0, 255, 204, 0.6);
-    box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    outline: none;
+}
+
+.custom-textarea {
+    min-height: 80px;
+    resize: vertical;
+    scrollbar-width: none;
+}
+
+.custom-textarea::-webkit-scrollbar {
+    display: none;
+}
+
+.custom-label {
+    font-size: 14px;
+    color: #a0a0c0;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.custom-toggle {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.custom-toggle-button {
+    padding: 10px 20px;
+    background: linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2));
+    color: #00ffcc;
+    border: 2px solid #00ffcc;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+}
+
+.custom-toggle-button.off {
+    background: linear-gradient(145deg, rgba(100, 100, 100, 0.2), rgba(80, 80, 80, 0.2));
+    border: 2px solid #a0a0c0;
+    color: #a0a0c0;
+    box-shadow: 0 0 10px rgba(160, 160, 192, 0.3);
+}
+
+.custom-toggle-button:hover {
+    background: linear-gradient(145deg, rgba(0, 255, 204, 0.4), rgba(0, 204, 153, 0.4));
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.8);
+}
+
+.custom-toggle-button.off:hover {
+    background: linear-gradient(145deg, rgba(120, 120, 120, 0.4), rgba(100, 100, 100, 0.4));
+    box-shadow: 0 0 15px rgba(160, 160, 192, 0.5);
+}
+
+.custom-clear-button {
+    padding: 10px 20px;
+    background: linear-gradient(145deg, rgba(255, 85, 85, 0.2), rgba(204, 0, 0, 0.2));
+    color: #ff5555;
+    border: 2px solid #ff5555;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
+    margin: 10px auto;
+    display: block;
+}
+
+/* Changelog Dialog Styles */
+.fm-changelog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.fm-changelog-content {
+    padding: 30px;
+    background: rgba(25, 25, 35, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+    font-family: 'Orbitron', 'Segoe UI', sans-serif;
+    max-width: 550px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.fm-changelog-content:hover {
+    transform: scale(1);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.fm-changelog-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    color: #e0e0e0;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.fm-changelog-close:hover {
+    color: #ff5555;
+    border-color: #ff5555;
+    box-shadow: 0 0 10px rgba(255, 85, 85, 0.5);
+}
+
+.fm-changelog-close:focus {
+    outline: none;
+}
+
+.fm-changelog-title {
+    text-align: center;
+    color: #00ffcc;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5);
+    letter-spacing: 1px;
+    animation: neonGlow 1.5s ease-in-out infinite alternate;
+}
+
+.fm-changelog-info {
+    text-align: center;
+    font-size: 16px;
+    color: #a0a0c0;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: slideUp 0.6s ease forwards 0.3s;
+}
+
+.fm-changelog-version,
+.fm-changelog-date {
+    margin: 5px 0;
+}
+
+.fm-changelog-section {
+    margin-bottom: 20px;
+    background: rgba(15, 15, 25, 0.5);
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.fm-changelog-subtitle {
+    color: #00ffcc;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+}
+
+.fm-changelog-list {
+    list-style: none;
+    padding: 0;
+    color: #e0e0e0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.fm-changelog-list li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.fm-changelog-list li:before {
+    content: "▹";
+    position: absolute;
+    left: 0;
+    color: #00ffcc;
+    font-size: 14px;
 }
