@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.9
+ * @version 12.1.9
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.0.9";
+        return "12.1.9";
     }
 
     initializeSettings() {
@@ -1029,6 +1029,51 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">Status: Not Installed</div>
+                        <div class="fm-changelog-date">Checked: ${new Date().toLocaleDateString()}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>The plugin <b>${pluginName}</b> is not installed.</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
                 return;
             }
@@ -1045,6 +1090,51 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">Status: Version Not Found</div>
+                        <div class="fm-changelog-date">Checked: ${new Date().toLocaleDateString()}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>Could not find version for <b>${pluginName}</b>.</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
                 return;
             }
@@ -1057,6 +1147,51 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">Version: ${localVersion}</div>
+                        <div class="fm-changelog-date">Checked: ${new Date().toLocaleDateString()}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>You are already up to date! (<code>${localVersion}</code>)</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
                 return;
             }
@@ -1068,6 +1203,52 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">New Version: ${remoteVersion}</div>
+                        <div class="fm-changelog-date">Current Version: ${localVersion}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>A new version of <b>${pluginName}</b> was found: <code>${remoteVersion}</code>.</li>
+                            <li>Updating now...</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
                 await this.downloadUpdate({ filename, updateUrl }, code);
                 if (results) {
@@ -1076,6 +1257,51 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">Version: ${remoteVersion}</div>
+                        <div class="fm-changelog-date">Updated: ${new Date().toLocaleDateString()}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>The plugin <b>${pluginName}</b> has been updated to version <code>${remoteVersion}</code>!</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
             } else {
                 if (results) {
@@ -1084,6 +1310,51 @@ module.exports = class FolderManager {
                     msg.style.opacity = "0";
                     msg.style.animation = "terminalText 0.5s ease forwards";
                     results.appendChild(msg);
+                } else {
+                    const changelogOverlay = document.createElement("div");
+                    changelogOverlay.className = "fm-changelog-overlay";
+
+                    const changelogContent = document.createElement("div");
+                    changelogContent.className = "fm-changelog-content";
+
+                    const closeButton = document.createElement("button");
+                    closeButton.className = "fm-changelog-close";
+                    closeButton.textContent = "✕";
+                    closeButton.onclick = () => {
+                        changelogOverlay.style.opacity = "0";
+                        setTimeout(() => changelogOverlay.remove(), 500);
+                    };
+                    changelogContent.appendChild(closeButton);
+
+                    const title = document.createElement("h2");
+                    title.className = "fm-changelog-title";
+                    title.textContent = "📢 FolderManager Update";
+                    changelogContent.appendChild(title);
+
+                    const info = document.createElement("div");
+                    info.className = "fm-changelog-info";
+                    info.innerHTML = `
+                        <div class="fm-changelog-version">Version: ${localVersion}</div>
+                        <div class="fm-changelog-date">Checked: ${new Date().toLocaleDateString()}</div>
+                    `;
+                    changelogContent.appendChild(info);
+
+                    const section = document.createElement("div");
+                    section.className = "fm-changelog-section";
+                    section.innerHTML = `
+                        <h3 class="fm-changelog-subtitle">Details</h3>
+                        <ul class="fm-changelog-list">
+                            <li>The plugin <b>${pluginName}</b> is up to date (<code>${localVersion}</code>).</li>
+                        </ul>
+                    `;
+                    changelogContent.appendChild(section);
+
+                    changelogOverlay.appendChild(changelogContent);
+                    document.body.appendChild(changelogOverlay);
+
+                    setTimeout(() => {
+                        changelogOverlay.style.opacity = "1";
+                    }, 10);
                 }
             }
         } catch (err) {
@@ -1094,6 +1365,51 @@ module.exports = class FolderManager {
                 msg.style.opacity = "0";
                 msg.style.animation = "terminalText 0.5s ease forwards";
                 results.appendChild(msg);
+            } else {
+                const changelogOverlay = document.createElement("div");
+                changelogOverlay.className = "fm-changelog-overlay";
+
+                const changelogContent = document.createElement("div");
+                changelogContent.className = "fm-changelog-content";
+
+                const closeButton = document.createElement("button");
+                closeButton.className = "fm-changelog-close";
+                closeButton.textContent = "✕";
+                closeButton.onclick = () => {
+                    changelogOverlay.style.opacity = "0";
+                    setTimeout(() => changelogOverlay.remove(), 500);
+                };
+                changelogContent.appendChild(closeButton);
+
+                const title = document.createElement("h2");
+                title.className = "fm-changelog-title";
+                title.textContent = "📢 FolderManager Update";
+                changelogContent.appendChild(title);
+
+                const info = document.createElement("div");
+                info.className = "fm-changelog-info";
+                info.innerHTML = `
+                    <div class="fm-changelog-version">Status: Error</div>
+                    <div class="fm-changelog-date">Checked: ${new Date().toLocaleDateString()}</div>
+                `;
+                changelogContent.appendChild(info);
+
+                const section = document.createElement("div");
+                section.className = "fm-changelog-section";
+                section.innerHTML = `
+                    <h3 class="fm-changelog-subtitle">Details</h3>
+                    <ul class="fm-changelog-list">
+                        <li>Error for <b>${pluginName}</b>: ${err.message}</li>
+                    </ul>
+                `;
+                changelogContent.appendChild(section);
+
+                changelogOverlay.appendChild(changelogContent);
+                document.body.appendChild(changelogOverlay);
+
+                setTimeout(() => {
+                    changelogOverlay.style.opacity = "1";
+                }, 10);
             }
         }
 
