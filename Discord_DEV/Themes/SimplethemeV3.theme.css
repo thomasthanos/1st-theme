@@ -65,7 +65,9 @@
  *      - user profile button
  *      - badges ui 
  *      - id copy minimal
+ *?7 Discord Login Start Page
  */
+
 
 :root {
     --server-size: 45px; /* Size of the server icons */
@@ -2812,3 +2814,97 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 [class="colorStandard_c9946a size14_a4e6b9 description_ddd181 formText_ddd181 description_d286c5 modeDefault_ddd181"]{
     display: none;
 }
+/* 7 Discord Login Start Page */
+/* Discord Login Start Page */
+/* Background image */
+.characterBackground_eb4069 {
+    background-image: url("https://i.postimg.cc/8sQdN5N8/Chat-GPT-Image-30-2025-11-38-13.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+/* Απόκρυψη του αρχικού <img> background εφόσον θέλουμε μόνο background μέσω CSS */
+.characterBackground_eb4069 > .artwork_eb4069 {
+    display: none;
+}
+/* Logo with text styling */
+.logoWithText_eb4069 {
+    content: url("https://i.postimg.cc/KcJRb4ct/thomasthanos-troll-fancy-copy.png");
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 510px; /* Μπορείς να το αλλάξεις */
+    height: auto;
+    z-index: 10;
+}
+/* Μοντέρνα εμφάνιση για ολόκληρο το login container */
+.authBoxExpanded__921c5.authBox__921c5.theme-dark.images-dark {
+    background-color: #0f1117 !important;
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+    border: 1px solid #1c1f26;
+    font-family: 'Segoe UI', sans-serif;
+}
+/* Τίτλος */
+.authBox__921c5 h1 {
+    font-size: 26px;
+    color: #fff;
+    font-weight: 600;
+}
+/* Υπότιτλος */
+.authBox__921c5 .text-md__normal_cf418e {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+/* Ετικέτες των input fields */
+.authBox__921c5 label {
+    color: #ccc;
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
+}
+/* Inputs */
+.authBox__921c5 input {
+    background-color: #181b22 !important;
+    border: 1px solid #2a2d34 !important;
+    color: #fff !important;
+    border-radius: 10px !important;
+    padding: 10px;
+    width: 100%;
+    transition: border 0.2s ease;
+}
+.authBox__921c5 input:focus {
+    border-color: #7289da !important;
+    outline: none;
+}
+/* Κουμπί Login */
+.authBox__921c5 button[type="submit"] {
+    background: linear-gradient(135deg, #5865F2, #404EED);
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    width: 100%;
+    margin-top: 10px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.authBox__921c5 button[type="submit"]:hover {
+    background: linear-gradient(135deg, #6d78fa, #505ced);
+    transform: scale(1.02);
+}
+/* Link buttons (Forgot password, Register, Passkey) */
+.authBox__921c5 a,
+.authBox__921c5 button[class*="lookLink__"] {
+    color: #7289da !important;
+    font-size: 13px;
+    transition: opacity 0.2s ease;
+}
+.authBox__921c5 a:hover,
+.authBox__921c5 button[class*="lookLink__"]:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
