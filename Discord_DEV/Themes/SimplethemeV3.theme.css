@@ -178,7 +178,7 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
     height: 24px;
     position: absolute;
     clip-path: path(
-        "M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7Z"
+            "M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7Z"
     );
 }
 
@@ -219,7 +219,7 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
 .visual-refresh section.panels_c48ade {
     margin-left: var(--custom-guild-list-width);
     width: calc(
-        100% - var(--space-xs) * 2 - var(--custom-guild-list-width)
+            100% - var(--space-xs) * 2 - var(--custom-guild-list-width)
     ) !important;
 }
 .actionButtons_e131a9 button {
@@ -250,10 +250,10 @@ nav.guilds_c48ade {
 
 /* Header */
 .heading-lg/bold_cf481e {
-    color: #ffffff;
-    font-size: 16px;
-    margin-bottom: 8px;
-}
+                color: #ffffff;
+                font-size: 16px;
+                margin-bottom: 8px;
+            }
 
 /* Tabs (like "Connection") */
 .tabBarItem__503f7 {
@@ -425,7 +425,7 @@ path[fill="var(--text-positive)"] {
     border-radius: 12px !important;
     background: linear-gradient(to bottom right, #1f1f23, #131314) !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
-        0 1px 2px rgba(255, 255, 255, 0.05) inset;
+    0 1px 2px rgba(255, 255, 255, 0.05) inset;
     border: 1px solid rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(6px);
     transition: all 0.3s ease-in-out;
@@ -852,10 +852,10 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
     flex: 1 1 auto;
     height: 1px;
     background: linear-gradient(
-        to right,
-        transparent,
-        rgba(255, 255, 255, 0.1),
-        transparent
+            to right,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
     );
     margin: 0 12px;
 }
@@ -889,7 +889,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
     border-radius: 4px 0 0 4px;
     transform: scaleY(0.9);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s ease,
-        background 0.3s ease;
+    background 0.3s ease;
 }
 
 .mentioned__5126c,
@@ -1032,9 +1032,9 @@ div[role="button"][aria-label="Ρυθμίσεις ειδοποιήσεων"] {
     border-radius: 8px;
     outline: none;
     transition: background-color 0.25s ease, box-shadow 0.25s ease,
-        border-radius 0.25s ease;
+    border-radius 0.25s ease;
     box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.05),
-        inset -1px -1px 2px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.6);
+    inset -1px -1px 2px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 /* Hover με έντονο 3D */
 .theme-dark .scrollableContainer__74017:hover,
@@ -1042,7 +1042,7 @@ div[role="button"][aria-label="Ρυθμίσεις ειδοποιήσεων"] {
     background-color: #2a2a2a;
     border-radius: 10px;
     box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.02),
-        0 4px 10px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.25);
+    0 4px 10px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.25);
     transform: translateY(-1px);
     transition: all 0.3s ease;
 }
@@ -1136,10 +1136,10 @@ body {
 
 .visual-refresh {
     --custom-guild-list-width: calc(
-        var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
+            var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
     );
     /* panel separation */
-    .guilds_c48ade /* server list */, 
+    .guilds_c48ade /* server list */,
     .sidebarList_c48ade /* channel list (includes dm list) */,
     .panels_c48ade /* user panel */,
     .chat_f75fb0 > .subtitleContainer_f75fb0 /* chat titlebar */,
@@ -1255,7 +1255,7 @@ body {
     }
     .divider__908e2 .content__908e2 {
         margin-top: calc(
-            var(--divider-thickness) - var(--divider-thickness) * 2
+                var(--divider-thickness) - var(--divider-thickness) * 2
         );
     }
 
@@ -1303,7 +1303,7 @@ body {
     .visual-refresh {
         .form_f75fb0 {
             margin: 0 var(--chatbar-padding) var(--chatbar-padding)
-                var(--chatbar-padding);
+            var(--chatbar-padding);
             padding: 0;
             --chatbar-border-color: var(--border-faint);
         }
@@ -1357,11 +1357,11 @@ body {
 }
 .visual-refresh {
     --custom-guild-list-width: calc(
-        var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
+            var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
     );
 
     /* panel separation */
-    .guilds_c48ade /* server list */, 
+    .guilds_c48ade /* server list */,
     .sidebarList_c48ade /* channel list (includes dm list) */,
     .panels_c48ade /* user panel */,
     .chat_f75fb0 > .subtitleContainer_f75fb0 /* chat titlebar */,
@@ -1523,74 +1523,74 @@ body {
     padding-right: 88px;
     box-sizing: content-box;
     transition: padding .2s;
-  
+
     &:before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      margin: 12px;
-      width: 32px;
-      height: 32px;
-      transition: margin .1s .2s, height .1s .2s, width .3s;
-      background: rgb(30, 66, 121);
-      border-radius: 32px;
+        content: "";
+        position: absolute;
+        inset: 0;
+        margin: 12px;
+        width: 32px;
+        height: 32px;
+        transition: margin .1s .2s, height .1s .2s, width .3s;
+        background: rgb(30, 66, 121);
+        border-radius: 32px;
     }
     &:last-child {
-      padding-right: 12px;
+        padding-right: 12px;
     }
-  
+
     >* {
-      z-index: 1;
+        z-index: 1;
     }
     .videoButton_cf09d8 {
-      background-color: var(--brand-500);
-      border-radius: var(--radius-round);
-      position: absolute;
-      top: -30px;
-      transition: .2s;
+        background-color: var(--brand-500);
+        border-radius: var(--radius-round);
+        position: absolute;
+        top: -30px;
+        transition: .2s;
     }
     .flex_abf706 {
-      background-color: var(--brand-500);
-      border-radius: var(--radius-round);
-      margin-left: 4px;
-      margin-top: -34px;
-      order: 2;
-      transition: .2s;
+        background-color: var(--brand-500);
+        border-radius: var(--radius-round);
+        margin-left: 4px;
+        margin-top: -34px;
+        order: 2;
+        transition: .2s;
     }
     .horizontal_b26b79 {
-      margin-left: 40px;
-      margin-right: 12px;
-      .mediaBarWrapper_b26b79 {
-        box-shadow: unset;
-        margin-top: 3px;
-        height: 3px;
-      }
-      .mediaBarProgress_b26b79, .mediaBarGrabber_b26b79 {
-        background-color: var(--text-normal);
-      }
+        margin-left: 40px;
+        margin-right: 12px;
+        .mediaBarWrapper_b26b79 {
+            box-shadow: unset;
+            margin-top: 3px;
+            height: 3px;
+        }
+        .mediaBarProgress_b26b79, .mediaBarGrabber_b26b79 {
+            background-color: var(--text-normal);
+        }
     }
     .mediaBarProgress_b26b79:before, .mediaBarProgress_b26b79:after {
-      background: inherit;
+        background: inherit;
     }
     .durationTimeWrapper_cf09d8 {
-      margin-left: -4px;
-      margin-top: -30px;
-      order: 1;
-      transition: .2s;
-      span {
-        font-family: var(--font-primary);
-      }
+        margin-left: -4px;
+        margin-top: -30px;
+        order: 1;
+        transition: .2s;
+        span {
+            font-family: var(--font-primary);
+        }
     }
-  }
-  .mosaicItem__6c706:has(a:first-child:last-child) {
+}
+.mosaicItem__6c706:has(a:first-child:last-child) {
     .wrapperAudio_cf09d8 {
-      padding-right: 50px;
-      + .hoverButtonGroup__06ab4 {
-        margin-left: -44px;
-      }
+        padding-right: 50px;
+        + .hoverButtonGroup__06ab4 {
+            margin-left: -44px;
+        }
     }
-  }
-  .wrapperAudio_cf09d8 + .hoverButtonGroup__06ab4 {
+}
+.wrapperAudio_cf09d8 + .hoverButtonGroup__06ab4 {
     background: transparent;
     margin-left: -82px;
     flex-direction: row-reverse;
@@ -1599,73 +1599,73 @@ body {
     opacity: 1 !important;
     outline: unset;
     > * {
-      background: var(--brand-500);
-      border-radius: var(--radius-round);
-      color: var(--white);
-      transition: .2s;
-      > svg {
-        opacity: .8;
-      }
-      &:hover > svg {
-        opacity: 1;
-      }
+        background: var(--brand-500);
+        border-radius: var(--radius-round);
+        color: var(--white);
+        transition: .2s;
+        > svg {
+            opacity: .8;
+        }
+        &:hover > svg {
+            opacity: 1;
+        }
     }
-  }
-  .wrapperAudio_cf09d8:has([d="M6 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6ZM15 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3Z"]) {
+}
+.wrapperAudio_cf09d8:has([d="M6 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6ZM15 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3Z"]) {
     &:before {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      transition: margin .1s, height .1s, width .3s;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        transition: margin .1s, height .1s, width .3s;
     }
     .metadataDownload_cf09d8 {
-      color: var(--white);
+        color: var(--white);
     }
     .metadataSize_cf09d8 {
-      color: hsl(var(--white-500-hsl) / .8);
+        color: hsl(var(--white-500-hsl) / .8);
     }
     .videoButton_cf09d8, .flex_abf706 {
-      background-color: var(--white);
+        background-color: var(--white);
     }
     .controlIcon_cf09d8 {
-      color: var(--brand-500);
+        color: var(--brand-500);
     }
     .horizontal_b26b79 {
-      .mediaBarProgress_b26b79, .mediaBarGrabber_b26b79 {
-        background-color: var(--white);
-      }
+        .mediaBarProgress_b26b79, .mediaBarGrabber_b26b79 {
+            background-color: var(--white);
+        }
     }
     + .hoverButtonGroup__06ab4 > * {
-      background: var(--white);
-      color: var(--brand-500);
+        background: var(--white);
+        color: var(--brand-500);
     }
-  }
-  
-  .audioMetadata_cf09d8 {
+}
+
+.audioMetadata_cf09d8 {
     margin-left: 36px;
     margin-top: -4px;
     &:before {
-      display: none;
+        display: none;
     }
-  }
-  .metadataDownload_cf09d8, .metadataSize_cf09d8, .controlIcon_cf09d8 {
+}
+.metadataDownload_cf09d8, .metadataSize_cf09d8, .controlIcon_cf09d8 {
     transition: .2s;
-  }
-  
-  .audioControls_cf09d8 {
+}
+
+.audioControls_cf09d8 {
     background: transparent !important;
     margin-top: 0;
     margin-bottom: -4px;
-  }
-  .controlIcon_cf09d8 {
+}
+.controlIcon_cf09d8 {
     opacity: .8;
-  }
-  .mediaBarProgress_b26b79, .mediaBarProgress_b26b79:before, .mediaBarProgress_b26b79:after {
+}
+.mediaBarProgress_b26b79, .mediaBarProgress_b26b79:before, .mediaBarProgress_b26b79:after {
     transition: background-color .2s;
-  }
-  .theme-light .wrapperAudio_cf09d8:not(:has([d="M6 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6ZM15 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3Z"])) .durationTimeWrapper_cf09d8 {
+}
+.theme-light .wrapperAudio_cf09d8:not(:has([d="M6 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6ZM15 4a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-3Z"])) .durationTimeWrapper_cf09d8 {
     color: #000;
-  }
+}
 /* BOT Tag Styling */
 .botTag__82f07,
 .botTagCozy_c19a55 {
@@ -1807,7 +1807,7 @@ body {
 #popout_975 .messageGroupWrapper__45690:hover {
     background-color: #313338 !important;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 /*! Search minimal */
 :root {
@@ -1884,10 +1884,10 @@ body {
 /* Αφαίρεση προεπιλεγμένου background */
 [class="container_a2f514 fixClipping_efbae7"] {
     background: none !important;
-  }
-  
-  /* Κύριο container με Material Dark φόντο */
-  .container_a2f514 {
+}
+
+/* Κύριο container με Material Dark φόντο */
+.container_a2f514 {
     background: #121212;
     position: relative;
     width: 100%;
@@ -1895,45 +1895,45 @@ body {
     padding-left: 40px;
     padding-right: 40px;
     box-sizing: border-box;
-  }
-  
-  /* Σύνδεσμοι με Material Design Purple χρώμα */
-  .container_a2f514 .anchor-1MIwyf {
+}
+
+/* Σύνδεσμοι με Material Design Purple χρώμα */
+.container_a2f514 .anchor-1MIwyf {
     pointer-events: auto;
     color: #bb86fc;
     text-decoration: none;
     transition: color 0.3s ease;
-  }
-  
-  .container_a2f514 .anchor-1MIwyf:hover {
+}
+
+.container_a2f514 .anchor-1MIwyf:hover {
     color: #d0b0ff;
-  }
-  
-  /* Απόκρυψη κειμένου */
-  .container_a2f514 .content_a2f514 .text_a2f514 {
+}
+
+/* Απόκρυψη κειμένου */
+.container_a2f514 .content_a2f514 .text_a2f514 {
     display: none;
-  }
-  
-  /* Discord logo – τοποθέτηση πάνω από τα προβλήματα */
-  .container_a2f514 .ready_a2f514 {
+}
+
+/* Discord logo – τοποθέτηση πάνω από τα προβλήματα */
+.container_a2f514 .ready_a2f514 {
     position: absolute;
     bottom: 135px;
     left: 90%;
     transform: translateX(-50%);
     z-index: 1;
-  }
-  
-  /* Εικόνες και βίντεο σε στυλ Material Design */
-  .container_a2f514 img,
-  .container_a2f514 video {
+}
+
+/* Εικόνες και βίντεο σε στυλ Material Design */
+.container_a2f514 img,
+.container_a2f514 video {
     width: 120px;
     height: 120px;
     border-radius: 16px;
     object-fit: cover;
-  }
-  
-  /* Κάρτα προβλημάτων στο κάτω μέρος */
-  .container_a2f514 .problems_a2f514 {
+}
+
+/* Κάρτα προβλημάτων στο κάτω μέρος */
+.container_a2f514 .problems_a2f514 {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1947,48 +1947,48 @@ body {
     -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.4);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  /* Στυλ εικονιδίων (Twitter & Discord) */
-  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"],
-  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] {
+}
+
+/* Στυλ εικονιδίων (Twitter & Discord) */
+[class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"],
+[class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] {
     font-size: 0;
     margin: 8px 4px;
-  }
-  
-  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"] svg,
-  [class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] svg {
+}
+
+[class="anchor_edefb8 anchorUnderlineOnHover_edefb8 twitterLink_a2f514 links_a2f514"] svg,
+[class="anchor_edefb8 anchorUnderlineOnHover_edefb8 statusLink_a2f514 links_a2f514"] svg {
     color: #ffffff;
-  }
-  
-  /* Wrapper για κεντράρισμα των εικονιδίων */
-  .container_a2f514 .problems_a2f514 > div:last-child {
+}
+
+/* Wrapper για κεντράρισμα των εικονιδίων */
+.container_a2f514 .problems_a2f514 > div:last-child {
     display: flex;
     justify-content: center;
     gap: 10px;
-  }
-  
-  /* Κείμενο προβλήματος με Comic Sans και Amber */
-  [class="problemsText_a2f514"] {
+}
+
+/* Κείμενο προβλήματος με Comic Sans και Amber */
+[class="problemsText_a2f514"] {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     color: #ffb300;
     font-weight: 400;
     letter-spacing: 0.5px;
     font-size: 0;
     text-shadow: none;
-  }
-  
-  /* Περιεχόμενο προβλήματος */
-  [class="problemsText_a2f514"]::before {
+}
+
+/* Περιεχόμενο προβλήματος */
+[class="problemsText_a2f514"]::before {
     content: "The internet crashed";
     font-size: large;
     justify-content: center;
     display: flex;
-  }
+}
 /*! server channel ui*/
 .containerDefault_c69b6d.selected-37j_iU
-    .modeSelected__2ea32
-    .link__2ea32::before,
+.modeSelected__2ea32
+.link__2ea32::before,
 .modeSelected__2ea32 .link__2ea32::before,
 .modeSelected__2ea32:hover .link__2ea32::before {
     content: "";
@@ -1999,9 +1999,9 @@ body {
     width: 170px;
     border-radius: 4px 0 0 4px;
     background: linear-gradient(
-        to bottom right,
-        var(--themeColor1),
-        var(--themeColor2)
+            to bottom right,
+            var(--themeColor1),
+            var(--themeColor2)
     );
     -webkit-mask: linear-gradient(to right, #000, Transparent);
     opacity: 0.5;
@@ -2016,9 +2016,9 @@ body {
     width: 5px;
     border-radius: 4px 0 0 4px;
     background: linear-gradient(
-        to bottom right,
-        var(--themeColor1),
-        var(--themeColor2)
+            to bottom right,
+            var(--themeColor1),
+            var(--themeColor2)
     );
     z-index: 1;
 }
@@ -2044,9 +2044,9 @@ body {
     width: 10px;
     border-radius: 4px 0 0 4px;
     background: linear-gradient(
-        to bottom right,
-        var(--unread3),
-        var(--unread4)
+            to bottom right,
+            var(--unread3),
+            var(--unread4)
     );
     -webkit-mask: linear-gradient(to right, #000, Transparent);
     z-index: 1;
@@ -2084,9 +2084,9 @@ body {
     flex-grow: 1;
     transition: all 0.3s ease-in-out;
     background: linear-gradient(
-        to right,
-        var(--channel-color) 50%,
-        transparent
+            to right,
+            var(--channel-color) 50%,
+            transparent
     );
     margin-left: 5px;
 }
@@ -2503,10 +2503,10 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 
 [class="background_fb62e2"] {
     background: linear-gradient(
-        90deg,
-        rgb(136, 151, 167) 0%,
-        rgb(146, 120, 125) 50%,
-        rgb(111, 95, 124) 100%
+            90deg,
+            rgb(136, 151, 167) 0%,
+            rgb(146, 120, 125) 50%,
+            rgb(111, 95, 124) 100%
     ) !important;
     border-radius: 50px !important;
 }
@@ -2518,16 +2518,16 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 .border__2f4f7.speaking__2f4f7 {
     /* speaking μιλαω*/
     -webkit-box-shadow: inset 0 0 0 2px var(--green-360),
-        inset 0 0 0 3px var(--black-500);
+    inset 0 0 0 3px var(--black-500);
     box-shadow: inset 0 0 3px 2px rgb(0, 160, 160),
-        inset 0 0 27px 4px rgb(0, 90, 90);
+    inset 0 0 27px 4px rgb(0, 90, 90);
     border-radius: 20px !important;
     transition: 350ms ease-in-out !important;
 }
 /*! My account */
 /* user profile button */
 .userInfo__1fed1
-    .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
+.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
     background-color: #2f3136 !important;
     color: transparent !important; /* Hide default text */
     border-radius: 8px;
@@ -2544,7 +2544,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 }
 /* Insert custom label */
 .userInfo__1fed1
-    .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5::after {
+.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5::after {
     content: "Edit Profile";
     color: #e0e0e0;
     position: absolute;
@@ -2556,7 +2556,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 }
 /* Hover effect */
 .userInfo__1fed1
-    .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
+.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
     background-color: #3a3c42 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
@@ -2570,13 +2570,13 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     gap: 6px;
     max-width: 100%;
     box-shadow: inset 0 0 10px rgb(0, 0, 0),
-        0 1px 2px rgba(255, 255, 255, 0.205); /* 3D γραμμή γύρω */
+    0 1px 2px rgba(255, 255, 255, 0.205); /* 3D γραμμή γύρω */
 }
 
 .badgeList__1fed1 > * {
     border-radius: 6px;
     box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.05),
-        0 1px 2px rgba(0, 0, 0, 0.25);
+    0 1px 2px rgba(0, 0, 0, 0.25);
     transition: transform 0.2s ease;
 }
 
@@ -2637,7 +2637,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 [id^="copy-id-devmode-copy-id"]:hover {
     background-color: rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3),
-        inset 0 0 1px rgba(255, 255, 255, 0.04);
+    inset 0 0 1px rgba(255, 255, 255, 0.04);
     transform: translateY(-0.5px);
     transition: all 0.2s ease;
 }
@@ -2662,10 +2662,10 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35) !important;
     border: 1px solid rgba(255, 255, 255, 0.06) !important;
     transition: all 0.2s ease-in-out;
-  }
-  
-  /* Hover effect */
-  .fieldButton__1fed1.button__201d5.lookFilled__201d5.colorPrimary__201d5.sizeSmall__201d5.grow__201d5:hover {
+}
+
+/* Hover effect */
+.fieldButton__1fed1.button__201d5.lookFilled__201d5.colorPrimary__201d5.sizeSmall__201d5.grow__201d5:hover {
     background-color: #384047 !important;
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
@@ -2701,10 +2701,10 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     padding: 6px 16px !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease-in-out;
-  }
-  
-  /* Hover effect */
-  [class="changePasswordButton__2666b button__201d5 lookFilled__201d5 colorBrand__201d5 sizeSmall__201d5 grow__201d5"]:hover {
+}
+
+/* Hover effect */
+[class="changePasswordButton__2666b button__201d5 lookFilled__201d5 colorBrand__201d5 sizeSmall__201d5 grow__201d5"]:hover {
     background-color: #2d2d35 !important;
     transform: translateY(-1px);
 }
@@ -2714,8 +2714,8 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 
 
 
-  /* Κουμπιά UI styling */
-  .flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
+/* Κουμπιά UI styling */
+.flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
     background-color: #1A1A1E !important;
     color: #ffffff !important;
     border-radius: 8px !important;
@@ -2726,10 +2726,10 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: all 0.25s ease;
     border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  
-  /* Hover effect */
-  .flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
+}
+
+/* Hover effect */
+.flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
     background-color: #2a2a2e !important;
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
@@ -2752,36 +2752,36 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     transition: all 0.2s ease;
     gap: 10px;
-  }
-  
-  .credentialItem__6c75d:hover {
+}
+
+.credentialItem__6c75d:hover {
     background-color: #232327 !important;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* Τίτλος συσκευής */
-  .credentialItem__6c75d .text-md\.semibold_cf4812 {
+}
+
+/* Τίτλος συσκευής */
+.credentialItem__6c75d .text-md\.semibold_cf4812 {
     color: #fff !important;
     font-size: 13px;
     font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  /* Κουμπί με τις τελείες */
-  .credentialItem__6c75d .button__201d5 {
+}
+
+/* Κουμπί με τις τελείες */
+.credentialItem__6c75d .button__201d5 {
     padding: 4px;
     background: transparent;
     border-radius: 6px;
     color: #bbb !important;
     transition: background 0.2s ease, color 0.2s ease;
-  }
-  
-  .credentialItem__6c75d .button__201d5:hover {
+}
+
+.credentialItem__6c75d .button__201d5:hover {
     background-color: rgba(255, 255, 255, 0.08);
     color: #fff !important;
-  }
+}
 /* Εναλλακτική - Επηρεάζει όλα τα κουμπιά στο κάτω μέρος */
 [class*="marginTop40_"] .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
     background-color: #1A1A1E !important;
@@ -2793,7 +2793,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
 
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: all 0.2s ease;
-  }
+}
 
 /* Hover */
 [class*="marginTop40_"] .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
@@ -2808,7 +2808,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     margin-left: auto;
     margin-right: auto;
     width: fit-content;
-  }
+}
 [class="colorStandard_c9946a size14_a4e6b9 description_ddd181 formText_ddd181 description_d286c5 modeDefault_ddd181"]{
     display: none;
 }
