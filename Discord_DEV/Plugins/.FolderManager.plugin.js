@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.2.9
+ * @version 12.3.9
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.2.9";
+        return "12.3.9";
     }
 
     initializeSettings() {
@@ -1211,10 +1211,7 @@ module.exports = class FolderManager {
                 if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
                     this.createAndInjectIcon(controls);
 
-                    this.observer.disconnect();
-                    this.observer = null;
-                    this._observerActive = false;
-                    this.log("✅ Observer απενεργοποιήθηκε αφού ολοκληρώθηκε το inject.");
+                    this.log("✅ Observer παρέμεινε ενεργός για συνεχή έλεγχο.");
                 }
             }
         });
