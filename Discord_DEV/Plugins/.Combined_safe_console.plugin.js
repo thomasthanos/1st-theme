@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.0.5
+ * @version 3.0.6
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -35,7 +35,9 @@ module.exports = class ThomasTCombined {
             "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]", "[MessageQueue]",
             "[Connection(default)]", "[RTCConnection(1366118296042340453, stream)]", "[RTCLatencyTestManager]", "[FetchBlockedDomain]",
             "[AVError]","[RTCConnection(1216757265391161537, default)]","[discord_protos.discord_users.v1.PreloadedUserSettings]",
-            "[StreamTile]","[PopoutWindowStore]","[PostMessageTransport]","[sentry.29ec565af5090e88.js:14 [ComponentDispatchUtils]"
+            "[StreamTile]","[PopoutWindowStore]","[PostMessageTransport]","[sentry.29ec565af5090e88.js:14 [ComponentDispatchUtils]",
+            "[discord_protos.discord_users.v1.FrecencyUserSettings]","[ZeresPluginLibrary]","[HideMutedCategories]","[discord_protos.discord_users.v1.FrecencyUserSettings]",
+            "[Flux]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 

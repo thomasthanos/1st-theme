@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.0.9
+ * @version 12.2.9
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.0.9";
+        return "12.2.9";
     }
 
     initializeSettings() {
@@ -71,7 +71,7 @@ module.exports = class FolderManager {
         if (this._isSaving) {
             this.log("⏳ Αποφεύχθηκε διπλός καθαρισμός λόγω ενεργού αποθήκευσης.");
             return;
-        }         
+        }
         if (this._saveDebounce) {
             clearTimeout(this._saveDebounce);
         }
@@ -89,7 +89,7 @@ module.exports = class FolderManager {
 
     async retryUICreation() {
         try {
-            const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 5000);
+            const guildsWrapper = await this.waitForElement('[data-list-id="guildsnav"]', 5000);
             if (!document.querySelector('.art-countdown') && this.settings.autoReadTrash.showCountdown) {
                 await this.createCountdownUI();
                 this.log("✅ Countdown UI δημιουργήθηκε επιτυχώς");
@@ -154,7 +154,7 @@ module.exports = class FolderManager {
         const allVisibleFolders = await waitForFolders();
         const folders = allVisibleFolders.filter(el => {
             const id = el.getAttribute("data-list-item-id");
-            return ids.includes(id) && el.closest('.wrapper_cc5dd2');
+            return ids.includes(id) && el.closest('[role="treeitem"]');
         });
 
         if (!folders.length) {
@@ -259,7 +259,7 @@ module.exports = class FolderManager {
         this._lastRun = this.settings.lastRun || Date.now();
         this.injectStyles();
         try {
-            await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]', 15000);
+            await this.waitForElement('[data-list-id="guildsnav"]', 15000);
             setTimeout(() => this.runAutoReadTrash(), 2000);
             this.startInterval();
             if (this.settings.autoReadTrash.showCountdown) {
@@ -284,7 +284,7 @@ module.exports = class FolderManager {
     startUICheck() {
         if (this._uiCheckInterval) return;
         this._uiCheckInterval = setInterval(() => {
-            this.retryUICreation().catch(error => 
+            this.retryUICreation().catch(error =>
                 this.log("❌ Σφάλμα κατά την επανάληψη δημιουργίας UI:", error.message)
             );
         }, 5000);
@@ -392,7 +392,7 @@ module.exports = class FolderManager {
 
     async showDiscordNotification(successfulReads) {
         try {
-            const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+            const guildsWrapper = await this.waitForElement('[data-list-id="guildsnav"]');
             if (!guildsWrapper) {
                 this.log("❌ Guilds wrapper not found for notifications");
                 return;
@@ -473,7 +473,7 @@ module.exports = class FolderManager {
 
     async createCountdownUI() {
         try {
-            const guildsWrapper = await this.waitForElement('[class="wrapper_ef3116 guilds_c48ade"]');
+            const guildsWrapper = await this.waitForElement('[data-list-id="guildsnav"]');
             if (!guildsWrapper) {
                 this.log("❌ Guilds wrapper not found for countdown");
                 throw new Error("Guilds wrapper not found");
@@ -1192,10 +1192,10 @@ module.exports = class FolderManager {
             this.log("ℹ️ Observer ήδη ενεργός, παράλειψη δημιουργίας");
             return;
         }
-    
+
         const targetNode = document.body;
         const config = { childList: true, subtree: true };
-    
+
         this.observer = new MutationObserver((mutations, observer) => {
             const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
             let pluginCard = null;
@@ -1205,12 +1205,12 @@ module.exports = class FolderManager {
                     pluginCard = card;
                 }
             });
-    
+
             if (pluginCard) {
                 const controls = pluginCard.querySelector('[class*="bd-controls"]');
                 if (controls && !controls.querySelector('[aria-label="Plugin Manager"]')) {
                     this.createAndInjectIcon(controls);
-    
+
                     this.observer.disconnect();
                     this.observer = null;
                     this._observerActive = false;
@@ -1218,7 +1218,7 @@ module.exports = class FolderManager {
                 }
             }
         });
-    
+
         this.observer.observe(targetNode, config);
         this._observerActive = true;
         this.log("✅ Ο observer ενεργοποιήθηκε");
