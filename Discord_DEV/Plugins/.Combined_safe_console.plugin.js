@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.0.8
+ * @version 3.0.9
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -39,7 +39,7 @@ module.exports = class ThomasTCombined {
             "[WindowVisibilityVideoManager]","[discord_protos.discord_users.v1.FrecencyUserSettings]",
             "[Flux]","[WindowVisibilityVideoManager]","[MediaEngineNative]","[AudioActionCreators]",
             "[Connection(stream)]","[RTCConnection(1367569156081455185, stream)]","[HideMutedCategories]",
-            "[ZeresPluginLibrary]"
+            "[ZeresPluginLibrary]","[RTCConnection(1367634672758296728, stream)]","[VideoStream]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 
