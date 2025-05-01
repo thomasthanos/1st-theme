@@ -37,7 +37,7 @@ module.exports = class ThomasTCombined {
             "[AVError]","[RTCConnection(1216757265391161537, default)]","[discord_protos.discord_users.v1.PreloadedUserSettings]",
             "[StreamTile]","[PopoutWindowStore]","[PostMessageTransport]","[sentry.29ec565af5090e88.js:14 [ComponentDispatchUtils]",
             "[discord_protos.discord_users.v1.FrecencyUserSettings]","[ZeresPluginLibrary]","[HideMutedCategories]","[discord_protos.discord_users.v1.FrecencyUserSettings]",
-            "[Flux]"
+            "[Flux]","[OverlayUsageStatsManager]","[ComponentDispatchUtils]",""
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 
