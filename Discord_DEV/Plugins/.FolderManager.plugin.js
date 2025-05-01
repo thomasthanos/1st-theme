@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.3.9
+ * @version 12.4.0
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.3.9";
+        return "12.4.0";
     }
 
     initializeSettings() {
@@ -125,6 +125,13 @@ module.exports = class FolderManager {
 
     _startPlugin() {
         this._subscribedToContextClose = false;
+        const lastVersion = BdApi.getData('FolderManager', 'lastShownVersion');
+        const currentVersion = this.getVersion();
+        if (lastVersion !== currentVersion) {
+            this.showChangelogDialog(currentVersion);
+            BdApi.setData('FolderManager', 'lastShownVersion', currentVersion);
+        }
+
         this.injectIcon();
         if (this.settings.autoReadTrash.enabled) {
             this.startAutoReadTrash();
@@ -1316,4 +1323,102 @@ module.exports = class FolderManager {
     log(...args) {
         console.log(`%c[FolderManager v${this.getVersion()}]`, "color: #00ffcc; font-weight: bold;", ...args);
     }
+
+    showChangelogDialog(version) {
+        const existing = document.querySelector('.fm-changelog-dialog');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.className = 'fm-changelog-dialog';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.background = 'rgba(0, 0, 0, 0.6)';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'center';
+        overlay.style.justifyContent = 'center';
+        overlay.style.zIndex = '10000';
+
+        const dialog = document.createElement('div');
+        dialog.style.background = '#1e1f22';
+        dialog.style.padding = '28px';
+        dialog.style.borderRadius = '16px';
+        dialog.style.width = '480px';
+        dialog.style.boxShadow = '0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(0,255,204,0.3)';
+        dialog.style.display = 'flex';
+        dialog.style.flexDirection = 'column';
+        dialog.style.fontFamily = 'gg sans, sans-serif';
+        dialog.style.animation = 'fadeInScale 0.3s ease';
+
+        const title = document.createElement('div');
+        title.style.fontSize = '22px';
+        title.style.fontWeight = '700';
+        title.style.marginBottom = '10px';
+        title.style.color = '#00ffc8';
+        title.style.textAlign = 'center';
+        title.textContent = `📦 FolderManager v${version}`;
+        dialog.appendChild(title);
+
+        const subTitle = document.createElement('div');
+        subTitle.style.fontSize = '14px';
+        subTitle.style.color = '#b5bac1';
+        subTitle.style.textAlign = 'center';
+        subTitle.style.marginBottom = '18px';
+        subTitle.textContent = 'Changelog (2025-05-01)';
+        dialog.appendChild(subTitle);
+
+        const changelogContainer = document.createElement('div');
+        changelogContainer.style.background = '#2b2d31';
+        changelogContainer.style.padding = '16px';
+        changelogContainer.style.borderRadius = '10px';
+        changelogContainer.style.marginBottom = '20px';
+        changelogContainer.style.color = '#dbdee1';
+        changelogContainer.style.fontSize = '14px';
+        changelogContainer.style.whiteSpace = 'pre-wrap';
+        changelogContainer.style.lineHeight = '1.6';
+        changelogContainer.textContent = "- Added persistent observer\n- Fixed selectors after Discord update\n- Improved UI stability\n- Modernized changelog dialog\n- Fixed redeclaration and overlay bugs";
+        dialog.appendChild(changelogContainer);
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.justifyContent = 'center';
+
+        const okButton = document.createElement('button');
+        okButton.textContent = 'GOT IT!';
+        okButton.style.padding = '12px 28px';
+        okButton.style.background = 'linear-gradient(145deg, #00ffc8, #00bfa5)';
+        okButton.style.color = '#14161a';
+        okButton.style.border = 'none';
+        okButton.style.borderRadius = '24px';
+        okButton.style.fontSize = '15px';
+        okButton.style.fontWeight = '700';
+        okButton.style.cursor = 'pointer';
+        okButton.style.boxShadow = '0 0 12px rgba(0,255,204,0.5)';
+        okButton.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+        okButton.onmouseenter = () => {
+            okButton.style.transform = 'scale(1.05)';
+            okButton.style.boxShadow = '0 0 20px rgba(0,255,204,0.8)';
+        };
+        okButton.onmouseleave = () => {
+            okButton.style.transform = 'scale(1)';
+            okButton.style.boxShadow = '0 0 12px rgba(0,255,204,0.5)';
+        };
+        okButton.onclick = () => overlay.remove();
+
+        buttonContainer.appendChild(okButton);
+        dialog.appendChild(buttonContainer);
+        overlay.appendChild(dialog);
+        document.body.appendChild(overlay);
+
+        const style = document.createElement('style');
+        style.textContent = `
+    @keyframes fadeInScale {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }`;
+        document.head.appendChild(style);
+    }
+
 };
