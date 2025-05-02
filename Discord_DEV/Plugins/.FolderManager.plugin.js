@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.4.0
+ * @version 12.5.0
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.4.0";
+        return "12.5.0";
     }
 
     initializeSettings() {
@@ -558,10 +558,16 @@ module.exports = class FolderManager {
     hideWrappers() {
         this.getConfigIds().forEach(id => {
             const elm = document.querySelector(`[data-list-item-id="${id}"]`);
-            const wrapper = elm?.closest(".wrapper_cc5dd2");
-            if (wrapper) wrapper.style.display = "none";
+            const listItem = elm?.closest(".listItem__650eb");
+            if (listItem) {
+                listItem.style.display = "none";
+                this.log(`✅ Έκρυψε πλήρως το folder με ID: ${id}`);
+            } else {
+                this.log(`❌ Δεν βρέθηκε listItem για το folder ID: ${id}`);
+            }
         });
     }
+
 
     showWrappers() {
         this.getConfigIds().forEach(id => {
