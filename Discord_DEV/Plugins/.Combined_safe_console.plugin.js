@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.0.9
+ * @version 3.2.9
  * @description Combines BlockConsole and DiscordLinkSafe with a custom UI for enabling/disabling and updating.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -33,13 +33,12 @@ module.exports = class ThomasTCombined {
             "[RTCControlSocket(default)]", "[DirectVideo]", "[HDStreamingConsumableModal]",
             "[ConnectionEventFramerateReducer]", "[OverlayRenderStore]",
             "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]", "[MessageQueue]",
-            "[Connection(default)]", "[RTCConnection(1366118296042340453, stream)]", "[RTCLatencyTestManager]", "[FetchBlockedDomain]",
-            "[AVError]","[RTCConnection(1216757265391161537, default)]","[discord_protos.discord_users.v1.PreloadedUserSettings]",
-            "[StreamTile]","[PopoutWindowStore]","[PostMessageTransport]","[ComponentDispatchUtils]",
-            "[WindowVisibilityVideoManager]","[discord_protos.discord_users.v1.FrecencyUserSettings]",
-            "[Flux]","[WindowVisibilityVideoManager]","[MediaEngineNative]","[AudioActionCreators]",
-            "[Connection(stream)]","[RTCConnection(1367569156081455185, stream)]","[HideMutedCategories]",
-            "[ZeresPluginLibrary]","[RTCConnection(1367634672758296728, stream)]","[VideoStream]"
+            "[Connection(default)]", "[hde-delete]", "[RTCLatencyTestManager]", "[FetchBlockedDomain]",
+            "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
+            "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
+            "[WindowVisibilityVideoManager]", "[discord_protos.discord_users.v1.FrecencyUserSettings]",
+            "[Flux]", "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]",
+            "[Connection(stream)]", "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
 
@@ -76,8 +75,10 @@ module.exports = class ThomasTCombined {
             this._orig[method] = console[method].bind(console);
             console[method] = (...args) => {
                 const blocked = args.some(arg =>
-                    typeof arg === "string" &&
-                    this._prefixes.some(pref => arg.includes(pref))
+                        typeof arg === "string" && (
+                            this._prefixes.some(pref => arg.includes(pref)) ||
+                            arg.includes("[RTCConnection")
+                        )
                 );
                 if (blocked) return;
                 this._orig[method](...args);
