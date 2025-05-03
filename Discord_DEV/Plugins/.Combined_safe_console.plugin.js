@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.7.0
+ * @version 3.8.0
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -33,6 +33,7 @@ module.exports = class ThomasTCombined {
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
         this._linkObserver = null;
+        this._justUpdated = false;
     }
 
     start() {
@@ -44,18 +45,12 @@ module.exports = class ThomasTCombined {
                     "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
                     "font-weight: bold; background: #616161; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
                 );
-            }, 10); // μικρό delay για να εμφανιστεί κάτω από το system μήνυμα
+            }, 10);
 
             if (this.settings.blockConsoleEnabled) this.startBlockConsole();
             if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
-        }, 8000); // καθυστέρηση 8 δευτερολέπτων
+        }, 8000);
     }
-
-
-
-
-
-
 
     stop() {
         this.stopBlockConsole();
@@ -105,7 +100,6 @@ module.exports = class ThomasTCombined {
         });
     }
 
-
     getSettingsPanel() {
         const panel = document.createElement("div");
         panel.id = "thomasT-settings-panel";
@@ -118,21 +112,18 @@ module.exports = class ThomasTCombined {
         panel.style.alignItems = "center";
         panel.style.gap = "16px";
 
-        // Toggle 1
         panel.appendChild(this._createStyledToggle("Enable BlockConsole", this.settings.blockConsoleEnabled, (checked) => {
             this.settings.blockConsoleEnabled = checked;
             BdApi.saveData("ThomasTCombined", "settings", this.settings);
             if (checked) this.startBlockConsole(); else this.stopBlockConsole();
         }));
 
-        // Toggle 2
         panel.appendChild(this._createStyledToggle("Enable DiscordLinkSafe", this.settings.discordLinkSafeEnabled, (checked) => {
             this.settings.discordLinkSafeEnabled = checked;
             BdApi.saveData("ThomasTCombined", "settings", this.settings);
             if (checked) this.startDiscordLinkSafe(); else this.stopDiscordLinkSafe();
         }));
 
-        // Update Check Button
         const updateButton = document.createElement("button");
         updateButton.textContent = "Check for Update";
         updateButton.classList.add("update-check");
@@ -140,39 +131,41 @@ module.exports = class ThomasTCombined {
         updateButton.onclick = async () => {
             updateButton.textContent = "Checking...";
             try {
-                const responseJson = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/plugin_version.json");
-                const json = await responseJson.json();
-                const remoteVersion = json.version;
+                const pluginName = "Combined_safe_console";
+                const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js";
+                const filename = ".Combined_safe_console.plugin.js";
 
-                const localVersion = "3.7.0"; // CURRENT local version
-
-                if (remoteVersion && remoteVersion !== localVersion) {
-                    const fileResponse = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js");
-                    const fileBlob = await fileResponse.blob();
-                    const url = URL.createObjectURL(fileBlob);
-
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = ".Combined_safe_console.plugin.js";
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-
-                    BdApi.alert("Update Downloaded", `New version ${remoteVersion} downloaded! Please replace the file manually in your BetterDiscord plugins folder.`);
-                } else {
-                    BdApi.alert("Up to Date", "You already have the latest version.");
+                const localPlugin = BdApi.Plugins.get(pluginName);
+                if (!localPlugin) {
+                    BdApi.alert("Error", `Το ${pluginName} δεν είναι εγκατεστημένο.`);
+                    updateButton.textContent = "Check for Update";
+                    return;
                 }
 
-                // Add custom ID to modal
-                setTimeout(() => {
-                    const modals = document.querySelectorAll('.bd-modal-root.bd-modal-small');
-                    modals.forEach(modal => {
-                        modal.id = "thomasT-update-modal";
-                    });
-                }, 100);
+                const code = await fetch(updateUrl).then(r => r.text());
+                const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
+                const localVersion = localPlugin.version;
+
+                if (!remoteVersion) {
+                    BdApi.alert("Error", `Δεν βρέθηκε έκδοση για ${pluginName}.`);
+                    updateButton.textContent = "Check for Update";
+                    return;
+                }
+
+                if (this.isNewerVersion(remoteVersion, localVersion)) {
+                    BdApi.Plugins.disable(pluginName);
+                    const fs = require("fs");
+                    const path = require("path");
+                    const filePath = path.join(BdApi.Plugins.folder, filename);
+                    fs.writeFileSync(filePath, code, "utf8");
+                    this._justUpdated = true;
+                    setTimeout(() => BdApi.Plugins.reload(pluginName), 1000);
+                    BdApi.alert("Success", `Το ${pluginName} ενημερώθηκε στην έκδοση ${remoteVersion}!`);
+                } else {
+                    BdApi.alert("Up to Date", `Το ${pluginName} είναι ήδη στην τελευταία έκδοση (${localVersion}).`);
+                }
             } catch (e) {
-                BdApi.alert("Error", "Failed to check or download update.");
+                BdApi.alert("Error", `Αποτυχία ελέγχου ή ενημέρωσης: ${e.message}`);
             } finally {
                 updateButton.textContent = "Check for Update";
             }
@@ -180,103 +173,53 @@ module.exports = class ThomasTCombined {
 
         panel.appendChild(updateButton);
 
-        // Inject custom CSS only once
         if (!document.getElementById("thomasT-custom-css")) {
             const style = document.createElement("style");
             style.id = "thomasT-custom-css";
             style.textContent = `
-            .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
-                width: 320px !important;
-                max-width: 320px !important;
-                min-width: 320px !important;
-                background-color: #1e1e1e !important;
-                border-radius: 14px !important;
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
-            }
-            #thomasT-settings-panel button {
-                border-radius: 999px !important;
-                padding: 10px 24px !important;
-                font-size: 13px !important;
-                font-weight: 500 !important;
-                border: none !important;
-                color: #ffffff !important;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-                transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
-            }
-            #thomasT-settings-panel button.on {
-                background-color: #4caf50 !important;
-            }
-            #thomasT-settings-panel button.off {
-                background-color: #e57373 !important;
-            }
-            #thomasT-settings-panel button.update-check {
-                background: linear-gradient(135deg, #2196f3, #1976d2) !important;
-                box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
-            }
-            #thomasT-settings-panel button.update-check:hover {
-                background: linear-gradient(135deg, #1976d2, #1565c0) !important;
-                box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
-            }
-            #thomasT-settings-panel button:hover {
-                filter: brightness(1.1) !important;
-                transform: translateY(-2px) !important;
-            }
-            #thomasT-settings-panel span {
-                color: #ffffff !important;
-            }
-            
-            /* Custom styling for the update modal */
-            #thomasT-update-modal {
-                background-color: #2a2a2a !important;
-                border: 1px solid #3a3a3a !important;
-                border-radius: 16px !important;
-                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6) !important;
-                padding: 24px !important;
-            }
-            #thomasT-update-modal .bd-modal-footer {
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                margin-top: 12px !important;
-                padding-top: 12px !important;
-                display: flex !important;
-                justify-content: center !important;
-            }
-            #thomasT-update-modal.bd-modal-root.bd-modal-small {
-                width: 75% !important;
-            }
-
-            #thomasT-update-modal .bd-header-primary {
-                font-size: 22px !important;
-                font-weight: 700 !important;
-                color: #ffffff !important;
-                margin-bottom: 12px !important;
-            }
-            #thomasT-update-modal .bd-modal-content {
-                color: #cccccc !important;
-                font-size: 15px !important;
-                line-height: 1.7 !important;
-            }
-            #thomasT-update-modal .bd-button {
-                border-radius: 999px !important;
-                background: linear-gradient(135deg, #42a5f5, #1e88e5) !important;
-                color: #ffffff !important;
-                font-weight: 600 !important;
-                padding: 10px 28px !important;
-                
-                box-shadow: 0 4px 12px rgba(66, 165, 245, 0.6), 0 0 10px rgba(66, 165, 245, 0.5) !important;
-                transition: transform 0.2s, box-shadow 0.2s !important;
-            }
-            #thomasT-update-modal .bd-button:hover {
-                transform: translateY(-3px) !important;
-                box-shadow: 0 6px 18px rgba(30, 136, 229, 0.7), 0 0 12px rgba(30, 136, 229, 0.6) !important;
-            }
-
-        `;
+                .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
+                    width: 320px !important;
+                    max-width: 320px !important;
+                    min-width: 320px !important;
+                    background-color: #1e1e1e !important;
+                    border-radius: 14px !important;
+                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+                }
+                #thomasT-settings-panel button {
+                    border-radius: 999px !important;
+                    padding: 10px 24px !important;
+                    font-size: 13px !important;
+                    font-weight: 500 !important;
+                    border: none !important;
+                    color: #ffffff !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+                    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
+                }
+                #thomasT-settings-panel button.on {
+                    background-color: #4caf50 !important;
+                }
+                #thomasT-settings-panel button.off {
+                    background-color: #e57373 !important;
+                }
+                #thomasT-settings-panel button.update-check {
+                    background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+                    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
+                }
+                #thomasT-settings-panel button.update-check:hover {
+                    background: linear-gradient(135deg, #1976d2, #1565c0) !important;
+                    box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
+                }
+                #thomasT-settings-panel button:hover {
+                    filter: brightness(1.1) !important;
+                    transform: translateY(-2px) !important;
+                }
+                #thomasT-settings-panel span {
+                    color: #ffffff !important;
+                }
+            `;
             document.head.appendChild(style);
         }
 
-        // Add ID to modal if it exists
         setTimeout(() => {
             const modal = document.querySelector('.bd-addon-modal');
             if (modal) {
@@ -287,9 +230,6 @@ module.exports = class ThomasTCombined {
         return panel;
     }
 
-
-
-
     _createStyledToggle(labelText, checked, onChange) {
         const container = document.createElement("div");
         container.style.marginBottom = "12px";
@@ -297,7 +237,6 @@ module.exports = class ThomasTCombined {
         container.style.flexDirection = "column";
         container.style.alignItems = "center";
         container.style.width = "100%";
-
 
         const label = document.createElement("span");
         label.textContent = labelText;
@@ -320,7 +259,6 @@ module.exports = class ThomasTCombined {
         button.style.fontWeight = "500";
         button.style.transition = "background-color 0.3s, transform 0.1s";
 
-
         button.onmouseover = () => {
             button.style.transform = "scale(1.05)";
         };
@@ -338,5 +276,15 @@ module.exports = class ThomasTCombined {
         container.appendChild(label);
         container.appendChild(button);
         return container;
+    }
+
+    isNewerVersion(remote, local) {
+        const r = remote.split(".").map(n => parseInt(n));
+        const l = local.split(".").map(n => parseInt(n));
+        for (let i = 0; i < Math.max(r.length, l.length); i++) {
+            if ((r[i] || 0) > (l[i] || 0)) return true;
+            if ((r[i] || 0) < (l[i] || 0)) return false;
+        }
+        return false;
     }
 };
