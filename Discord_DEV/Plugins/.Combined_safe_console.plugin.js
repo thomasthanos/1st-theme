@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.6.0
+ * @version 3.3.8
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -140,20 +140,31 @@ module.exports = class ThomasTCombined {
         updateButton.onclick = async () => {
             updateButton.textContent = "Checking...";
             try {
-                const response = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js");
-                const remoteText = await response.text();
+                const responseJson = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/plugin_version.json");
+                const json = await responseJson.json();
+                const remoteVersion = json.version;
 
-                const remoteVersion = remoteText.match(/@version (\d+\.\d+\.\d+)/)?.[1];
-                const localVersion = "3.6.0"; // Update this if you bump local version
+                const localVersion = "3.3.8"; // CURRENT local version
 
                 if (remoteVersion && remoteVersion !== localVersion) {
-                    BdApi.alert("Update Available", `New version ${remoteVersion} available! Please download from GitHub.`);
-                    window.open("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js", "_blank");
+                    const fileResponse = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js");
+                    const fileBlob = await fileResponse.blob();
+                    const url = URL.createObjectURL(fileBlob);
+
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = ".Combined_safe_console.plugin.js";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    BdApi.alert("Update Downloaded", `New version ${remoteVersion} downloaded! Please replace the file manually in your BetterDiscord plugins folder.`);
                 } else {
                     BdApi.alert("Up to Date", "You already have the latest version.");
                 }
 
-                // Add custom ID to the alert modal after it appears
+                // Add custom ID to modal
                 setTimeout(() => {
                     const modals = document.querySelectorAll('.bd-modal-root.bd-modal-small');
                     modals.forEach(modal => {
@@ -161,7 +172,7 @@ module.exports = class ThomasTCombined {
                     });
                 }, 100);
             } catch (e) {
-                BdApi.alert("Error", "Failed to check for updates.");
+                BdApi.alert("Error", "Failed to check or download update.");
             } finally {
                 updateButton.textContent = "Check for Update";
             }
