@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.5.8
+ * @version 3.7.0
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -144,7 +144,7 @@ module.exports = class ThomasTCombined {
                 const json = await responseJson.json();
                 const remoteVersion = json.version;
 
-                const localVersion = "3.5.8"; // CURRENT local version
+                const localVersion = "3.7.0"; // CURRENT local version
 
                 if (remoteVersion && remoteVersion !== localVersion) {
                     const fileResponse = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js");
@@ -339,7 +339,4 @@ module.exports = class ThomasTCombined {
         container.appendChild(button);
         return container;
     }
-
-
-
 };
