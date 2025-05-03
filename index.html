@@ -8,6 +8,9 @@
   <!-- Highlight.js – Atom One Dark Theme (για VSCode look) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   
+  <!-- Google Fonts για Roboto -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  
   <!-- Custom CSS για dark mode, menu, notes & inline code comments -->
   <style>
     /* Global resets */
@@ -24,54 +27,110 @@
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: #1e1e1e; }
     ::-webkit-scrollbar-thumb { background: #444; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
     html { scrollbar-width: thin; scrollbar-color: #444 #1e1e1e; }
     
-    /* Fixed Navigation Menu - Νέο, πιο όμορφο design */
+    /* Fixed Navigation Menu - Redesigned with logo left and menu right */
     nav {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
-      padding: 12px 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(10px); /* Ελαφρύ blur effect στο background */
-      -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: #252526;
+      padding: 10px 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
       z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #3c3c3c;
+    }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #00aaff;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 15px;
+      background: rgba(0, 170, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .logo:hover {
+      background: rgba(0, 170, 255, 0.3);
+      color: #ffffff;
+      transform: translateY(-2px);
     }
     nav ul {
       list-style: none;
       display: flex;
-      justify-content: center;
-      flex-wrap: wrap; /* Για να τυλίγεται σε μικρές οθόνες */
-      gap: 10px;
+      align-items: center;
+      gap: 15px;
     }
     nav ul li {
-      margin: 0 10px;
+      position: relative;
+      margin: 0;
     }
     nav ul li a {
       text-decoration: none;
-      color: #e0e0e0;
+      color: #b0b0b0;
       font-size: 1rem;
       font-weight: 500;
-      padding: 8px 16px;
-      border-radius: 20px;
+      padding: 8px 15px;
+      border-radius: 15px;
       transition: all 0.3s ease;
       display: inline-block;
-      background: rgba(255, 255, 255, 0.05);
     }
     nav ul li a:hover {
       color: #ffffff;
-      background: linear-gradient(90deg, #569cd6, #1e90ff);
+      background: #3c3c3c;
       transform: translateY(-2px);
-      box-shadow: 0 2px 8px rgba(86, 156, 214, 0.3);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     }
     nav ul li a.active {
       color: #ffffff;
-      background: linear-gradient(90deg, #569cd6, #1e90ff);
-      border-bottom: none;
-      box-shadow: 0 2px 8px rgba(86, 156, 214, 0.3);
+      background: #007acc;
+      box-shadow: 0 2px 6px rgba(0, 122, 204, 0.3);
+    }
+    
+    /* Dropdown Submenu - Enhanced hover design */
+    nav ul li:hover .submenu {
+      display: block;
+    }
+    .submenu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: #2d2d2d;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      min-width: 200px;
+      z-index: 1001;
+      padding: 5px 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    nav ul li:hover .submenu {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .submenu li {
+      margin: 0;
+    }
+    .submenu li a {
+      display: block;
+      padding: 8px 20px;
+      color: #d4d4d4;
+      font-size: 0.95rem;
+      border-radius: 0;
+      transition: all 0.3s ease;
+    }
+    .submenu li a:hover {
+      background: linear-gradient(90deg, #2e7d32, #4caf50);
+      color: #ffffff;
+      padding-left: 25px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
     }
     
     /* Container */
@@ -89,16 +148,20 @@
       margin: 30px 0;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .code-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
     }
     .code-container h2 {
-      background-color: #007acc;
+      background: linear-gradient(90deg, #007acc, #005d9b);
       color: #fff;
       padding: 15px 20px;
       font-size: 1.2rem;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
-    /* Τα notes τοποθετούνται αμέσως κάτω από τον τίτλο (χωρίς επιπλέον spacing) */
     .code-container .note {
       background: #005d9b;
       color: #fff;
@@ -122,7 +185,7 @@
       font-style: italic;
     }
     
-    /* Toggle button styling για truncated view */
+    /* Toggle button styling */
     .toggle-btn {
       display: block;
       width: 100%;
@@ -133,23 +196,38 @@
       cursor: pointer;
       font-size: 0.9rem;
       text-align: center;
-      transition: background 0.3s;
+      transition: background 0.3s, color 0.3s;
     }
-    .toggle-btn:hover { background-color: #3c3c3c; }
+    .toggle-btn:hover {
+      background-color: #3c3c3c;
+      color: #ffffff;
+    }
   </style>
 </head>
 <body>
-  <!-- Navigation Menu -->
+  <!-- Navigation Menu with Logo on Left and Menu on Right -->
   <nav>
+    <a href="#" class="logo">Modern Code Viewer</a>
     <ul>
-      <li><a href="#section-css1">SimplethemeV3.theme.css</a></li>
-      <li><a href="#section-css2">OLD_WORKING_SimplethemeV3.theme.css</a></li>
-      <li><a href="#section-css3">SimplethemeV2.theme.css</a></li>
-      <li><a href="#section-js1">Prezomenoi_OG.plugin.js</a></li>
-      <li><a href="#section-js2">autoreadtrash.plugin.js</a></li>
-      <li><a href="#section-js3">HideFolders.plugin.js</a></li>
-      <li><a href="#section-js4">discord_change.plugin.js</a></li>
-      <li><a href="#section-js5">BetterAccountButtons.plugin.js</a></li>
+      <li>
+        <a href="#">Plugins</a>
+        <ul class="submenu">
+          <li><a href="#section-js1">FolderManager.plugin.js</a></li>
+          <li><a href="#section-js2">Combined_safe_console.plugin.js</a></li>
+          <li><a href="#section-js3">Prezomenoi_OG.plugin.js</a></li>
+          <li><a href="#section-js4">allinone_update.plugin.js</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Themes</a>
+        <ul class="submenu">
+          <li><a href="#section-css1">SimplethemeV3.theme.css</a></li>
+          <li><a href="#section-css2">OLD_WORKING_SimplethemeV3.theme.css</a></li>
+          <li><a href="#section-css3">SimplethemeV2.theme.css</a></li>
+          <li><a href="#section-css4">folder.theme.css</a></li>
+          <li><a href="#section-css5">prezomenoi.theme.css</a></li>
+        </ul>
+      </li>
     </ul>
   </nav>
   
@@ -181,49 +259,58 @@
       <pre><code id="code-css3" class="language-css">/* Loading code... */</code></pre>
     </div>
     
-    <!-- Section για JS: Prezomenoi_OG.plugin.js (truncate στις 50 γραμμές) -->
+    <!-- Section για CSS: folder.theme.css (truncate στις 50 γραμμές) -->
+    <div class="code-container" id="section-css4">
+      <h2>folder.theme.css UI</h2>
+      <div class="note">
+        Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
+      </div>
+      <pre><code id="code-css4" class="language-css">/* Loading code... */</code></pre>
+    </div>
+    
+    <!-- Section για CSS: prezomenoi.theme.css (truncate στις 50 γραμμές) -->
+    <div class="code-container" id="section-css5">
+      <h2>prezomenoi.theme.css UI</h2>
+      <div class="note">
+        Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
+      </div>
+      <pre><code id="code-css5" class="language-css">/* Loading code... */</code></pre>
+    </div>
+    
+    <!-- Section για JS: FolderManager.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js1">
-      <h2>Prezomenoi_OG.plugin.js UI</h2>
+      <h2>FolderManager.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-js1" class="language-javascript">// Loading code...</code></pre>
     </div>
     
-    <!-- Section για JS: autoreadtrash.plugin.js (truncate στις 50 γραμμές) -->
+    <!-- Section για JS: Combined_safe_console.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js2">
-      <h2>autoreadtrash.plugin.js UI</h2>
+      <h2>Combined_safe_console.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-js2" class="language-javascript">// Loading code...</code></pre>
     </div>
     
-    <!-- Section για JS: HideFolders.plugin.js (truncate στις 50 γραμμές) -->
+    <!-- Section για JS: Prezomenoi_OG.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js3">
-      <h2>HideFolders.plugin.js UI</h2>
+      <h2>Prezomenoi_OG.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-js3" class="language-javascript">// Loading code...</code></pre>
     </div>
     
-    <!-- Section για JS: discord_change.plugin.js (truncate στις 50 γραμμές) -->
+    <!-- Section για JS: allinone_update.plugin.js (truncate στις 50 γραμμές) -->
     <div class="code-container" id="section-js4">
-      <h2>discord_change.plugin.js UI</h2>
+      <h2>allinone_update.plugin.js UI</h2>
       <div class="note">
         Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
       </div>
       <pre><code id="code-js4" class="language-javascript">// Loading code...</code></pre>
-    </div>
-    
-    <!-- Section για JS: BetterAccountButtons.plugin.js (truncate στις 50 γραμμές) -->
-    <div class="code-container" id="section-js5">
-      <h2>BetterAccountButtons.plugin.js UI</h2>
-      <div class="note">
-        Το αρχείο αυτό εμφανίζει τις πρώτες 50 γραμμές. Κάνε κλικ στο "Show More" για όλο το αρχείο.
-      </div>
-      <pre><code id="code-js5" class="language-javascript">// Loading code...</code></pre>
     </div>
   </div>
   
@@ -288,24 +375,26 @@
     const urlCSS1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Themes/SimplethemeV3.theme.css";
     const urlCSS2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Themes/OLD_WORKING_SimplethemeV3.theme.css";
     const urlCSS3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Themes/SimplethemeV2.theme.css";
+    const urlCSS4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Themes/folder.theme.css";
+    const urlCSS5 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Themes/prezomenoi.theme.css";
 
-    const urlJS1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/Prezomenoi_OG.plugin.js";
-    const urlJS2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/autoreadtrash.plugin.js";
-    const urlJS3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/HideFolders.plugin.js";
-    const urlJS4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/discord_change.plugin.js";
-    const urlJS5 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/BetterAccountButtons.plugin.js";
+    const urlJS1 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js";
+    const urlJS2 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js";
+    const urlJS3 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js";
+    const urlJS4 = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.allinone_update.plugin.js";
     
     // Φόρτωση CSS αρχείων με truncate
     loadCode(urlCSS1, 'code-css1', 'language-css', 66);
     loadCode(urlCSS2, 'code-css2', 'language-css', 36);
     loadCode(urlCSS3, 'code-css3', 'language-css', 83);
+    loadCode(urlCSS4, 'code-css4', 'language-css', 50);
+    loadCode(urlCSS5, 'code-css5', 'language-css', 50);
     
     // Φόρτωση JS αρχείων με truncate
     loadCode(urlJS1, 'code-js1', 'language-javascript', 50);
     loadCode(urlJS2, 'code-js2', 'language-javascript', 50);
     loadCode(urlJS3, 'code-js3', 'language-javascript', 50);
     loadCode(urlJS4, 'code-js4', 'language-javascript', 50);
-    loadCode(urlJS5, 'code-js5', 'language-javascript', 50);
   </script>
 </body>
 </html>
