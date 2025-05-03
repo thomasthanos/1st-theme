@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.5.0
+ * @version 3.5.8
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -104,30 +104,132 @@ module.exports = class ThomasTCombined {
             link.dataset._discordSafeModified = "true";
         });
     }
-
     getSettingsPanel() {
         const panel = document.createElement("div");
+        panel.id = "thomasT-settings-panel";
+        panel.style.padding = "20px";
+        panel.style.background = "linear-gradient(135deg, #2c2c2c, #1e1e1e)";
+        panel.style.borderRadius = "12px";
+        panel.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.4)";
+        panel.style.display = "flex";
+        panel.style.flexDirection = "column";
+        panel.style.alignItems = "center";
+        panel.style.gap = "16px";
 
+        // Toggle 1
         panel.appendChild(this._createStyledToggle("Enable BlockConsole", this.settings.blockConsoleEnabled, (checked) => {
             this.settings.blockConsoleEnabled = checked;
             BdApi.saveData("ThomasTCombined", "settings", this.settings);
             if (checked) this.startBlockConsole(); else this.stopBlockConsole();
         }));
 
+        // Toggle 2
         panel.appendChild(this._createStyledToggle("Enable DiscordLinkSafe", this.settings.discordLinkSafeEnabled, (checked) => {
             this.settings.discordLinkSafeEnabled = checked;
             BdApi.saveData("ThomasTCombined", "settings", this.settings);
             if (checked) this.startDiscordLinkSafe(); else this.stopDiscordLinkSafe();
         }));
 
+        // Update Check Button
+        const updateButton = document.createElement("button");
+        updateButton.textContent = "Check for Update";
+        updateButton.classList.add("update-check");
+
+        updateButton.onclick = async () => {
+            updateButton.textContent = "Checking...";
+            try {
+                const response = await fetch("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js");
+                const remoteText = await response.text();
+
+                const remoteVersion = remoteText.match(/@version (\d+\.\d+\.\d+)/)?.[1];
+                const localVersion = "3.5.8"; // Update this if you bump local version
+
+                if (remoteVersion && remoteVersion !== localVersion) {
+                    BdApi.alert("Update Available", `New version ${remoteVersion} available! Please download from GitHub.`);
+                    window.open("https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js", "_blank");
+                } else {
+                    BdApi.alert("Up to Date", "You already have the latest version.");
+                }
+            } catch (e) {
+                BdApi.alert("Error", "Failed to check for updates.");
+            } finally {
+                updateButton.textContent = "Check for Update";
+            }
+        };
+
+        panel.appendChild(updateButton);
+
+        // Inject custom CSS only once
+        if (!document.getElementById("thomasT-custom-css")) {
+            const style = document.createElement("style");
+            style.id = "thomasT-custom-css";
+            style.textContent = `
+    .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
+        width: 320px !important;
+        max-width: 320px !important;
+        min-width: 320px !important;
+        background-color: #1e1e1e !important;
+        border-radius: 14px !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+    }
+    #thomasT-settings-panel button {
+        border-radius: 999px !important;
+        padding: 10px 24px !important;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
+    }
+    #thomasT-settings-panel button.on {
+        background-color: #4caf50 !important;
+    }
+    #thomasT-settings-panel button.off {
+        background-color: #e57373 !important;
+    }
+    .bd-addon-modal#thomasT-addon-modal #thomasT-settings-panel button.update-check {
+        background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
+    }
+    .bd-addon-modal#thomasT-addon-modal #thomasT-settings-panel button.update-check:hover {
+        background: linear-gradient(135deg, #1976d2, #1565c0) !important;
+        box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
+    }
+    #thomasT-settings-panel button:hover {
+        filter: brightness(1.1) !important;
+        transform: translateY(-2px) !important;
+    }
+    #thomasT-settings-panel span {
+        color: #ffffff !important;
+    }
+`;
+
+            document.head.appendChild(style);
+        }
+
+        // Add ID to modal if it exists
+        setTimeout(() => {
+            const modal = document.querySelector('.bd-addon-modal');
+            if (modal) {
+                modal.id = "thomasT-addon-modal";
+            }
+        }, 100);
+
         return panel;
     }
+
+
+
 
     _createStyledToggle(labelText, checked, onChange) {
         const container = document.createElement("div");
         container.style.marginBottom = "12px";
         container.style.display = "flex";
+        container.style.flexDirection = "column";
         container.style.alignItems = "center";
+        container.style.width = "100%";
+
 
         const label = document.createElement("span");
         label.textContent = labelText;
@@ -135,7 +237,7 @@ module.exports = class ThomasTCombined {
         label.style.fontWeight = "600";
         label.style.fontFamily = "Segoe UI, sans-serif";
         label.style.fontSize = "14px";
-        label.style.color = "#333";
+        label.style.color = "#fff";
 
         const button = document.createElement("button");
         button.textContent = checked ? "ON" : "OFF";
@@ -143,12 +245,13 @@ module.exports = class ThomasTCombined {
         button.style.border = "1px solid #ccc";
         button.style.borderRadius = "6px";
         button.style.cursor = "pointer";
-        button.style.backgroundColor = checked ? "#4caf50" : "#e57373";
+        button.style.backgroundColor = checked ? "#009106" : "#a90000";
         button.style.color = "#fff";
         button.style.fontFamily = "Segoe UI, sans-serif";
         button.style.fontSize = "12px";
         button.style.fontWeight = "500";
         button.style.transition = "background-color 0.3s, transform 0.1s";
+
 
         button.onmouseover = () => {
             button.style.transform = "scale(1.05)";
@@ -168,4 +271,7 @@ module.exports = class ThomasTCombined {
         container.appendChild(button);
         return container;
     }
+
+
+
 };
