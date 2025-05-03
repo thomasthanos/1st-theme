@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.3.9
+ * @version 3.5.0
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -28,16 +28,33 @@ module.exports = class ThomasTCombined {
             "[FetchBlockedDomain]", "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
             "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
             "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
-            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]"
+            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]","[OverlayUsageStatsManager]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
         this._linkObserver = null;
     }
 
     start() {
-        if (this.settings.blockConsoleEnabled) this.startBlockConsole();
-        if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
+        setTimeout(() => {
+            console.clear();
+            setTimeout(() => {
+                console.log(
+                    "%c [Combined_safe_console] %c Η κονσόλα καθαρίστηκε!",
+                    "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
+                    "font-weight: bold; background: #616161; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
+                );
+            }, 10); // μικρό delay για να εμφανιστεί κάτω από το system μήνυμα
+
+            if (this.settings.blockConsoleEnabled) this.startBlockConsole();
+            if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
+        }, 10000); // καθυστέρηση 10 δευτερολέπτων
     }
+
+
+
+
+
+
 
     stop() {
         this.stopBlockConsole();

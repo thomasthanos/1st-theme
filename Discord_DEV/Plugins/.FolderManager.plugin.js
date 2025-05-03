@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.5.0
+ * @version 12.4.1
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,7 +49,7 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.5.0";
+        return "12.4.1";
     }
 
     initializeSettings() {
@@ -63,7 +63,6 @@ module.exports = class FolderManager {
             this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
             Object.assign(this.settings, loadedSettings);
             this._lastRun = this.settings.lastRun || 0;
-            this.log("✅ Settings loaded:", JSON.stringify(this.settings));
         }
     }
 
@@ -92,7 +91,6 @@ module.exports = class FolderManager {
             const guildsWrapper = await this.waitForElement('[data-list-id="guildsnav"]', 5000);
             if (!document.querySelector('.art-countdown') && this.settings.autoReadTrash.showCountdown) {
                 await this.createCountdownUI();
-                this.log("✅ Countdown UI δημιουργήθηκε επιτυχώς");
             }
             if (!document.querySelector('.art-wrapper') && this._notificationQueue.length > 0) {
                 this.wrapper3d = null;
@@ -1327,8 +1325,13 @@ module.exports = class FolderManager {
     }
 
     log(...args) {
-        console.log(`%c[FolderManager v${this.getVersion()}]`, "color: #00ffcc; font-weight: bold;", ...args);
+        console.log(
+            "%c [FolderManager v" + this.getVersion() + "] %c " + args.join(" "),
+            "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
+            "font-weight: bold; background: #313131; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
+        );
     }
+
 
     showChangelogDialog(version) {
         const existing = document.querySelector('.fm-changelog-dialog');
