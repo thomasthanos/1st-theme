@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.5.8
+ * @version 3.6.0
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -104,6 +104,8 @@ module.exports = class ThomasTCombined {
             link.dataset._discordSafeModified = "true";
         });
     }
+
+
     getSettingsPanel() {
         const panel = document.createElement("div");
         panel.id = "thomasT-settings-panel";
@@ -142,7 +144,7 @@ module.exports = class ThomasTCombined {
                 const remoteText = await response.text();
 
                 const remoteVersion = remoteText.match(/@version (\d+\.\d+\.\d+)/)?.[1];
-                const localVersion = "3.5.8"; // Update this if you bump local version
+                const localVersion = "3.6.0"; // Update this if you bump local version
 
                 if (remoteVersion && remoteVersion !== localVersion) {
                     BdApi.alert("Update Available", `New version ${remoteVersion} available! Please download from GitHub.`);
@@ -150,6 +152,14 @@ module.exports = class ThomasTCombined {
                 } else {
                     BdApi.alert("Up to Date", "You already have the latest version.");
                 }
+
+                // Add custom ID to the alert modal after it appears
+                setTimeout(() => {
+                    const modals = document.querySelectorAll('.bd-modal-root.bd-modal-small');
+                    modals.forEach(modal => {
+                        modal.id = "thomasT-update-modal";
+                    });
+                }, 100);
             } catch (e) {
                 BdApi.alert("Error", "Failed to check for updates.");
             } finally {
@@ -164,47 +174,94 @@ module.exports = class ThomasTCombined {
             const style = document.createElement("style");
             style.id = "thomasT-custom-css";
             style.textContent = `
-    .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
-        width: 320px !important;
-        max-width: 320px !important;
-        min-width: 320px !important;
-        background-color: #1e1e1e !important;
-        border-radius: 14px !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
-    }
-    #thomasT-settings-panel button {
-        border-radius: 999px !important;
-        padding: 10px 24px !important;
-        font-size: 13px !important;
-        font-weight: 500 !important;
-        border: none !important;
-        color: #ffffff !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-        transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
-    }
-    #thomasT-settings-panel button.on {
-        background-color: #4caf50 !important;
-    }
-    #thomasT-settings-panel button.off {
-        background-color: #e57373 !important;
-    }
-    .bd-addon-modal#thomasT-addon-modal #thomasT-settings-panel button.update-check {
-        background: linear-gradient(135deg, #2196f3, #1976d2) !important;
-        box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
-    }
-    .bd-addon-modal#thomasT-addon-modal #thomasT-settings-panel button.update-check:hover {
-        background: linear-gradient(135deg, #1976d2, #1565c0) !important;
-        box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
-    }
-    #thomasT-settings-panel button:hover {
-        filter: brightness(1.1) !important;
-        transform: translateY(-2px) !important;
-    }
-    #thomasT-settings-panel span {
-        color: #ffffff !important;
-    }
-`;
+            .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
+                width: 320px !important;
+                max-width: 320px !important;
+                min-width: 320px !important;
+                background-color: #1e1e1e !important;
+                border-radius: 14px !important;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+            }
+            #thomasT-settings-panel button {
+                border-radius: 999px !important;
+                padding: 10px 24px !important;
+                font-size: 13px !important;
+                font-weight: 500 !important;
+                border: none !important;
+                color: #ffffff !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+                transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
+            }
+            #thomasT-settings-panel button.on {
+                background-color: #4caf50 !important;
+            }
+            #thomasT-settings-panel button.off {
+                background-color: #e57373 !important;
+            }
+            #thomasT-settings-panel button.update-check {
+                background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+                box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
+            }
+            #thomasT-settings-panel button.update-check:hover {
+                background: linear-gradient(135deg, #1976d2, #1565c0) !important;
+                box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
+            }
+            #thomasT-settings-panel button:hover {
+                filter: brightness(1.1) !important;
+                transform: translateY(-2px) !important;
+            }
+            #thomasT-settings-panel span {
+                color: #ffffff !important;
+            }
+            
+            /* Custom styling for the update modal */
+            #thomasT-update-modal {
+                background-color: #2a2a2a !important;
+                border: 1px solid #3a3a3a !important;
+                border-radius: 16px !important;
+                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6) !important;
+                padding: 24px !important;
+            }
+            #thomasT-update-modal .bd-modal-footer {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin-top: 12px !important;
+                padding-top: 12px !important;
+                display: flex !important;
+                justify-content: center !important;
+            }
+            #thomasT-update-modal.bd-modal-root.bd-modal-small {
+                width: 75% !important;
+            }
 
+            #thomasT-update-modal .bd-header-primary {
+                font-size: 22px !important;
+                font-weight: 700 !important;
+                color: #ffffff !important;
+                margin-bottom: 12px !important;
+            }
+            #thomasT-update-modal .bd-modal-content {
+                color: #cccccc !important;
+                font-size: 15px !important;
+                line-height: 1.7 !important;
+            }
+            #thomasT-update-modal .bd-button {
+                border-radius: 999px !important;
+                background: linear-gradient(135deg, #42a5f5, #1e88e5) !important;
+                color: #ffffff !important;
+                font-weight: 600 !important;
+                padding: 10px 28px !important;
+                
+                box-shadow: 0 4px 12px rgba(66, 165, 245, 0.6), 0 0 10px rgba(66, 165, 245, 0.5) !important;
+                transition: transform 0.2s, box-shadow 0.2s !important;
+            }
+            #thomasT-update-modal .bd-button:hover {
+                transform: translateY(-3px) !important;
+                box-shadow: 0 6px 18px rgba(30, 136, 229, 0.7), 0 0 12px rgba(30, 136, 229, 0.6) !important;
+            }
+
+        `;
             document.head.appendChild(style);
         }
 
