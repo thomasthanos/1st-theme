@@ -28,7 +28,8 @@ module.exports = class ThomasTCombined {
             "[FetchBlockedDomain]", "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
             "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
             "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
-            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]","[OverlayUsageStatsManager]"
+            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]","[OverlayUsageStatsManager]",
+            "[UserProfileModalActionCreators]"
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
         this._linkObserver = null;
@@ -47,7 +48,7 @@ module.exports = class ThomasTCombined {
 
             if (this.settings.blockConsoleEnabled) this.startBlockConsole();
             if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
-        }, 10000); // καθυστέρηση 10 δευτερολέπτων
+        }, 8000); // καθυστέρηση 8 δευτερολέπτων
     }
 
 
