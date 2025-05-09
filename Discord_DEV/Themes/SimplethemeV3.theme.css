@@ -171,18 +171,6 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
     scale: 10;
 }
 
-/* 1.2.2 Folder Overlay - Clip-path για folder icons */
-.expandedFolderIconWrapper__48112::after,
-.folderPreview__48112::after {
-    content: "";
-    background-color: #fff;
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    clip-path: path(
-            "M20 7H12L10.553 5.106C10.214 4.428 9.521 4 8.764 4H3C2.447 4 2 4.447 2 5V19C2 20.104 2.895 21 4 21H20C21.104 21 22 20.104 22 19V9C22 7.896 21.104 7 20 7Z"
-    );
-}
 
 /* 1.2.3 Closed Folder Effect - Θόλωμα */
 .folderPreview__48112 > .folderPreviewGuildIcon__48112 {
