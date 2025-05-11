@@ -1,11 +1,11 @@
 /**
  * @name Timer
- * @version 1.6.5
+ * @version 1.6.6
  * @description Εμφανίζει την ώρα με dark εμφάνιση και προσφέρει custom ρυθμίσεις μέσω εικονιδίου ⚙️ με ✓ ✕ κουμπιά.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme
- * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/Timer.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/timer.plugin.js
  */
 
 

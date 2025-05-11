@@ -23,6 +23,10 @@ module.exports = class UpdateAllMyPlugins {
             "FolderManager": {
                 filename: ".FolderManager.plugin.js",
                 updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js"
+            },
+            "timer.plugin": {
+                filename: ".timer.plugin.js",
+                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/timer.plugin.js"
             }
         };
         this.modal = null;
