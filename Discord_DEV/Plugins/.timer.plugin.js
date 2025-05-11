@@ -1,7 +1,7 @@
 /**
  * @name Timer
  * @version 1.6.6
- * @description Εμφανίζει την ώρα με dark εμφάνιση και προσφέρει custom ρυθμίσεις μέσω εικονιδίου ⚙️ με ✓ ✕ κουμπιά.
+ * @description Εμφανίζει την real time ώρα
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme
