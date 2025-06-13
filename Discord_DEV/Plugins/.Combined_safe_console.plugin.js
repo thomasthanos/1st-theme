@@ -29,7 +29,7 @@ module.exports = class ThomasTCombined {
             "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
             "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
             "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]","[OverlayUsageStatsManager]",
-            "[UserProfileModalActionCreators]"
+            "[UserProfileModalActionCreators]","[RPCServer:PostMessage]","[RpcApplicationLogger]",
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
         this._linkObserver = null;

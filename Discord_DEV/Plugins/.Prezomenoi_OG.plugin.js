@@ -169,8 +169,8 @@ module.exports = class RenameChannel {
 
         const fallbackUsers = [
             { fallback: "☌⟟⏃⋏⋏⟟☊", name: "Giannhs", color: "#1F8249" },
-            { fallback: "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", name: "Akrivos", color: "#1F8249" },
-            { fallback: "スパイダーマン", name: "Mpillias", color: "#734986" },
+            { fallback: "AnimalRapist", name: "Akrivos", color: "#1F8249" },
+            { fallback: "Tony Redgrave", name: "Mpillias", color: "#734986" },
             { fallback: "アスタ", name: "Petros", color: "#FF4500" },
             { fallback: "ANNOUSKA", name: "Eirini", color: "#FF69B4" },
             { fallback: "FlaviBot", name: "FlaviBot", color: "#FFD700" },
@@ -195,8 +195,8 @@ module.exports = class RenameChannel {
     renameRepliedMessages() {
         const replyAriaElements = document.querySelectorAll(
             "[aria-label*='☌⟟⏃⋏⋏⟟☊'], " +
-            "[aria-label*='⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟'], " +
-            "[aria-label*='スパイダーマン'], " +
+            "[aria-label*='AnimalRapist'], " +
+            "[aria-label*='Tony Redgrave'], " +
             "[aria-label*='アスタ'], " +
             "[aria-label*='ANNOUSKA'], " +
             "[aria-label*='FlaviBot'], " +
@@ -208,10 +208,10 @@ module.exports = class RenameChannel {
             if (!oldAria) return;
             if (oldAria.includes("☌⟟⏃⋏⋏⟟☊"))
                 el.setAttribute("aria-label", oldAria.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
-            if (oldAria.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
-                el.setAttribute("aria-label", oldAria.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
-            if (oldAria.includes("スパイダーマン"))
-                el.setAttribute("aria-label", oldAria.replace("スパイダーマン", "Mpillias"));
+            if (oldAria.includes("AnimalRapist"))
+                el.setAttribute("aria-label", oldAria.replace("AnimalRapist", "Akrivos"));
+            if (oldAria.includes("Tony Redgrave"))
+                el.setAttribute("aria-label", oldAria.replace("Tony Redgrave", "Mpillias"));
             if (oldAria.includes("アスタ"))
                 el.setAttribute("aria-label", oldAria.replace("アスタ", "Petros"));
             if (oldAria.includes("ANNOUSKA"))
@@ -230,11 +230,11 @@ module.exports = class RenameChannel {
                     el.textContent = "Giannhs";
                     el.style.color = "#1F8249";
                 }
-                if (trimmed === "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟") {
+                if (trimmed === "AnimalRapist") {
                     el.textContent = "Akrivos";
                     el.style.color = "#1F8249";
                 }
-                if (trimmed === "スパイダーマン") {
+                if (trimmed === "Tony Redgrave") {
                     el.textContent = "Mpillias";
                     el.style.color = "#734986";
                 }
@@ -267,8 +267,8 @@ module.exports = class RenameChannel {
 
         this.replaceTextInNode(rootNode, "Prezomenoi OG", "Ghost Server");
         this.replaceTextInNode(rootNode, "☌⟟⏃⋏⋏⟟☊", "Giannhs");
-        this.replaceTextInNode(rootNode, "⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
-        this.replaceTextInNode(rootNode, "スパイダーマン", "Mpillias");
+        this.replaceTextInNode(rootNode, "AnimalRapist", "Akrivos");
+        this.replaceTextInNode(rootNode, "Tony Redgrave", "Mpillias");
         this.replaceTextInNode(rootNode, "アスタ", "Petros");
         this.replaceTextInNode(rootNode, "ANNOUSKA", "Eirini");
         this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
@@ -291,10 +291,10 @@ module.exports = class RenameChannel {
 
             if (ariaVal && ariaVal.includes("☌⟟⏃⋏⋏⟟☊"))
                 el.setAttribute("aria-label", ariaVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
-            if (ariaVal && ariaVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
-                el.setAttribute("aria-label", ariaVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
-            if (ariaVal && ariaVal.includes("スパイダーマン"))
-                el.setAttribute("aria-label", ariaVal.replace("スパイダーマン", "Mpillias"));
+            if (ariaVal && ariaVal.includes("AnimalRapist"))
+                el.setAttribute("aria-label", ariaVal.replace("AnimalRapist", "Akrivos"));
+            if (ariaVal && ariaVal.includes("Tony Redgrave"))
+                el.setAttribute("aria-label", ariaVal.replace("Tony Redgrave", "Mpillias"));
             if (ariaVal && ariaVal.includes("アスタ"))
                 el.setAttribute("aria-label", ariaVal.replace("アスタ", "Petros"));
             if (ariaVal && ariaVal.includes("ANNOUSKA"))
@@ -311,15 +311,15 @@ module.exports = class RenameChannel {
                 if (el.textContent.includes("☌⟟⏃⋏⋏⟟☊"))
                     el.textContent = el.textContent.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs");
             }
-            if (dtVal && dtVal.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟")) {
-                el.setAttribute("data-text", dtVal.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos"));
-                if (el.textContent.includes("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟"))
-                    el.textContent = el.textContent.replace("⏚⏃⋏⍜☊☌⍀⍙⍾⏃⍜⎅⟟", "Akrivos");
+            if (dtVal && dtVal.includes("AnimalRapist")) {
+                el.setAttribute("data-text", dtVal.replace("AnimalRapist", "Akrivos"));
+                if (el.textContent.includes("AnimalRapist"))
+                    el.textContent = el.textContent.replace("AnimalRapist", "Akrivos");
             }
-            if (dtVal && dtVal.includes("スパイダーマン")) {
-                el.setAttribute("data-text", dtVal.replace("スパイダーマン", "Mpillias"));
-                if (el.textContent.includes("スパイダーマン"))
-                    el.textContent = el.textContent.replace("スパイダーマン", "Mpillias");
+            if (dtVal && dtVal.includes("Tony Redgrave")) {
+                el.setAttribute("data-text", dtVal.replace("Tony Redgrave", "Mpillias"));
+                if (el.textContent.includes("Tony Redgrave"))
+                    el.textContent = el.textContent.replace("Tony Redgrave", "Mpillias");
             }
             if (dtVal && dtVal.includes("アスタ")) {
                 el.setAttribute("data-text", dtVal.replace("アスタ", "Petros"));
