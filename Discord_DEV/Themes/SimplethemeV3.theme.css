@@ -169,7 +169,7 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
 /* 1.2.2 Folder Overlay - Clip-path για folder icons */
 .expandedFolderIconWrapper__48112::after,
 .folderPreview__48112::after,
-.folderHeader__48112::after {
+.folderIcon__48112::after {
     content: "";
     background-color: #f0f0f0;
     background-image: radial-gradient(circle at center, rgba(0,0,0,0.2) 70%, transparent 100%);
@@ -373,7 +373,7 @@ path[fill="var(--text-positive)"] {
 }
 
 /* Soundboard wrapper */
-#popout_90 .wrapper_da5890 {
+#popout_90 .wrapper__4e6ce {
     background: transparent;
 }
 
@@ -969,7 +969,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
 .highlighted_fc800f pre:hover {
     background: rgba(30, 35, 45, 0.95);
 }
-.wrapper_da5890 {
+.wrapper_f61d60 {
     border-radius: 8px;
     padding: clamp(2px, 0.5vw, 3px) clamp(4px, 1vw, 8px);
     font-weight: 500;
@@ -982,7 +982,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
     align-items: center;
     transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
-.wrapper_da5890:hover {
+.wrapper_f61d60:hover {
     background: var(--mention-background-hover, rgba(88, 101, 242, 0.3));
     box-shadow: 0 2px 8px rgba(88, 101, 242, 0.3);
     transform: translateY(-1px);
@@ -2683,7 +2683,7 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     width: 94%;
     transform: translateX(-5px);
 }
-[class="h1_b717a1 title_b717a1 defaultColor__4bd52 defaultMarginh1_b717a1"] {
+[class="h1_b717a1 title_b717a1 defaultColor_b717a1 defaultMarginh1_b717a1"] {
     text-align: center;
     display: block;
     margin: 3px auto 10px 0;
