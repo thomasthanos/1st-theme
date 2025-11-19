@@ -214,11 +214,11 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
 }
 
 /* 1.5 User Area Layout Fix */
-[class="panels_c48ade"] {
+[class="panels__5e434"] {
     transform: translateX(3.5px) !important;
 }
 /* 1.5.1 Panels & κάτω μπάρα */
-.visual-refresh section.panels_c48ade {
+.visual-refresh section.panels__5e434 {
     margin-left: var(--custom-guild-list-width);
     width: calc(
             100% - var(--space-xs) * 2 - var(--custom-guild-list-width)
@@ -227,12 +227,12 @@ div[class="childWrapper__6e9f8 childWrapperNoHoverBg__6e9f8 button_aa90f4"] {
 .actionButtons_e131a9 button {
     padding: 0;
 }
-nav.guilds_c48ade {
+nav.guilds__5e434 {
     margin-bottom: 0 !important;
 }
 
 /* 1.5.2 Hide Bottom Bar (Προαιρετικό) */
-.sidebar_c48ade:after {
+.sidebar__5e434:after {
     display: none;
 }
 [class="rtcConnectionStatusConnected__06d62 rtcConnectionStatusLabel__06d62 hoverableStatus_cdcd10 hoverRoll__0263c"] {
@@ -267,7 +267,7 @@ nav.guilds_c48ade {
     transition: 0.2s;
 }
 
-.tabBarItem__503f7.selected_b3f026 {
+.tabBarItem__503f7.selected_aa8da2 {
     background: rgba(138, 180, 248, 0.1);
     box-shadow: inset 0 0 0 1px rgba(138, 180, 248, 0.3);
     color: #ffffff;
@@ -373,7 +373,7 @@ path[fill="var(--text-positive)"] {
 }
 
 /* Soundboard wrapper */
-#popout_90 .wrapper__4e6ce {
+#popout_90 .wrapper__0d1ef {
     background: transparent;
 }
 
@@ -502,13 +502,13 @@ path[fill="var(--text-positive)"] {
 
 /* 2.1 Search Bar Styling */
 /* 2.1.1 Κέντρο κουμπιού */
-.searchBar__35e86 {
+.searchBar_e6b769 {
     display: flex;
     justify-content: center;
 }
 
 /* 2.1.2 Κουμπί αναζήτησης */
-.searchBar__35e86 .button__201d5 {
+.searchBar_e6b769 .button__201d5 {
     position: relative;
     background: linear-gradient(145deg, #2f3136, #1e1f22) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -527,14 +527,14 @@ path[fill="var(--text-positive)"] {
 }
 
 /* 2.1.3 Hover στο κουμπί */
-.searchBar__35e86 .button__201d5:hover {
+.searchBar_e6b769 .button__201d5:hover {
     background: #3a3e45 !important;
     transform: scale(1.03);
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
 }
 
 /* 2.1.4 Απόκρυψη default κειμένου */
-.searchBar__35e86 .button__201d5 .contents__201d5 {
+.searchBar_e6b769 .button__201d5 .contents__201d5 {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -546,7 +546,7 @@ path[fill="var(--text-positive)"] {
 }
 
 /* 2.1.5 Προσθήκη εικονιδίου + εφέ */
-.searchBar__35e86 .button__201d5 .contents__201d5::before {
+.searchBar_e6b769 .button__201d5 .contents__201d5::before {
     content: "🔍 Search";
     font-size: 14px;
     color: #ccc;
@@ -556,7 +556,7 @@ path[fill="var(--text-positive)"] {
 }
 
 /* 2.1.6 Hover effect στο label */
-.searchBar__35e86 .button__201d5:hover .contents__201d5::before {
+.searchBar_e6b769 .button__201d5:hover .contents__201d5::before {
     color: #ffffff;
     transform: scale(1.05);
 }
@@ -727,7 +727,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
 }
 
 /* Common tab button */
-.tabBar__133bf .item_b3f026 {
+.tabBar__133bf .item_aa8da2 {
     background-color: transparent;
     color: #bbb !important;
     border-radius: 999px;
@@ -741,20 +741,20 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
 }
 
 /* Hover effect */
-.tabBar__133bf .item_b3f026:hover {
+.tabBar__133bf .item_aa8da2:hover {
     background-color: rgba(255, 255, 255, 0.05);
     color: #fff !important;
 }
 
 /* Selected tab (Material elevated) */
-.tabBar__133bf .item_b3f026.selected_b3f026 {
+.tabBar__133bf .item_aa8da2.selected_aa8da2 {
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* Add Friend button styling (Material Blue Dark) */
-.tabBar__133bf .item_b3f026.addFriend__133bf {
+.tabBar__133bf .item_aa8da2.addFriend__133bf {
     background: #3b49df5d !important;
     color: #fff !important;
     border-radius: 999px;
@@ -764,7 +764,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
 }
 
 /* Add Friend hover */
-.tabBar__133bf .item_b3f026.addFriend__133bf:hover {
+.tabBar__133bf .item_aa8da2.addFriend__133bf:hover {
     background: #29328556 !important;
     box-shadow: 0 4px 12px rgba(22, 27, 87, 0.493);
     transform: translateY(-1px);
@@ -969,7 +969,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
 .highlighted_fc800f pre:hover {
     background: rgba(30, 35, 45, 0.95);
 }
-.wrapper_f61d60 {
+.wrapper__4106a {
     border-radius: 8px;
     padding: clamp(2px, 0.5vw, 3px) clamp(4px, 1vw, 8px);
     font-weight: 500;
@@ -982,7 +982,7 @@ div:has(> a.link__972a0[data-list-item-id*="messageRequests"]) {
     align-items: center;
     transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
-.wrapper_f61d60:hover {
+.wrapper__4106a:hover {
     background: var(--mention-background-hover, rgba(88, 101, 242, 0.3));
     box-shadow: 0 2px 8px rgba(88, 101, 242, 0.3);
     transform: translateY(-1px);
@@ -1141,9 +1141,9 @@ body {
             var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
     );
     /* panel separation */
-    .guilds_c48ade /* server list */,
-    .sidebarList_c48ade /* channel list (includes dm list) */,
-    .panels_c48ade /* user panel */,
+    .guilds__5e434 /* server list */,
+    .sidebarList__5e434 /* channel list (includes dm list) */,
+    .panels__5e434 /* user panel */,
     .chat_f75fb0 > .subtitleContainer_f75fb0 /* chat titlebar */,
     .chatContent_f75fb0 /* chat */,
     .container_c8ffbb /* member list */,
@@ -1156,18 +1156,18 @@ body {
         box-sizing: border-box;
     }
 
-    .base_c48ade /* base grid */ {
+    .base__5e434 /* base grid */ {
         gap: 0 var(--gap);
     }
 
-    .sidebar_c48ade /* server list + channel list + user panel group */ {
+    .sidebar__5e434 /* server list + channel list + user panel group */ {
         margin: 0 0 var(--gap) var(--gap);
     }
 
-    .guilds_c48ade /* server list */ {
+    .guilds__5e434 /* server list */ {
         margin-bottom: calc(var(--custom-app-panels-height, 0) + var(--gap));
     }
-    .guilds_c48ade + div:not(.sidebarList_c48ade) /* betterfolders */ {
+    .guilds__5e434 + div:not(.sidebarList__5e434) /* betterfolders */ {
         width: 100% !important;
     }
     .scroller_ef3116 /* server list inner scroller */ {
@@ -1191,7 +1191,7 @@ body {
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
-    .sidebar_c48ade:after /* server list + channel list bottom shadow */ {
+    .sidebar__5e434:after /* server list + channel list bottom shadow */ {
         display: none;
     }
 
@@ -1200,14 +1200,14 @@ body {
         background: none;
     }
     .container__133bf /* friends page group outer */,
-    .page_c48ade {
+    .page__5e434 {
         padding-bottom: var(--gap);
         padding-right: var(--gap);
         border: none !important;
         background: none;
     }
-    .page_c48ade > .chat_f75fb0,
-    .page_c48ade > .container__133bf {
+    .page__5e434 > .chat_f75fb0,
+    .page__5e434 > .container__133bf {
         padding: 0;
     }
 
@@ -1363,9 +1363,9 @@ body {
     );
 
     /* panel separation */
-    .guilds_c48ade /* server list */,
-    .sidebarList_c48ade /* channel list (includes dm list) */,
-    .panels_c48ade /* user panel */,
+    .guilds__5e434 /* server list */,
+    .sidebarList__5e434 /* channel list (includes dm list) */,
+    .panels__5e434 /* user panel */,
     .chat_f75fb0 > .subtitleContainer_f75fb0 /* chat titlebar */,
     .chatContent_f75fb0 /* chat */,
     .container_c8ffbb /* member list */,
@@ -1403,7 +1403,7 @@ body {
         background: transparent;
     }
 
-    .privateChannels__35e86 /* dm list */,
+    .privateChannels_e6b769 /* dm list */,
     .scroller__99e7c /* dm list inner */ {
         background: none;
     }
@@ -1749,7 +1749,7 @@ body {
 }
 
 /* Μπλοκ μηνύματος */
-#popout_975 .messageGroupWrapper__45690 {
+#popout_975 .messageGroupWrapper_e8b59c {
     background: #2a2c31 !important;
     border-radius: 12px !important;
 
@@ -1806,7 +1806,7 @@ body {
 }
 
 /* Εφέ hover */
-#popout_975 .messageGroupWrapper__45690:hover {
+#popout_975 .messageGroupWrapper_e8b59c:hover {
     background-color: #313338 !important;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06),
     0 4px 12px rgba(0, 0, 0, 0.3) !important;
@@ -2185,8 +2185,8 @@ body {
     background: linear-gradient(to left, currentColor 50%, transparent);
     margin-right: 5px;
 }
-.hiddenVisually__27f77,
-.showOnFocus__27f77:not(:focus-within) {
+.hiddenVisually_b18fe2,
+.showOnFocus_b18fe2:not(:focus-within) {
     clip: rect(0 0 0 0);
     -webkit-clip-path: inset(50%);
     clip-path: inset(50%);
@@ -2318,7 +2318,7 @@ body {
 }
 
 /* Material Design Button Style */
-.channelSettingButtons__1ee8c .button__6e3f1 {
+.channelSettingButtons__1ee8c .button_aec7ab {
     background: rgba(255, 255, 255, 0.06);
     border-radius: 9px;
     padding: 8px 16px;
@@ -2334,7 +2334,7 @@ body {
 }
 
 /* Hover effect */
-.channelSettingButtons__1ee8c .button__6e3f1:hover {
+.channelSettingButtons__1ee8c .button_aec7ab:hover {
     background: rgba(255, 255, 255, 0.12);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -2348,7 +2348,7 @@ body {
     transition: fill 0.2s ease;
 }
 
-.channelSettingButtons__1ee8c .button__6e3f1:hover .buttonIcon__6e3f1 svg {
+.channelSettingButtons__1ee8c .button_aec7ab:hover .buttonIcon__6e3f1 svg {
     fill: #fff;
 }
 /* Button label */
@@ -2525,385 +2525,4 @@ button[class="button__201d5 lookFilled__201d5 colorPrimary__201d5 sizeSmall__201
     inset 0 0 27px 4px rgb(0, 90, 90);
     border-radius: 20px !important;
     transition: 350ms ease-in-out !important;
-}
-/*! My account */
-/* user profile button */
-.userInfo__1fed1
-.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
-    background-color: #2f3136 !important;
-    color: transparent !important; /* Hide default text */
-    border-radius: 8px;
-    font-weight: 500;
-    font-family: "Segoe UI", "Roboto", sans-serif;
-    padding: 0px !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.25s ease;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    text-transform: none;
-    letter-spacing: 0.3px;
-    position: relative;
-    width: 148px;
-}
-/* Insert custom label */
-.userInfo__1fed1
-.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5::after {
-    content: "Edit Profile";
-    color: #e0e0e0;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    font-size: 14px;
-}
-/* Hover effect */
-.userInfo__1fed1
-.button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
-    background-color: #3a3c42 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-/* badges ui */
-.badgeList__1fed1 {
-    background-color: var(--background-secondary); /* Εξωτερικό μόνο */
-    border-radius: 8px;
-    padding: 6px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    max-width: 100%;
-    box-shadow: inset 0 0 10px rgb(0, 0, 0),
-    0 1px 2px rgba(255, 255, 255, 0.205); /* 3D γραμμή γύρω */
-}
-
-.badgeList__1fed1 > * {
-    border-radius: 6px;
-    box-shadow: inset 0 0 1px rgba(255, 255, 255, 0.05),
-    0 1px 2px rgba(0, 0, 0, 0.25);
-    transition: transform 0.2s ease;
-}
-
-.badgeList__1fed1 > *:hover {
-    transform: scale(1.05);
-}
-/*? id copy minimal */
-.menu_c1e9c4:not(.submenu_c1e9c4) {
-    background-color: #1e1e1e !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-    padding: 0 !important;
-    width: fit-content !important;
-    min-width: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Apply to ALL "Copy ID" entries */
-[id^="copy-id-devmode-copy-id"] {
-    height: 22px !important;
-    padding: 0px 0px !important;
-    font-size: 12px !important;
-    border-radius: 6px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 4px;
-    position: relative;
-}
-
-/* Remove default label spacing/text */
-[id^="copy-id-devmode-copy-id"] .label_c1e9c4 {
-    font-size: 0 !important;
-    line-height: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    overflow: hidden;
-    position: relative;
-}
-
-/* Replace text with 'Copy' */
-[id^="copy-id-devmode-copy-id"] .label_c1e9c4::before {
-    content: "Copy";
-    font-size: 13px;
-    font-weight: 500;
-    color: white;
-    display: inline-block;
-    line-height: normal;
-    margin: 0;
-    padding: 0;
-}
-
-/* Hover effect */
-[id^="copy-id-devmode-copy-id"]:hover {
-    background-color: rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3),
-    inset 0 0 1px rgba(255, 255, 255, 0.04);
-    transform: translateY(-0.5px);
-    transition: all 0.2s ease;
-}
-
-/* Icon tweaks */
-[id^="copy-id-devmode-copy-id"] .iconContainer_c1e9c4 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 4px;
-}
-/* Material-3D στυλ για το κουμπί Edit */
-.fieldButton__1fed1.button__201d5.lookFilled__201d5.colorPrimary__201d5.sizeSmall__201d5.grow__201d5 {
-    background-color: #272a2e !important;
-    color: #ffffff !important;
-    border-radius: 6px !important;
-    font-size: 13px !important;
-    font-weight: 500;
-    padding: 4px 12px !important;
-    min-width: unset !important;
-    width: fit-content !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35) !important;
-    border: 1px solid rgba(255, 255, 255, 0.06) !important;
-    transition: all 0.2s ease-in-out;
-}
-
-/* Hover effect */
-.fieldButton__1fed1.button__201d5.lookFilled__201d5.colorPrimary__201d5.sizeSmall__201d5.grow__201d5:hover {
-    background-color: #384047 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4) !important;
-}
-/*? password section*/
-.userSettingsSecurity__2666b.marginTop40_fd297e {
-    width: fit-content;
-    margin: 30px auto 0 auto !important;
-    padding: 12px 12px;
-    background-color: #202024;
-    border-radius: 9px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-    width: 94%;
-    transform: translateX(-5px);
-}
-[class="h1_b717a1 title_b717a1 defaultColor_b717a1 defaultMarginh1_b717a1"] {
-    text-align: center;
-    display: block;
-    margin: 3px auto 10px 0;
-}
-[class="h5_b717a1 eyebrow_b717a1 isEnabled__2666b marginBottom20_fd297e"]{
-    color: green !important;
-}
-[class="lockIcon__2666b"]{
-    filter: brightness(80%) contrast(150%);
-}
-/* Μετακίνηση του κουμπιού full δεξιά */
-[class="changePasswordButton__2666b button__201d5 lookFilled__201d5 colorBrand__201d5 sizeSmall__201d5 grow__201d5"] {
-    border-radius: 8px !important;
-    background-color: #1A1A1E !important; /* Material primary */
-    color: #ffffff !important;
-    font-weight: 600;
-    padding: 6px 16px !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in-out;
-}
-
-/* Hover effect */
-[class="changePasswordButton__2666b button__201d5 lookFilled__201d5 colorBrand__201d5 sizeSmall__201d5 grow__201d5"]:hover {
-    background-color: #2d2d35 !important;
-    transform: translateY(-1px);
-}
-[class="colorStandard_c9946a size14_a4e6b9 description_ddd181 formText_ddd181 marginBottom20_fd297e modeDefault_ddd181"]{
-    display: none;
-}
-
-
-
-/* Κουμπιά UI styling */
-.flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
-    background-color: #1A1A1E !important;
-    color: #ffffff !important;
-    border-radius: 8px !important;
-    font-weight: 500;
-    font-size: 13px;
-    padding: 6px 18px !important;
-    width: fit-content !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: all 0.25s ease;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* Hover effect */
-.flex__7c0ba.marginBottom20_fd297e .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
-    background-color: #2a2a2e !important;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-[class="colorStandard_c9946a size14_a4e6b9 description_ddd181 formText_ddd181 description__6c75d modeDefault_ddd181"]{
-    display: none;
-}
-
-
-.credentialItem__6c75d {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 8px 14px;
-    border-radius: 8px;
-    background-color: #1A1A1E !important;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease;
-    gap: 10px;
-}
-
-.credentialItem__6c75d:hover {
-    background-color: #232327 !important;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Τίτλος συσκευής */
-.credentialItem__6c75d .text-md\.semibold_cf4812 {
-    color: #fff !important;
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Κουμπί με τις τελείες */
-.credentialItem__6c75d .button__201d5 {
-    padding: 4px;
-    background: transparent;
-    border-radius: 6px;
-    color: #bbb !important;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-
-.credentialItem__6c75d .button__201d5:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: #fff !important;
-}
-/* Εναλλακτική - Επηρεάζει όλα τα κουμπιά στο κάτω μέρος */
-[class*="marginTop40_"] .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5 {
-    background-color: #1A1A1E !important;
-    color: #ffffff !important;
-    font-weight: 500;
-    font-size: 13px;
-    border-radius: 8px;
-    padding: 6px 16px;
-
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: all 0.2s ease;
-}
-
-/* Hover */
-[class*="marginTop40_"] .button__201d5.lookFilled__201d5.colorBrand__201d5.sizeSmall__201d5.grow__201d5:hover {
-    background-color: #2A2A30 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-}
-/* Κεντράρει μόνο το συγκεκριμένο heading */
-.h5_b717a1.eyebrow_b717a1.defaultMarginh5_b717a1 {
-    text-align: center;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: fit-content;
-}
-[class="colorStandard_c9946a size14_a4e6b9 description_ddd181 formText_ddd181 description_d286c5 modeDefault_ddd181"]{
-    display: none;
-}
-/* 7 Discord Login Start Page */
-/* Discord Login Start Page */
-/* Background image */
-.characterBackground_eb4069 {
-    background-image: url("https://i.postimg.cc/8sQdN5N8/Chat-GPT-Image-30-2025-11-38-13.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-}
-/* Απόκρυψη του αρχικού <img> background εφόσον θέλουμε μόνο background μέσω CSS */
-.characterBackground_eb4069 > .artwork_eb4069 {
-    display: none;
-}
-/* Logo with text styling */
-.logoWithText_eb4069 {
-    content: url("https://i.postimg.cc/KcJRb4ct/thomasthanos-troll-fancy-copy.png");
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: 510px; /* Μπορείς να το αλλάξεις */
-    height: auto;
-    z-index: 10;
-}
-/* Μοντέρνα εμφάνιση για ολόκληρο το login container */
-.authBoxExpanded__921c5.authBox__921c5.theme-dark.images-dark {
-    background-color: #0f1117 !important;
-    border-radius: 18px;
-    padding: 32px;
-    box-shadow: 0 0 30px rgba(0,0,0,0.6);
-    border: 1px solid #1c1f26;
-    font-family: 'Segoe UI', sans-serif;
-}
-/* Τίτλος */
-.authBox__921c5 h1 {
-    font-size: 26px;
-    color: #fff;
-    font-weight: 600;
-}
-/* Υπότιτλος */
-.authBox__921c5 .text-md__normal_cf418e {
-    color: #aaa;
-    margin-bottom: 20px;
-}
-/* Ετικέτες των input fields */
-.authBox__921c5 label {
-    color: #ccc;
-    font-size: 14px;
-    margin-bottom: 6px;
-    display: block;
-}
-/* Inputs */
-.authBox__921c5 input {
-    background-color: #181b22 !important;
-    border: 1px solid #2a2d34 !important;
-    color: #fff !important;
-    border-radius: 10px !important;
-    padding: 10px;
-    width: 100%;
-    transition: border 0.2s ease;
-}
-.authBox__921c5 input:focus {
-    border-color: #7289da !important;
-    outline: none;
-}
-/* Κουμπί Login */
-.authBox__921c5 button[type="submit"] {
-    background: linear-gradient(135deg, #5865F2, #404EED);
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    width: 100%;
-    margin-top: 10px;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-.authBox__921c5 button[type="submit"]:hover {
-    background: linear-gradient(135deg, #6d78fa, #505ced);
-    transform: scale(1.02);
-}
-/* Link buttons (Forgot password, Register, Passkey) */
-.authBox__921c5 a,
-.authBox__921c5 button[class*="lookLink__"] {
-    color: #7289da !important;
-    font-size: 13px;
-    transition: opacity 0.2s ease;
-}
-.authBox__921c5 a:hover,
-.authBox__921c5 button[class*="lookLink__"]:hover {
-    opacity: 0.8;
-    text-decoration: underline;
 }
