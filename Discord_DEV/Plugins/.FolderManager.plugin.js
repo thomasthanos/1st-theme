@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 12.4.1
+ * @version 12.4.2
  * @description Combines AutoReadTrash and HideFolders: Marks folders as read and hides folders based on their IDs, with a custom modal UI featuring collapsible sections.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -49,11 +49,11 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.4.1";
+        return "12.4.2";
     }
 
     initializeSettings() {
-        let loadedSettings = BdApi.loadData("FolderManager", "settings");
+        let loadedSettings = BdApi.Data.load("FolderManager", "settings");
         if (!loadedSettings) {
             this.log("⚠️ No settings found, initializing with defaults...");
             this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
@@ -68,7 +68,7 @@ module.exports = class FolderManager {
 
     saveSettings() {
         if (this._isSaving) {
-            this.log("⏳ Αποφεύχθηκε διπλός καθαρισμός λόγω ενεργού αποθήκευσης.");
+            this.log("⏳ Αποφευχθηκε διπλός καθαρισμός λόγω ενεργού αποθήκευσης.");
             return;
         }
         if (this._saveDebounce) {
@@ -77,7 +77,7 @@ module.exports = class FolderManager {
         this._saveDebounce = setTimeout(() => {
             this._isSaving = true;
             try {
-                BdApi.saveData("FolderManager", "settings", this.settings);
+                BdApi.Data.save("FolderManager", "settings", this.settings);
             } catch (error) {
                 this.log("❌ Error saving settings:", error.message, error.stack);
             } finally {
@@ -123,11 +123,11 @@ module.exports = class FolderManager {
 
     _startPlugin() {
         this._subscribedToContextClose = false;
-        const lastVersion = BdApi.getData('FolderManager', 'lastShownVersion');
+        const lastVersion = BdApi.Data.load('FolderManager', 'lastShownVersion');
         const currentVersion = this.getVersion();
         if (lastVersion !== currentVersion) {
             this.showChangelogDialog(currentVersion);
-            BdApi.setData('FolderManager', 'lastShownVersion', currentVersion);
+            BdApi.Data.save('FolderManager', 'lastShownVersion', currentVersion);
         }
 
         this.injectIcon();
@@ -222,7 +222,7 @@ module.exports = class FolderManager {
             }
         }
 
-        this.log(`📁 Καθαρίστηκαν ${successfulReads} από ${folders.length} φάκελοι`);
+        this.log(`🗂 Καθαρίστηκαν ${successfulReads} από ${folders.length} φάκελοι`);
         this.queueNotification(successfulReads);
         return successfulReads > 0;
     }
@@ -1387,7 +1387,7 @@ module.exports = class FolderManager {
         changelogContainer.style.fontSize = '14px';
         changelogContainer.style.whiteSpace = 'pre-wrap';
         changelogContainer.style.lineHeight = '1.6';
-        changelogContainer.textContent = "- Added persistent observer\n- Fixed selectors after Discord update\n- Improved UI stability\n- Modernized changelog dialog\n- Fixed redeclaration and overlay bugs";
+        changelogContainer.textContent = "- Updated to new BdApi (Data.load/save)\n- Fixed compatibility with modern BetterDiscord\n- Added persistent observer\n- Fixed selectors after Discord update\n- Improved UI stability";
         dialog.appendChild(changelogContainer);
 
         const buttonContainer = document.createElement('div');

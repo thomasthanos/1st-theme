@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.8.0
+ * @version 3.8.1
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -11,7 +11,7 @@
 
 module.exports = class ThomasTCombined {
     constructor() {
-        this.settings = BdApi.loadData("ThomasTCombined", "settings") || {
+        this.settings = BdApi.Data.load("ThomasTCombined", "settings") || {
             blockConsoleEnabled: true,
             discordLinkSafeEnabled: true
         };
@@ -28,8 +28,8 @@ module.exports = class ThomasTCombined {
             "[FetchBlockedDomain]", "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
             "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
             "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
-            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]","[OverlayUsageStatsManager]",
-            "[UserProfileModalActionCreators]","[RPCServer:PostMessage]","[RpcApplicationLogger]",
+            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]", "[OverlayUsageStatsManager]",
+            "[UserProfileModalActionCreators]", "[RPCServer:PostMessage]", "[RpcApplicationLogger]",
         ];
         this._methods = ["log", "info", "warn", "error", "debug"];
         this._linkObserver = null;
@@ -114,13 +114,13 @@ module.exports = class ThomasTCombined {
 
         panel.appendChild(this._createStyledToggle("Enable BlockConsole", this.settings.blockConsoleEnabled, (checked) => {
             this.settings.blockConsoleEnabled = checked;
-            BdApi.saveData("ThomasTCombined", "settings", this.settings);
+            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
             if (checked) this.startBlockConsole(); else this.stopBlockConsole();
         }));
 
         panel.appendChild(this._createStyledToggle("Enable DiscordLinkSafe", this.settings.discordLinkSafeEnabled, (checked) => {
             this.settings.discordLinkSafeEnabled = checked;
-            BdApi.saveData("ThomasTCombined", "settings", this.settings);
+            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
             if (checked) this.startDiscordLinkSafe(); else this.stopDiscordLinkSafe();
         }));
 
