@@ -2,13 +2,10 @@
  * @name SimplethemeV3
  * @description Simple Discord theme with custom emojis
  * @author Thomas Thanos
- * @version 1.6
+ * @version 2.0
  * @authorId 706932839907852389
  */
 
-/* Εισαγωγή εξωτερικών θεμάτων */
-@import url(https://nikospepponis.github.io/Discord_Theme_Thomasthanos/themes/BD.theme.css);
-@import url(https://nikospepponis.github.io/Discord_Theme_Thomasthanos/themes/Settings_minimal.theme.css);
 
 /** 
  * ΠΕΡΙΕΧΟΜΕΝΑ
@@ -169,7 +166,7 @@ div[class="_6e9f8dce4cc18de3-childWrapper _6e9f8dce4cc18de3-childWrapperNoHoverB
 /* 1.2.2 Folder Overlay - Clip-path για folder icons */
 .expandedFolderIconWrapper__48112::after,
 ._48112cbe77dc5022-folderPreview::after,
-._48112cbe77dc5022-folderHeader::after {
+._48112cbe77dc5022-folderIcon::after {
     content: "";
     background-color: #f0f0f0;
     background-image: radial-gradient(circle at center, rgba(0,0,0,0.2) 70%, transparent 100%);
