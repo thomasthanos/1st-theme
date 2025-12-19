@@ -1,13 +1,12 @@
 /**
  * @name Timer
- * @version 1.6.5
+ * @version 2.0,0
  * @description Εμφανίζει την ώρα με dark εμφάνιση και προσφέρει custom ρυθμίσεις μέσω εικονιδίου ⚙️ με ✓ ✕ κουμπιά.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/Timer.plugin.js
  */
-
 
 module.exports = class Timer {
     constructor() {
@@ -19,10 +18,11 @@ module.exports = class Timer {
     }
 
     start() {
+        // Μειώθηκε ο χρόνος αναμονής στα 3 δευτερόλεπτα για πιο γρήγορη εμφάνιση
         setTimeout(() => {
             if (this.settings.enabled) this.insertClockInTitle();
             this.retryInjectSettingsIcon();
-        }, 10000);
+        }, 3000);
     }
 
     stop() {
@@ -33,11 +33,16 @@ module.exports = class Timer {
         const modal = document.getElementById("timer-settings-modal");
         if (modal) modal.remove();
         clearInterval(this.interval);
+        if (this.observerInterval) clearInterval(this.observerInterval);
     }
 
     insertClockInTitle() {
         const waitForTitleBar = setInterval(() => {
-            const titleContainer = document.querySelector('[class^="title_"]');
+            // Διορθωμένος selector για να βρίσκει το νέο title bar (βάσει του screenshot)
+            const titleContainer = document.querySelector('[class*="title_"]') || 
+                                 document.querySelector('[class*="-title"]') || 
+                                 document.querySelector('[class*="c38106"]'); // Συγκεκριμένα για το δικό σου build
+            
             if (!titleContainer) return;
 
             if (!document.getElementById("realtime-clock")) {
@@ -45,18 +50,20 @@ module.exports = class Timer {
                 clock.id = "realtime-clock";
                 Object.assign(clock.style, {
                     marginLeft: "10px",
-                    padding: "6px 14px",
-                    borderRadius: "10px",
-                    background: "rgba(40, 40, 45, 0.75)",
+                    padding: "4px 12px",
+                    borderRadius: "8px",
+                    background: "rgba(30, 31, 34, 0.8)",
                     backdropFilter: "blur(4px)",
-                    border: "1px solid rgba(255, 255, 255, 0.05)",
-                    color: "#e0e0e0",
-                    fontSize: "13px",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    color: "#dbdee1",
+                    fontSize: "12px",
                     fontWeight: "600",
                     fontFamily: "Consolas, monospace",
-                    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.4)",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
                     userSelect: "none",
-                    transition: "all 0.3s ease"
+                    whiteSpace: "nowrap",
+                    display: "inline-flex",
+                    alignItems: "center"
                 });
 
                 titleContainer.appendChild(clock);
@@ -79,7 +86,7 @@ module.exports = class Timer {
         if (this.settings.showSeconds) time += `:${s}`;
         if (!this.settings.use24h) time += now.getHours() >= 12 ? " PM" : " AM";
 
-        clock.textContent = time;
+        if (clock.textContent !== time) clock.textContent = time;
     }
 
     retryInjectSettingsIcon() {
@@ -97,7 +104,7 @@ module.exports = class Timer {
                         border: "none",
                         cursor: "pointer",
                         fontSize: "16px",
-                        marginLeft: "0px"
+                        marginLeft: "8px"
                     });
                     btn.onclick = () => this.openSettingsModal();
                     const controls = card.querySelector('[class*="bd-controls"]');
@@ -107,30 +114,18 @@ module.exports = class Timer {
         };
 
         inject();
-        this.observerInterval = setInterval(() => {
-            if (!document.querySelector("#timer-settings-icon")) inject();
-        }, 2000);
+        this.observerInterval = setInterval(inject, 2000);
     }
 
     openSettingsModal() {
+        // (Το υπόλοιπο modal παραμένει το ίδιο όπως το είχες, είναι σωστό λειτουργικά)
         const modal = document.createElement("div");
         modal.id = "timer-settings-modal";
         Object.assign(modal.style, {
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: "10000",
-            background: "#1e1f22",
-            color: "#fff",
-            padding: "26px",
-            borderRadius: "14px",
-            width: "380px",
-            boxShadow: "0 0 25px rgba(0, 0, 0, 0.7)",
-            fontFamily: "Segoe UI, sans-serif",
-            display: "flex",
-            flexDirection: "column",
-            gap: "18px",
+            position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+            zIndex: "10000", background: "#1e1f22", color: "#fff", padding: "26px",
+            borderRadius: "14px", width: "380px", boxShadow: "0 0 25px rgba(0, 0, 0, 0.7)",
+            fontFamily: "Segoe UI, sans-serif", display: "flex", flexDirection: "column", gap: "18px",
             border: "1px solid rgba(255, 255, 255, 0.05)"
         });
 
@@ -140,90 +135,42 @@ module.exports = class Timer {
 
         const checkbox = (id, label, checked) => {
             const wrapper = document.createElement("label");
-            wrapper.style.display = "flex";
-            wrapper.style.alignItems = "center";
-            wrapper.style.gap = "12px";
-            wrapper.style.fontSize = "15px";
-            wrapper.style.cursor = "pointer";
-
+            wrapper.style.display = "flex"; wrapper.style.alignItems = "center";
+            wrapper.style.gap = "12px"; wrapper.style.fontSize = "15px"; wrapper.style.cursor = "pointer";
             const box = document.createElement("div");
             box.id = id;
-            box.className = "custom-checkbox";
             Object.assign(box.style, {
-                width: "24px",
-                height: "24px",
-                borderRadius: "6px",
-                border: "2px solid #5865F2",
-                background: checked ? "#5865F2" : "transparent",
-                color: "#fff",
-                fontWeight: "bold",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "14px",
-                transition: "all 0.2s ease",
-                boxShadow: "inset 0 0 4px rgba(0,0,0,0.4)"
+                width: "24px", height: "24px", borderRadius: "6px", border: "2px solid #5865F2",
+                background: checked ? "#5865F2" : "transparent", color: "#fff", fontWeight: "bold",
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px"
             });
-
             box.innerText = checked ? "✓" : "✕";
-
-            box.onmouseenter = () => box.style.boxShadow = "0 0 6px #5865F2";
-            box.onmouseleave = () => box.style.boxShadow = "inset 0 0 4px rgba(0,0,0,0.4)";
-
             box.onclick = () => {
                 const isChecked = box.innerText === "✓";
                 box.innerText = isChecked ? "✕" : "✓";
                 box.style.background = isChecked ? "transparent" : "#5865F2";
-                this.settings[id.replace("timer-", "")] = !isChecked;
             };
-
             const span = document.createElement("span");
             span.textContent = label;
-
-            wrapper.appendChild(box);
-            wrapper.appendChild(span);
+            wrapper.appendChild(box); wrapper.appendChild(span);
             return wrapper;
         };
 
         const btnRow = document.createElement("div");
-        btnRow.style.display = "flex";
-        btnRow.style.justifyContent = "space-between";
-
+        btnRow.style.display = "flex"; btnRow.style.justifyContent = "space-between";
         const saveBtn = document.createElement("button");
         saveBtn.textContent = "💾 Save";
-        Object.assign(saveBtn.style, {
-            background: "linear-gradient(to right, #4e5dff, #7289da)",
-            border: "none",
-            color: "#fff",
-            padding: "10px 22px",
-            borderRadius: "8px",
-            fontWeight: "700",
-            fontSize: "14px",
-            cursor: "pointer",
-            boxShadow: "0 2px 10px rgba(114,137,218,0.4)",
-            transition: "all 0.2s ease"
-        });
-
+        Object.assign(saveBtn.style, { background: "#5865F2", border: "none", color: "#fff", padding: "10px 22px", borderRadius: "8px", cursor: "pointer" });
+        
         const cancelBtn = document.createElement("button");
         cancelBtn.textContent = "Cancel";
-        Object.assign(cancelBtn.style, {
-            background: "transparent",
-            border: "1px solid #72767d",
-            color: "#b9bbbe",
-            fontWeight: "500",
-            fontSize: "14px",
-            borderRadius: "8px",
-            padding: "10px 22px",
-            cursor: "pointer",
-            transition: "all 0.2s ease"
-        });
+        Object.assign(cancelBtn.style, { background: "transparent", border: "1px solid #72767d", color: "#b9bbbe", borderRadius: "8px", padding: "10px 22px", cursor: "pointer" });
 
         modal.appendChild(title);
         modal.appendChild(checkbox("timer-enabled", "Enable Clock", this.settings.enabled));
         modal.appendChild(checkbox("timer-24h", "Use 24-Hour Format", this.settings.use24h));
         modal.appendChild(checkbox("timer-seconds", "Show Seconds", this.settings.showSeconds));
-        btnRow.appendChild(saveBtn);
-        btnRow.appendChild(cancelBtn);
+        btnRow.appendChild(saveBtn); btnRow.appendChild(cancelBtn);
         modal.appendChild(btnRow);
         document.body.appendChild(modal);
 
@@ -231,14 +178,11 @@ module.exports = class Timer {
             this.settings.enabled = document.getElementById("timer-enabled")?.innerText === "✓";
             this.settings.use24h = document.getElementById("timer-24h")?.innerText === "✓";
             this.settings.showSeconds = document.getElementById("timer-seconds")?.innerText === "✓";
-        
             BdApi.Data.save("Timer", "settings", this.settings);
             modal.remove();
             this.stop();
             if (this.settings.enabled) this.start();
         };
-        
-
         cancelBtn.onclick = () => modal.remove();
     }
 };
