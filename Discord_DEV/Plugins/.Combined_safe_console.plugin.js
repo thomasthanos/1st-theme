@@ -1,6 +1,6 @@
 /**
  * @name Combined_safe_console
- * @version 3.8.1
+ * @version 3.9.1
  * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -13,9 +13,12 @@ module.exports = class ThomasTCombined {
     constructor() {
         this.settings = BdApi.Data.load("ThomasTCombined", "settings") || {
             blockConsoleEnabled: true,
-            discordLinkSafeEnabled: true
+            discordLinkSafeEnabled: true,
+            blockNetworkRequests: true
         };
         this._orig = {};
+        this._origFetch = null;
+        this._origXHR = null;
         this._prefixes = [
             "[FAST CONNECT]", "[default]", "[KeyboardLayoutMapUtils]", "[Spellchecker]", "[libdiscore]",
             "[BetterDiscord]", "[RPCServer:WSS]", "[GatewaySocket]", "[MessageActionCreators]",
@@ -30,10 +33,32 @@ module.exports = class ThomasTCombined {
             "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
             "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]", "[OverlayUsageStatsManager]",
             "[UserProfileModalActionCreators]", "[RPCServer:PostMessage]", "[RpcApplicationLogger]",
+            "[AVErrorManager]", "[Flux]", "[JANK]", "[GamesActionCreators]", "[OverlayV3Store]",
+            "[AnalyticsTrackImpressionContext]", "[sentry]", "[RTCConnection", "[RPC]", "[AnalyticsTrackingStore]",
         ];
-        this._methods = ["log", "info", "warn", "error", "debug"];
+        this._regexes = [
+            /\/api\/v9\/oauth2\/applications\/.*\/rpc/,
+            /discord\.com\/api\/.*\/oauth2\/applications/,
+            /sentry\./,
+            /GET.*404.*Not Found/,
+            /RTCConnection/,
+            /RPC.*error/,
+            /\[RTCConnection/,
+            /oauth2.*applications.*rpc/,
+            /Cannot read properties of undefined/,
+            /The resource .* was preloaded using link preload but not used/,
+            /AbortError: The play\(\) request was interrupted/
+        ];
+        this._networkBlockPatterns = [
+            /\/api\/v9\/oauth2\/applications\/.*\/rpc/,
+            /discord\.com\/api\/.*\/oauth2\/applications\/\d+\/rpc/
+        ];
+        this._methods = ["log", "info", "warn", "error", "debug", "trace"];
         this._linkObserver = null;
         this._justUpdated = false;
+
+        // Store a reference to this for use in XMLHttpRequest override
+        this._self = this;
     }
 
     start() {
@@ -41,31 +66,54 @@ module.exports = class ThomasTCombined {
             console.clear();
             setTimeout(() => {
                 console.log(
-                    "%c [Combined_safe_console] %c Η κονσόλα καθαρίστηκε!",
+                    "%c [Combined_safe_console] %c Η κονσόλα καθαρίστηκε! %c v3.9.1",
                     "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
-                    "font-weight: bold; background: #616161; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
+                    "font-weight: bold; background: #616161; color: white; padding: 4px 8px;",
+                    "font-weight: bold; background: #2196f3; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
                 );
             }, 10);
 
             if (this.settings.blockConsoleEnabled) this.startBlockConsole();
             if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
+            if (this.settings.blockNetworkRequests) this.startBlockNetworkRequests();
         }, 8000);
     }
 
     stop() {
         this.stopBlockConsole();
         this.stopDiscordLinkSafe();
+        this.stopBlockNetworkRequests();
     }
 
     startBlockConsole() {
         this._methods.forEach(method => {
             this._orig[method] = console[method].bind(console);
             console[method] = (...args) => {
-                const blocked = args.some(arg => typeof arg === "string" && (this._prefixes.some(pref => arg.includes(pref)) || arg.includes("[RTCConnection")));
+                const blocked = args.some(arg => {
+                    const str = typeof arg === "string" ? arg : String(arg);
+                    const shouldBlock =
+                        this._prefixes.some(pref => str.includes(pref)) ||
+                        this._regexes.some(reg => reg.test(str)) ||
+                        str.includes("oauth2/applications") ||
+                        str.includes("sentry") ||
+                        str.includes("404 (Not Found)") ||
+                        str.includes("Cannot read properties of undefined");
+
+                    return shouldBlock;
+                });
                 if (blocked) return;
                 this._orig[method](...args);
             };
         });
+
+        // Block sentry specific initialization
+        if (window.Sentry) {
+            try {
+                window.Sentry.init = () => { };
+                window.Sentry.captureException = () => { };
+                window.Sentry.captureMessage = () => { };
+            } catch (e) { }
+        }
     }
 
     stopBlockConsole() {
@@ -73,6 +121,86 @@ module.exports = class ThomasTCombined {
             if (this._orig[method]) console[method] = this._orig[method];
         });
         this._orig = {};
+    }
+
+    startBlockNetworkRequests() {
+        const self = this._self;
+
+        // Block fetch requests
+        if (window.fetch) {
+            this._origFetch = window.fetch;
+            window.fetch = (...args) => {
+                const url = args[0]?.url || args[0] || '';
+                const shouldBlock = self._networkBlockPatterns.some(pattern =>
+                    pattern.test(url)
+                );
+
+                if (shouldBlock) {
+                    // Return a rejected promise that won't log errors
+                    return Promise.reject(new Error('Blocked by Combined_safe_console'));
+                }
+                return this._origFetch(...args);
+            };
+        }
+
+        // Block XMLHttpRequest
+        if (window.XMLHttpRequest) {
+            this._origXHR = window.XMLHttpRequest.prototype.open;
+            const origXHR = this._origXHR;
+
+            window.XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+                const shouldBlock = self._networkBlockPatterns.some(pattern =>
+                    pattern.test(url)
+                );
+
+                if (shouldBlock) {
+                    // Prevent the request
+                    this._blocked = true;
+                    this._blockedUrl = url;
+                    return;
+                }
+                return origXHR.apply(this, [method, url, ...rest]);
+            };
+
+            // Override send to prevent blocked requests
+            const origSend = window.XMLHttpRequest.prototype.send;
+            window.XMLHttpRequest.prototype.send = function (...args) {
+                if (this._blocked) {
+                    // Trigger error handler without actually sending
+                    setTimeout(() => {
+                        if (this.onerror) this.onerror.call(this, new Event('error'));
+                    }, 0);
+                    return;
+                }
+                return origSend.apply(this, args);
+            };
+        }
+
+        // Block console messages from network errors
+        const origError = console.error;
+        console.error = (...args) => {
+            const str = args.map(arg => String(arg)).join(' ');
+            if (str.includes('GET') && str.includes('404') && str.includes('Not Found')) {
+                return; // Block 404 network errors
+            }
+            if (str.includes('oauth2/applications') || str.includes('/api/v9/oauth2/applications')) {
+                return; // Block oauth2 errors
+            }
+            return origError(...args);
+        };
+        this._orig.error = origError;
+    }
+
+    stopBlockNetworkRequests() {
+        if (this._origFetch) {
+            window.fetch = this._origFetch;
+        }
+        if (this._origXHR) {
+            window.XMLHttpRequest.prototype.open = this._origXHR;
+        }
+        if (this._orig.error) {
+            console.error = this._orig.error;
+        }
     }
 
     startDiscordLinkSafe() {
@@ -122,6 +250,12 @@ module.exports = class ThomasTCombined {
             this.settings.discordLinkSafeEnabled = checked;
             BdApi.Data.save("ThomasTCombined", "settings", this.settings);
             if (checked) this.startDiscordLinkSafe(); else this.stopDiscordLinkSafe();
+        }));
+
+        panel.appendChild(this._createStyledToggle("Block Network Requests", this.settings.blockNetworkRequests, (checked) => {
+            this.settings.blockNetworkRequests = checked;
+            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
+            if (checked) this.startBlockNetworkRequests(); else this.stopBlockNetworkRequests();
         }));
 
         const updateButton = document.createElement("button");

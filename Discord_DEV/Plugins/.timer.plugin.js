@@ -39,10 +39,10 @@ module.exports = class Timer {
     insertClockInTitle() {
         const waitForTitleBar = setInterval(() => {
             // Διορθωμένος selector για να βρίσκει το νέο title bar (βάσει του screenshot)
-            const titleContainer = document.querySelector('[class*="title_"]') || 
-                                 document.querySelector('[class*="-title"]') || 
-                                 document.querySelector('[class*="c38106"]'); // Συγκεκριμένα για το δικό σου build
-            
+            const titleContainer = document.querySelector('[class*="c38106"][class*="-title"]') ||
+                document.querySelector('[class*="title_"]') ||
+                document.querySelector('[class*="-title"]');
+
             if (!titleContainer) return;
 
             if (!document.getElementById("realtime-clock")) {
@@ -161,7 +161,7 @@ module.exports = class Timer {
         const saveBtn = document.createElement("button");
         saveBtn.textContent = "💾 Save";
         Object.assign(saveBtn.style, { background: "#5865F2", border: "none", color: "#fff", padding: "10px 22px", borderRadius: "8px", cursor: "pointer" });
-        
+
         const cancelBtn = document.createElement("button");
         cancelBtn.textContent = "Cancel";
         Object.assign(cancelBtn.style, { background: "transparent", border: "1px solid #72767d", color: "#b9bbbe", borderRadius: "8px", padding: "10px 22px", cursor: "pointer" });

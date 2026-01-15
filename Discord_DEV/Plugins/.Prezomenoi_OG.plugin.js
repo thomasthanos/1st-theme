@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 6.2.0
+ * @version 6.2.2
  * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -78,6 +78,7 @@ module.exports = class RenameChannel {
         this.renameUsers();
         this.renameRepliedMessages();
         this.textReplace(document.body);
+        this.applyOfflineColors();
     }
 
     renameChannels() {
@@ -96,7 +97,8 @@ module.exports = class RenameChannel {
     renameCategories() {
         const categories = {
             "1216757265936154686": "💬",
-            "1216757265936154687": "📱"
+            "1216757265936154687": "📱",
+            "1459305587413094420": "🇩🇪"
         };
         Object.entries(categories).forEach(([categoryId, newName]) => {
             const headers = document.querySelectorAll(`[data-list-item-id="channels___${categoryId}"] h3`);
@@ -168,11 +170,12 @@ module.exports = class RenameChannel {
         });
 
         const fallbackUsers = [
-            { fallback: "☌⟟⏃⋏⋏⟟☊", name: "Giannhs", color: "#1F8249" },
+            { fallback: "Skiguros", name: "Giannhs", color: "#1F8249" },
             { fallback: "AnimalRapist", name: "Akrivos", color: "#1F8249" },
-            { fallback: "Tony Redgrave", name: "Mpillias", color: "#734986" },
-            { fallback: "アスタ", name: "Petros", color: "#FF4500" },
-            { fallback: "ANNOUSKA", name: "Eirini", color: "#FF69B4" },
+            { fallback: "Karaflopekatsos", name: "Mpillias", color: "#734986" },
+            { fallback: "Pipirokauletas", name: "Petros", color: "#FF4500" },
+            { fallback: "nyxterida", name: "Eirini", color: "#FF69B4" },
+            { fallback: "Seniora Chara", name: "Chara", color: "#9b59b6" },
             { fallback: "FlaviBot", name: "FlaviBot", color: "#FFD700" },
             { fallback: "Simple Poll", name: "Simple Poll", color: "#FFD700" },
             { fallback: "Kontosouvli lover", name: "Andreas", color: "#8B0000" }
@@ -184,21 +187,26 @@ module.exports = class RenameChannel {
             });
         });
 
+    }
+
+    applyOfflineColors() {
         const defaultCustomColor = "#C0C0C0";
-        document.querySelectorAll("div[class*='username']").forEach(div => {
-            if (!div.style.color || div.style.color === "") {
-                div.style.setProperty("color", defaultCustomColor, "important");
+        document.querySelectorAll("[class*='username']").forEach(el => {
+            const isOffline = el.closest('[class*="offline"]');
+            if (isOffline) {
+                el.style.setProperty("color", defaultCustomColor, "important");
             }
         });
     }
 
     renameRepliedMessages() {
         const replyAriaElements = document.querySelectorAll(
-            "[aria-label*='☌⟟⏃⋏⋏⟟☊'], " +
+            "[aria-label*='Skiguros'], " +
             "[aria-label*='AnimalRapist'], " +
-            "[aria-label*='Tony Redgrave'], " +
-            "[aria-label*='アスタ'], " +
-            "[aria-label*='ANNOUSKA'], " +
+            "[aria-label*='Karaflopekatsos'], " +
+            "[aria-label*='Pipirokauletas'], " +
+            "[aria-label*='nyxterida'], " +
+            "[aria-label*='Seniora Chara'], " +
             "[aria-label*='FlaviBot'], " +
             "[aria-label*='Simple Poll'], " +
             "[aria-label*='Kontosouvli lover']"
@@ -206,16 +214,18 @@ module.exports = class RenameChannel {
         replyAriaElements.forEach(el => {
             const oldAria = el.getAttribute("aria-label");
             if (!oldAria) return;
-            if (oldAria.includes("☌⟟⏃⋏⋏⟟☊"))
-                el.setAttribute("aria-label", oldAria.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
+            if (oldAria.includes("Skiguros"))
+                el.setAttribute("aria-label", oldAria.replace("Skiguros", "Giannhs"));
             if (oldAria.includes("AnimalRapist"))
                 el.setAttribute("aria-label", oldAria.replace("AnimalRapist", "Akrivos"));
-            if (oldAria.includes("Tony Redgrave"))
-                el.setAttribute("aria-label", oldAria.replace("Tony Redgrave", "Mpillias"));
-            if (oldAria.includes("アスタ"))
-                el.setAttribute("aria-label", oldAria.replace("アスタ", "Petros"));
-            if (oldAria.includes("ANNOUSKA"))
-                el.setAttribute("aria-label", oldAria.replace("ANNOUSKA", "Eirini"));
+            if (oldAria.includes("Karaflopekatsos"))
+                el.setAttribute("aria-label", oldAria.replace("Karaflopekatsos", "Mpillias"));
+            if (oldAria.includes("Pipirokauletas"))
+                el.setAttribute("aria-label", oldAria.replace("Pipirokauletas", "Petros"));
+            if (oldAria.includes("nyxterida"))
+                el.setAttribute("aria-label", oldAria.replace("nyxterida", "Eirini"));
+            if (oldAria.includes("Seniora Chara"))
+                el.setAttribute("aria-label", oldAria.replace("Seniora Chara", "Chara"));
             if (oldAria.includes("FlaviBot"))
                 el.setAttribute("aria-label", oldAria.replace("FlaviBot", "FlaviBot"));
             if (oldAria.includes("Simple Poll"))
@@ -226,7 +236,7 @@ module.exports = class RenameChannel {
         document.querySelectorAll("*").forEach(el => {
             if (el.childElementCount === 0) {
                 const trimmed = el.textContent.trim();
-                if (trimmed === "☌⟟⏃⋏⋏⟟☊") {
+                if (trimmed === "Skiguros") {
                     el.textContent = "Giannhs";
                     el.style.color = "#1F8249";
                 }
@@ -234,17 +244,21 @@ module.exports = class RenameChannel {
                     el.textContent = "Akrivos";
                     el.style.color = "#1F8249";
                 }
-                if (trimmed === "Tony Redgrave") {
+                if (trimmed === "Karaflopekatsos") {
                     el.textContent = "Mpillias";
                     el.style.color = "#734986";
                 }
-                if (trimmed === "アスタ") {
+                if (trimmed === "Pipirokauletas") {
                     el.textContent = "Petros";
                     el.style.color = "#FF4500";
                 }
-                if (trimmed === "ANNOUSKA") {
+                if (trimmed === "nyxterida") {
                     el.textContent = "Eirini";
                     el.style.color = "#FF69B4";
+                }
+                if (trimmed === "Seniora Chara") {
+                    el.textContent = "Chara";
+                    el.style.color = "#9b59b6";
                 }
                 if (trimmed === "FlaviBot") {
                     el.textContent = "FlaviBot";
@@ -265,12 +279,13 @@ module.exports = class RenameChannel {
     textReplace(rootNode) {
         if (!rootNode) return;
 
-        this.replaceTextInNode(rootNode, "Prezomenoi OG", "Ghost Server");
-        this.replaceTextInNode(rootNode, "☌⟟⏃⋏⋏⟟☊", "Giannhs");
+        this.replaceTextInNode(rootNode, "Xountikoi OG", "Ghost Server");
+        this.replaceTextInNode(rootNode, "Skiguros", "Giannhs");
         this.replaceTextInNode(rootNode, "AnimalRapist", "Akrivos");
-        this.replaceTextInNode(rootNode, "Tony Redgrave", "Mpillias");
-        this.replaceTextInNode(rootNode, "アスタ", "Petros");
-        this.replaceTextInNode(rootNode, "ANNOUSKA", "Eirini");
+        this.replaceTextInNode(rootNode, "Karaflopekatsos", "Mpillias");
+        this.replaceTextInNode(rootNode, "Pipirokauletas", "Petros");
+        this.replaceTextInNode(rootNode, "nyxterida", "Eirini");
+        this.replaceTextInNode(rootNode, "Seniora Chara", "Chara");
         this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
         this.replaceTextInNode(rootNode, "Simple Poll", "Simple Poll");
         this.replaceTextInNode(rootNode, "@Kontosouvli lover", "Andreas");
@@ -278,27 +293,29 @@ module.exports = class RenameChannel {
         const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
         elementsWithAttrs.forEach(el => {
             const ariaVal = el.getAttribute("aria-label");
-            if (ariaVal && ariaVal.includes("Prezomenoi OG")) {
-                el.setAttribute("aria-label", ariaVal.replace("Prezomenoi OG", "Prezomenoi LOCAL"));
+            if (ariaVal && ariaVal.includes("Xountikoi OG")) {
+                el.setAttribute("aria-label", ariaVal.replace("Xountikoi OG", "Prezomenoi LOCAL"));
             }
 
             const dtVal = el.getAttribute("data-text");
-            if (dtVal && dtVal.includes("Prezomenoi OG")) {
-                el.setAttribute("data-text", dtVal.replace("Prezomenoi OG", "Prezomenoi LOCAL"));
-                if (el.textContent.includes("Prezomenoi OG"))
-                    el.textContent = el.textContent.replace("Prezomenoi OG", "Prezomenoi LOCAL");
+            if (dtVal && dtVal.includes("Xountikoi OG")) {
+                el.setAttribute("data-text", dtVal.replace("Xountikoi OG", "Prezomenoi LOCAL"));
+                if (el.textContent.includes("Xountikoi OG"))
+                    el.textContent = el.textContent.replace("Xountikoi OG", "Prezomenoi LOCAL");
             }
 
-            if (ariaVal && ariaVal.includes("☌⟟⏃⋏⋏⟟☊"))
-                el.setAttribute("aria-label", ariaVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
+            if (ariaVal && ariaVal.includes("Skiguros"))
+                el.setAttribute("aria-label", ariaVal.replace("Skiguros", "Giannhs"));
             if (ariaVal && ariaVal.includes("AnimalRapist"))
                 el.setAttribute("aria-label", ariaVal.replace("AnimalRapist", "Akrivos"));
-            if (ariaVal && ariaVal.includes("Tony Redgrave"))
-                el.setAttribute("aria-label", ariaVal.replace("Tony Redgrave", "Mpillias"));
-            if (ariaVal && ariaVal.includes("アスタ"))
-                el.setAttribute("aria-label", ariaVal.replace("アスタ", "Petros"));
-            if (ariaVal && ariaVal.includes("ANNOUSKA"))
-                el.setAttribute("aria-label", ariaVal.replace("ANNOUSKA", "Eirini"));
+            if (ariaVal && ariaVal.includes("Karaflopekatsos"))
+                el.setAttribute("aria-label", ariaVal.replace("Karaflopekatsos", "Mpillias"));
+            if (ariaVal && ariaVal.includes("Pipirokauletas"))
+                el.setAttribute("aria-label", ariaVal.replace("Pipirokauletas", "Petros"));
+            if (ariaVal && ariaVal.includes("nyxterida"))
+                el.setAttribute("aria-label", ariaVal.replace("nyxterida", "Eirini"));
+            if (ariaVal && ariaVal.includes("Seniora Chara"))
+                el.setAttribute("aria-label", ariaVal.replace("Seniora Chara", "Chara"));
             if (ariaVal && ariaVal.includes("FlaviBot"))
                 el.setAttribute("aria-label", ariaVal.replace("FlaviBot", "FlaviBot"));
             if (ariaVal && ariaVal.includes("Simple Poll"))
@@ -306,30 +323,35 @@ module.exports = class RenameChannel {
             if (ariaVal && ariaVal.includes("@Kontosouvli lover"))
                 el.setAttribute("aria-label", ariaVal.replace("@Kontosouvli lover", "Andreas"));
 
-            if (dtVal && dtVal.includes("☌⟟⏃⋏⋏⟟☊")) {
-                el.setAttribute("data-text", dtVal.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs"));
-                if (el.textContent.includes("☌⟟⏃⋏⋏⟟☊"))
-                    el.textContent = el.textContent.replace("☌⟟⏃⋏⋏⟟☊", "Giannhs");
+            if (dtVal && dtVal.includes("Skiguros")) {
+                el.setAttribute("data-text", dtVal.replace("Skiguros", "Giannhs"));
+                if (el.textContent.includes("Skiguros"))
+                    el.textContent = el.textContent.replace("Skiguros", "Giannhs");
             }
             if (dtVal && dtVal.includes("AnimalRapist")) {
                 el.setAttribute("data-text", dtVal.replace("AnimalRapist", "Akrivos"));
                 if (el.textContent.includes("AnimalRapist"))
                     el.textContent = el.textContent.replace("AnimalRapist", "Akrivos");
             }
-            if (dtVal && dtVal.includes("Tony Redgrave")) {
-                el.setAttribute("data-text", dtVal.replace("Tony Redgrave", "Mpillias"));
-                if (el.textContent.includes("Tony Redgrave"))
-                    el.textContent = el.textContent.replace("Tony Redgrave", "Mpillias");
+            if (dtVal && dtVal.includes("Karaflopekatsos")) {
+                el.setAttribute("data-text", dtVal.replace("Karaflopekatsos", "Mpillias"));
+                if (el.textContent.includes("Karaflopekatsos"))
+                    el.textContent = el.textContent.replace("Karaflopekatsos", "Mpillias");
             }
-            if (dtVal && dtVal.includes("アスタ")) {
-                el.setAttribute("data-text", dtVal.replace("アスタ", "Petros"));
-                if (el.textContent.includes("アスタ"))
-                    el.textContent = el.textContent.replace("アスタ", "Petros");
+            if (dtVal && dtVal.includes("Pipirokauletas")) {
+                el.setAttribute("data-text", dtVal.replace("Pipirokauletas", "Petros"));
+                if (el.textContent.includes("Pipirokauletas"))
+                    el.textContent = el.textContent.replace("Pipirokauletas", "Petros");
             }
-            if (dtVal && dtVal.includes("ANNOUSKA")) {
-                el.setAttribute("data-text", dtVal.replace("ANNOUSKA", "Eirini"));
-                if (el.textContent.includes("ANNOUSKA"))
-                    el.textContent = el.textContent.replace("ANNOUSKA", "Eirini");
+            if (dtVal && dtVal.includes("nyxterida")) {
+                el.setAttribute("data-text", dtVal.replace("nyxterida", "Eirini"));
+                if (el.textContent.includes("nyxterida"))
+                    el.textContent = el.textContent.replace("nyxterida", "Eirini");
+            }
+            if (dtVal && dtVal.includes("Seniora Chara")) {
+                el.setAttribute("data-text", dtVal.replace("Seniora Chara", "Chara"));
+                if (el.textContent.includes("Seniora Chara"))
+                    el.textContent = el.textContent.replace("Seniora Chara", "Chara");
             }
             if (dtVal && dtVal.includes("FlaviBot")) {
                 el.setAttribute("data-text", dtVal.replace("FlaviBot", "FlaviBot"));
@@ -378,7 +400,9 @@ module.exports = class RenameChannel {
             "1250083136818122813": "☣️〢Karkinos",
             "1216761517194739936": "⚖️〢Dikastirio",
             "1216818976898941068": "🎬〢Movies",
-            "1345100969393917953": "🔏〢Secret"
+            "1345100969393917953": "🔏〢Secret",
+            "1459305637841473711": "🇩🇪〢secret channel",
+            "1459297181721952307": "🇩🇪〢secret call"
         };
     }
 
@@ -726,7 +750,7 @@ module.exports = class RenameChannel {
     }
     log(...args) {
         console.log(
-            "%c [Prezomenoi_OG v6.2.0] %c " + args.join(" "),
+            "%c [Prezomenoi_OG v6.2.2] %c " + args.join(" "),
             "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
             "font-weight: bold; background: #313131; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
         );
