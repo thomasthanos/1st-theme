@@ -6,7 +6,7 @@
     background-color: #000 !important;
     transform: scale(2) translateX(0px) translateY(8px);
 }
-.prezomenoi-og-active .f34534e8a5d3ca64-icon.guildIcon__85643.f34534e8a5d3ca64-iconSizeMini.f34534e8a5d3ca64-iconActiveMini {
+.prezomenoi-og-active [class*="guildIcon"][class*="iconSizeMini"][class*="iconActiveMini"] {
     background-image: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
     background-size: cover !important;
     border-radius: 20% !important;
