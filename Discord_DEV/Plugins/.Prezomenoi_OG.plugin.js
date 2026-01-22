@@ -19,6 +19,20 @@ module.exports = class RenameChannel {
         this.locationCheckInterval = null;
     }
 
+    get USERS() {
+        return [
+            { id: "411178013103751190", original: ["AnimalRapist"], target: "Akrivos", color: "#1F8249" },
+            { id: "681933873877352472", original: ["Karaflopekatsos", "Tony Redgrave"], target: "Mpillias", color: "#734986" },
+            { id: "1076347460500324363", original: ["Skiguros"], target: "Giannhs", color: "#1F8249" },
+            { id: "633412575601623049", original: ["Pipirokauletas", "アスタ"], target: "Petros", color: "#206694" },
+            { id: "804860278788456469", original: ["nyxterida", "ANNOUSKA"], target: "Eirini", color: "#FF69B4" },
+            { id: "684773505157431347", original: ["FlaviBot"], target: "FlaviBot", color: "#FFD700" },
+            { id: "324631108731928587", original: ["Simple Poll"], target: "Simple Poll", color: "#FFD700" },
+            { id: "778355613373693953", original: ["Kontosouvli lover", "@Kontosouvli lover"], target: "Andreas", color: "#8B0000" },
+            { id: null, original: ["Seniora Chara"], target: "Chara", color: "#9b59b6" }
+        ];
+    }
+
     start() {
         this.log("[Prezomenoi_OG] Plugin activated");
         const link = document.createElement('link');
@@ -75,6 +89,7 @@ module.exports = class RenameChannel {
         this.renameChannels();
         this.renameCategories();
         this.renameHeaderTitle();
+        this.renameVoiceChatHeader(); // Προσθήκη για voice chat
         this.renameUsers();
         this.renameRepliedMessages();
         this.textReplace(document.body);
@@ -117,26 +132,44 @@ module.exports = class RenameChannel {
         if (!match) return;
         const newTitle = channels[match[1]];
         if (!newTitle) return;
-        const header = document.querySelector("h1[class*='title__']");
-        if (header && header.textContent !== newTitle) {
+
+        const header = document.querySelector("h1[class*='title']");
+        if (header && !header.textContent.includes(newTitle)) {
             header.textContent = newTitle;
         }
     }
 
+    renameVoiceChatHeader() {
+        const channels = this.getChannelMap();
+        const match = window.location.pathname.match(/channels\/\d+\/(\d+)/);
+        if (!match) return;
+
+        const channelId = match[1];
+        const newTitle = channels[channelId];
+        if (!newTitle) return;
+
+        // Ψάχνουμε το συγκεκριμένο στοιχείο voice chat header
+        const voiceHeaders = document.querySelectorAll('h2[class*="channelName"]');
+
+        voiceHeaders.forEach(voiceHeader => {
+            // Απλά αλλάζουμε το κείμενο αν είναι διαφορετικό
+            if (voiceHeader.textContent !== newTitle) {
+                voiceHeader.textContent = newTitle;
+                voiceHeader.setAttribute("data-prezomenoi-renamed", "true");
+            }
+        });
+    }
+
     renameUsers() {
-        const userMap = {
-            "411178013103751190": { name: "Akrivos", color: "#1F8249" },
-            "681933873877352472": { name: "Mpillias", color: "#734986" },
-            "1076347460500324363": { name: "Giannhs", color: "#1F8249" },
-            "633412575601623049": { name: "Petros", color: "#206694" },
-            "804860278788456469": { name: "Eirini", color: "#FF69B4" },
-            "684773505157431347": { name: "FlaviBot", color: "#FFD700" },
-            "324631108731928587": { name: "Simple Poll", color: "#FFD700" },
-            "778355613373693953": { name: "Andreas", color: "#8B0000" }
-        };
+        const userMap = {};
+        this.USERS.forEach(user => {
+            if (user.id) userMap[user.id] = user;
+        });
 
         const allUsernameDivs = document.querySelectorAll("div[class*='username']");
         allUsernameDivs.forEach(div => {
+            if (div.getAttribute("data-prezomenoi-renamed")) return; // Skip if already processed
+
             const avatarDiv = div.closest(".content__07f91")?.querySelector(".userAvatar__55bab");
             const isVoiceCall = div.closest("[class*='voiceUser']");
 
@@ -157,41 +190,38 @@ module.exports = class RenameChannel {
 
             const userInfo = userMap[userId];
             if (userInfo) {
-                const computedStyle = window.getComputedStyle(div);
-                const originalFontSize = computedStyle.fontSize;
+                if (div.textContent !== userInfo.target) {
+                    const computedStyle = window.getComputedStyle(div);
+                    const originalFontSize = computedStyle.fontSize;
 
-                div.textContent = userInfo.name;
-                div.style.color = userInfo.color;
+                    div.textContent = userInfo.target;
+                    div.style.color = userInfo.color;
+                    div.setAttribute("data-prezomenoi-renamed", "true");
 
-                if (isVoiceCall) {
-                    div.style.fontSize = originalFontSize;
+                    if (isVoiceCall) {
+                        div.style.fontSize = originalFontSize;
+                    }
                 }
             }
         });
 
-        const fallbackUsers = [
-            { fallback: "Skiguros", name: "Giannhs", color: "#1F8249" },
-            { fallback: "AnimalRapist", name: "Akrivos", color: "#1F8249" },
-            { fallback: "Karaflopekatsos", name: "Mpillias", color: "#734986" },
-            { fallback: "Pipirokauletas", name: "Petros", color: "#FF4500" },
-            { fallback: "nyxterida", name: "Eirini", color: "#FF69B4" },
-            { fallback: "Seniora Chara", name: "Chara", color: "#9b59b6" },
-            { fallback: "FlaviBot", name: "FlaviBot", color: "#FFD700" },
-            { fallback: "Simple Poll", name: "Simple Poll", color: "#FFD700" },
-            { fallback: "Kontosouvli lover", name: "Andreas", color: "#8B0000" }
-        ];
-        fallbackUsers.forEach(user => {
-            document.querySelectorAll(`[data-text="${user.fallback}"]`).forEach(el => {
-                el.textContent = user.name;
-                el.style.color = user.color;
+        // Fallback for names in lists where ID might isn't easily accessible or generally by text
+        this.USERS.forEach(user => {
+            user.original.forEach(origName => {
+                document.querySelectorAll(`[data-text="${origName}"]`).forEach(el => {
+                    if (el.textContent !== user.target) {
+                        el.textContent = user.target;
+                        el.style.color = user.color;
+                    }
+                });
             });
         });
-
     }
 
-    applyOfflineColors() {
+    applyOfflineColors(rootNode = document) {
+        if (!rootNode || !rootNode.querySelectorAll) return;
         const defaultCustomColor = "#C0C0C0";
-        document.querySelectorAll("[class*='username']").forEach(el => {
+        rootNode.querySelectorAll("[class*='username']").forEach(el => {
             const isOffline = el.closest('[class*="offline"]');
             if (isOffline) {
                 el.style.setProperty("color", defaultCustomColor, "important");
@@ -200,77 +230,31 @@ module.exports = class RenameChannel {
     }
 
     renameRepliedMessages() {
-        const replyAriaElements = document.querySelectorAll(
-            "[aria-label*='Skiguros'], " +
-            "[aria-label*='AnimalRapist'], " +
-            "[aria-label*='Karaflopekatsos'], " +
-            "[aria-label*='Pipirokauletas'], " +
-            "[aria-label*='nyxterida'], " +
-            "[aria-label*='Seniora Chara'], " +
-            "[aria-label*='FlaviBot'], " +
-            "[aria-label*='Simple Poll'], " +
-            "[aria-label*='Kontosouvli lover']"
-        );
+        const selectors = this.USERS.flatMap(u => u.original.map(name => `[aria-label*='${name}']`)).join(", ");
+        const replyAriaElements = document.querySelectorAll(selectors);
+
         replyAriaElements.forEach(el => {
             const oldAria = el.getAttribute("aria-label");
             if (!oldAria) return;
-            if (oldAria.includes("Skiguros"))
-                el.setAttribute("aria-label", oldAria.replace("Skiguros", "Giannhs"));
-            if (oldAria.includes("AnimalRapist"))
-                el.setAttribute("aria-label", oldAria.replace("AnimalRapist", "Akrivos"));
-            if (oldAria.includes("Karaflopekatsos"))
-                el.setAttribute("aria-label", oldAria.replace("Karaflopekatsos", "Mpillias"));
-            if (oldAria.includes("Pipirokauletas"))
-                el.setAttribute("aria-label", oldAria.replace("Pipirokauletas", "Petros"));
-            if (oldAria.includes("nyxterida"))
-                el.setAttribute("aria-label", oldAria.replace("nyxterida", "Eirini"));
-            if (oldAria.includes("Seniora Chara"))
-                el.setAttribute("aria-label", oldAria.replace("Seniora Chara", "Chara"));
-            if (oldAria.includes("FlaviBot"))
-                el.setAttribute("aria-label", oldAria.replace("FlaviBot", "FlaviBot"));
-            if (oldAria.includes("Simple Poll"))
-                el.setAttribute("aria-label", oldAria.replace("Simple Poll", "Simple Poll"));
-            if (oldAria.includes("@Kontosouvli lover"))
-                el.setAttribute("aria-label", oldAria.replace("@Kontosouvli lover", "Andreas"));
+
+            this.USERS.forEach(user => {
+                user.original.forEach(origName => {
+                    if (oldAria.includes(origName)) {
+                        el.setAttribute("aria-label", oldAria.replace(origName, user.target));
+                    }
+                });
+            });
         });
+
         document.querySelectorAll("*").forEach(el => {
             if (el.childElementCount === 0) {
                 const trimmed = el.textContent.trim();
-                if (trimmed === "Skiguros") {
-                    el.textContent = "Giannhs";
-                    el.style.color = "#1F8249";
-                }
-                if (trimmed === "AnimalRapist") {
-                    el.textContent = "Akrivos";
-                    el.style.color = "#1F8249";
-                }
-                if (trimmed === "Karaflopekatsos") {
-                    el.textContent = "Mpillias";
-                    el.style.color = "#734986";
-                }
-                if (trimmed === "Pipirokauletas") {
-                    el.textContent = "Petros";
-                    el.style.color = "#FF4500";
-                }
-                if (trimmed === "nyxterida") {
-                    el.textContent = "Eirini";
-                    el.style.color = "#FF69B4";
-                }
-                if (trimmed === "Seniora Chara") {
-                    el.textContent = "Chara";
-                    el.style.color = "#9b59b6";
-                }
-                if (trimmed === "FlaviBot") {
-                    el.textContent = "FlaviBot";
-                    el.style.color = "#FFD700";
-                }
-                if (trimmed === "Simple Poll") {
-                    el.textContent = "Simple Poll";
-                    el.style.color = "#FFD700";
-                }
-                if (trimmed === "Kontosouvli lover") {
-                    el.textContent = "Andreas";
-                    el.style.color = "#8B0000";
+                const matchedUser = this.USERS.find(u => u.original.includes(trimmed));
+                if (matchedUser) {
+                    if (el.textContent !== matchedUser.target) {
+                        el.textContent = matchedUser.target;
+                        el.style.color = matchedUser.color;
+                    }
                 }
             }
         });
@@ -280,15 +264,13 @@ module.exports = class RenameChannel {
         if (!rootNode) return;
 
         this.replaceTextInNode(rootNode, "Xountikoi OG", "Ghost Server");
-        this.replaceTextInNode(rootNode, "Skiguros", "Giannhs");
-        this.replaceTextInNode(rootNode, "AnimalRapist", "Akrivos");
-        this.replaceTextInNode(rootNode, "Karaflopekatsos", "Mpillias");
-        this.replaceTextInNode(rootNode, "Pipirokauletas", "Petros");
-        this.replaceTextInNode(rootNode, "nyxterida", "Eirini");
-        this.replaceTextInNode(rootNode, "Seniora Chara", "Chara");
-        this.replaceTextInNode(rootNode, "FlaviBot", "FlaviBot");
-        this.replaceTextInNode(rootNode, "Simple Poll", "Simple Poll");
-        this.replaceTextInNode(rootNode, "@Kontosouvli lover", "Andreas");
+
+        this.USERS.forEach(user => {
+            user.original.forEach(origName => {
+                this.replaceTextInNode(rootNode, origName, user.target);
+            });
+        });
+
 
         const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
         elementsWithAttrs.forEach(el => {
@@ -304,70 +286,23 @@ module.exports = class RenameChannel {
                     el.textContent = el.textContent.replace("Xountikoi OG", "Prezomenoi LOCAL");
             }
 
-            if (ariaVal && ariaVal.includes("Skiguros"))
-                el.setAttribute("aria-label", ariaVal.replace("Skiguros", "Giannhs"));
-            if (ariaVal && ariaVal.includes("AnimalRapist"))
-                el.setAttribute("aria-label", ariaVal.replace("AnimalRapist", "Akrivos"));
-            if (ariaVal && ariaVal.includes("Karaflopekatsos"))
-                el.setAttribute("aria-label", ariaVal.replace("Karaflopekatsos", "Mpillias"));
-            if (ariaVal && ariaVal.includes("Pipirokauletas"))
-                el.setAttribute("aria-label", ariaVal.replace("Pipirokauletas", "Petros"));
-            if (ariaVal && ariaVal.includes("nyxterida"))
-                el.setAttribute("aria-label", ariaVal.replace("nyxterida", "Eirini"));
-            if (ariaVal && ariaVal.includes("Seniora Chara"))
-                el.setAttribute("aria-label", ariaVal.replace("Seniora Chara", "Chara"));
-            if (ariaVal && ariaVal.includes("FlaviBot"))
-                el.setAttribute("aria-label", ariaVal.replace("FlaviBot", "FlaviBot"));
-            if (ariaVal && ariaVal.includes("Simple Poll"))
-                el.setAttribute("aria-label", ariaVal.replace("Simple Poll", "Simple Poll"));
-            if (ariaVal && ariaVal.includes("@Kontosouvli lover"))
-                el.setAttribute("aria-label", ariaVal.replace("@Kontosouvli lover", "Andreas"));
+            this.USERS.forEach(user => {
+                user.original.forEach(origName => {
+                    const currentAria = el.getAttribute("aria-label");
+                    if (currentAria && currentAria.includes(origName)) {
+                        el.setAttribute("aria-label", currentAria.replace(origName, user.target));
+                    }
 
-            if (dtVal && dtVal.includes("Skiguros")) {
-                el.setAttribute("data-text", dtVal.replace("Skiguros", "Giannhs"));
-                if (el.textContent.includes("Skiguros"))
-                    el.textContent = el.textContent.replace("Skiguros", "Giannhs");
-            }
-            if (dtVal && dtVal.includes("AnimalRapist")) {
-                el.setAttribute("data-text", dtVal.replace("AnimalRapist", "Akrivos"));
-                if (el.textContent.includes("AnimalRapist"))
-                    el.textContent = el.textContent.replace("AnimalRapist", "Akrivos");
-            }
-            if (dtVal && dtVal.includes("Karaflopekatsos")) {
-                el.setAttribute("data-text", dtVal.replace("Karaflopekatsos", "Mpillias"));
-                if (el.textContent.includes("Karaflopekatsos"))
-                    el.textContent = el.textContent.replace("Karaflopekatsos", "Mpillias");
-            }
-            if (dtVal && dtVal.includes("Pipirokauletas")) {
-                el.setAttribute("data-text", dtVal.replace("Pipirokauletas", "Petros"));
-                if (el.textContent.includes("Pipirokauletas"))
-                    el.textContent = el.textContent.replace("Pipirokauletas", "Petros");
-            }
-            if (dtVal && dtVal.includes("nyxterida")) {
-                el.setAttribute("data-text", dtVal.replace("nyxterida", "Eirini"));
-                if (el.textContent.includes("nyxterida"))
-                    el.textContent = el.textContent.replace("nyxterida", "Eirini");
-            }
-            if (dtVal && dtVal.includes("Seniora Chara")) {
-                el.setAttribute("data-text", dtVal.replace("Seniora Chara", "Chara"));
-                if (el.textContent.includes("Seniora Chara"))
-                    el.textContent = el.textContent.replace("Seniora Chara", "Chara");
-            }
-            if (dtVal && dtVal.includes("FlaviBot")) {
-                el.setAttribute("data-text", dtVal.replace("FlaviBot", "FlaviBot"));
-                if (el.textContent.includes("FlaviBot"))
-                    el.textContent = el.textContent.replace("FlaviBot", "FlaviBot");
-            }
-            if (dtVal && dtVal.includes("Simple Poll")) {
-                el.setAttribute("data-text", dtVal.replace("Simple Poll", "Simple Poll"));
-                if (el.textContent.includes("Simple Poll"))
-                    el.textContent = el.textContent.replace("Simple Poll", "Simple Poll");
-            }
-            if (dtVal && dtVal.includes("@Kontosouvli lover")) {
-                el.setAttribute("data-text", dtVal.replace("@Kontosouvli lover", "Andreas"));
-                if (el.textContent.includes("@Kontosouvli lover"))
-                    el.textContent = el.textContent.replace("@Kontosouvli lover", "Andreas");
-            }
+                    const currentDt = el.getAttribute("data-text");
+                    if (currentDt && currentDt.includes(origName)) {
+                        el.setAttribute("data-text", currentDt.replace(origName, user.target));
+                        // Safe double check for text content if it matches data-text pattern
+                        if (el.textContent.includes(origName)) {
+                            el.textContent = el.textContent.replace(origName, user.target);
+                        }
+                    }
+                });
+            });
         });
     }
 
@@ -385,6 +320,27 @@ module.exports = class RenameChannel {
 
     renameInNode(node) {
         this.textReplace(node);
+        this.applyOfflineColors(node);
+
+        // Check for channel list updates
+        if (node.querySelector && (
+            node.querySelector('[data-list-item-id^="channels___"]') ||
+            (node.getAttribute && node.getAttribute('data-list-item-id')?.startsWith('channels___')) ||
+            node.querySelector('[class*="sidebar"]') ||
+            (node.classList && Array.from(node.classList).some(c => c.includes("sidebar")))
+        )) {
+            this.renameChannels();
+            this.renameCategories();
+        }
+
+        // Check for header updates (κανονικό και voice chat)
+        if (node.querySelector && (node.querySelector('h1[class*="title"]') ||
+            node.querySelector('h2[class*="channelName"]') ||
+            node.tagName === 'H1' ||
+            node.tagName === 'H2')) {
+            this.renameHeaderTitle();
+            this.renameVoiceChatHeader(); // Καλεί και για voice chat
+        }
     }
 
     getChannelMap() {
@@ -755,6 +711,4 @@ module.exports = class RenameChannel {
             "font-weight: bold; background: #313131; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
         );
     }
-
-
 };
