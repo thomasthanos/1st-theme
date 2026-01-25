@@ -37,6 +37,8 @@
  *   - Voice Call UI
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap');
+
 :root {
   --server-size: 45px;
   /* Size of the server icons */
@@ -226,9 +228,9 @@ div[class="_6e9f8dce4cc18de3-childWrapper _6e9f8dce4cc18de3-childWrapperNoHoverB
 
 /* 1.5.1 Panels & κάτω μπάρα */
 .visual-refresh section.panels__5e434 {
-  margin-left: var(--custom-guild-list-width);
+  margin-left: calc(var(--custom-guild-list-width) + 2px);
   width: calc(
-    100% - var(--space-xs) * 2 - var(--custom-guild-list-width)
+    100% - var(--space-xs) * 2 - var(--custom-guild-list-width) - -1px
   ) !important;
 }
 
@@ -245,8 +247,71 @@ nav.guilds__5e434 {
   display: none;
 }
 
-[class="_06d6249a1f2584ac-rtcConnectionStatusConnected _06d6249a1f2584ac-rtcConnectionStatusLabel cdcd1000b1205ff9-hoverableStatus _0263c8321829b3e8-hoverRoll"] {
+[class="_06d6249a1f2584ac-rtcConnectionStatusConnected _06d6249a1f2584ac-rtcConnectionStatusLabel cdcd1000b1205ff9-hoverableStatus _0263c8321829b3e8-hoverRoll"],
+.rtcConnectionStatusConnected__06d62 {
   color: green !important;
+  pointer-events: none !important;
+}
+
+/* Completely disable hover - remove all hover functionality */
+.rtcConnectionStatusConnected__06d62,
+.rtcConnectionStatusConnected__06d62 *,
+.rtcConnectionStatusConnected__06d62:hover,
+.rtcConnectionStatusConnected__06d62:hover * {
+  transition: none !important;
+  animation: none !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+
+/* Hide hover state completely */
+.rtcConnectionStatusConnected__06d62 .hovered__0263c,
+.rtcConnectionStatusConnected__06d62:hover .hovered__0263c {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Disable hover roll animation completely */
+.rtcConnectionStatusConnected__06d62.hoverRoll__0263c,
+.rtcConnectionStatusConnected__06d62.hoverRoll__0263c:hover {
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Hide default text content */
+.rtcConnectionStatusConnected__06d62 .default__0263c .text-md\/medium_cf4812 {
+  font-size: 0 !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  line-height: 0 !important;
+  opacity: 0 !important;
+}
+
+/* Add custom "voice connected" text - always visible */
+.rtcConnectionStatusConnected__06d62 .default__0263c {
+  position: relative !important;
+}
+
+.rtcConnectionStatusConnected__06d62 .default__0263c::after,
+.rtcConnectionStatusConnected__06d62:hover .default__0263c::after {
+  content: "voice connected";
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: green !important;
+  visibility: visible !important;
+  display: inline-block !important;
+  height: auto !important;
+  line-height: 1.2 !important;
+  position: relative !important;
+  opacity: 1 !important;
+  margin-left: 10px !important;
 }
 
 /* debug menu ping */
@@ -543,6 +608,8 @@ button[aria-label="Notification Settings"],
 button[aria-label="Νήματα"],
 button[aria-label="Βοήθεια"],
 button[aria-label="Ρυθμίσεις ειδοποιήσεων"],
+button[aria-label="Επιλογές εισόδου"],
+button[aria-label="Επιλογές εξόδου"],
 div[role="button"][aria-label="Στείλτε ένα δώρο"],
 div[role="button"][aria-label="Άνοιγμα επιλογέα αυτοκόλλητων"],
 div[role="button"][aria-label="Εφαρμογές"],
@@ -554,7 +621,9 @@ div[role="button"][aria-label="Help"],
 div[role="button"][aria-label="Notification Settings"],
 div[role="button"][aria-label="Νήματα"],
 div[role="button"][aria-label="Βοήθεια"],
-div[role="button"][aria-label="Ρυθμίσεις ειδοποιήσεων"] {
+div[role="button"][aria-label="Ρυθμίσεις ειδοποιήσεων"],
+div[role="button"][aria-label="Επιλογές εισόδου"],
+div[role="button"][aria-label="Επιλογές εξόδου"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -639,8 +708,16 @@ body {
   /* font, change to '' for default discord font */
   --font: "figtree";
   /* sizes */
-  --gap: 6px;
+  --gap: 5px;
   /* spacing between panels */
+  font-family: 'Comic Neue', sans-serif !important;
+}
+
+/* Apply font everywhere */
+*,
+*::before,
+*::after {
+  font-family: 'Comic Neue', sans-serif !important;
 }
 
 .visual-refresh {
@@ -860,11 +937,9 @@ body {
 }
 
 body {
-  --chatbar-height: 47px;
   /* height of the chatbar */
   --chatbar-padding: 8px;
   /* padding of the chatbar */
-  --custom-channel-textarea-text-area-height: var(--chatbar-height);
 }
 
 @container body style(--flipped-chatbar: on) {
@@ -938,145 +1013,7 @@ body {
   }
 }
 
-.visual-refresh {
-  --custom-guild-list-width: calc(
-    var(--guildbar-avatar-size) + var(--custom-guild-list-padding) * 2 + 2px
-  );
 
-  /* panel separation */
-  .guilds__5e434
-    /* server list */
-    ,
-    .sidebarList__5e434
-    /* channel list (includes dm list) */
-    ,
-    .panels__5e434
-    /* user panel */
-    ,
-    .chat_f75fb0>.subtitleContainer_f75fb0
-    /* chat titlebar */
-    ,
-    .chatContent_f75fb0
-    /* chat */
-    ,
-    .container_c8ffbb
-    /* member list */
-    ,
-    .content_f75fb0>.membersWrap_c8ffbb
-    /* forum post member list */
-    ,
-    .container__133bf>.container__9293f
-    /* friends titlebar */
-    ,
-    .container_f391e3>.container__9293f
-    /* message requests titlebar */
-    ,
-    .homeWrapper__0920e>.container__9293f
-    /* nitro page titlebar */
-    ,
-    .container__01ae2>.container__9293f
-    /* vc chat titlebar */
-    ,
-    .container_fb64c9>.container__9293f
-    /* new thread panel */
-    ,
-    .peopleColumn__133bf
-    /* online friends */
-    ,
-    .nowPlayingColumn__133bf
-    /* active now */
-    ,
-    .scroller_c880e8
-    /* nitro page */
-    ,
-    .container_f391e3>.content_f75fb0
-    /* message requests */
-    ,
-    .shop__6db1d
-    /* shop */
-    ,
-    .outer_c0bea0.panel_c0bea0
-    /* dm user panel */
-    ,
-    .searchResultsWrap_a98f3b
-    /* search results */
-    ,
-    .container_f369db
-    /* forum */
-    ,
-    .chat_fb64c9
-    /* new thread panel */
-    ,
-    .container_a592e1
-    /* server discovery */
-    ,
-    .callContainer_cb9592
-    /* vc container */
-    ,
-    .callContainer__722ff
-
-    /* stage */ {
-    background-color: var(--background-base-lower);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-subtle);
-    backdrop-filter: var(--panel-backdrop-filter);
-    box-sizing: border-box;
-  }
-
-  .members_c8ffbb
-    /* member list inner */
-    ,
-    .member_c8ffbb
-
-    /* member list item */ {
-    background: none;
-  }
-
-  .resizeHandle__01ae2
-
-    /* resize handle */ {
-    background: transparent;
-  }
-
-  .privateChannels_e6b769
-    /* dm list */
-    ,
-    .scroller__99e7c
-
-    /* dm list inner */ {
-    background: none;
-  }
-
-  .scroller__99e7c
-
-    /* dm list inner */ {
-    margin-bottom: 0;
-  }
-
-  .tabBody__133bf
-
-    /* online friends + active now group outer */ {
-    background: none;
-  }
-
-  .nowPlayingColumn__133bf
-
-    /* active now */ {
-    margin-left: var(--gap);
-  }
-
-  .container__7d20c
-
-    /* active now inner */ {
-    background: none;
-  }
-
-  .scroller__7d20c
-
-    /* active now inner */ {
-    border: none;
-  }
-}
 
 /*! END */
 
