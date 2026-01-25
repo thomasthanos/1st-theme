@@ -1,15 +1,17 @@
 /**
- * @name NoPause
- * @author Thomas
- * @description Prevents Discord from pausing videos when you alt-tab or lose focus
- * @version 1.2.0
- * @authorLink https://github.com/
- * @source https://github.com/
+ * @name NoPause for Quests
+ * @description Prevents Discord from pausing QUEST videos when you alt-tab or lose focus
+ * @version 2.0.0
+ * @author ThomasT
+ * @authorId 706932839907852389
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/NoPause.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/NoPause.plugin.js
+ * @website https://github.com/thomasthanos
  */
 
 module.exports = class NoPause {
     constructor() {
-        this.name = "NoPause";
+        this.name = "NoPause for Quests";
         this.observer = null;
         this.patchedVideos = new WeakSet();
         this.intervals = [];
@@ -22,7 +24,7 @@ module.exports = class NoPause {
         this.startObserver();
         this.startVideoMonitor();
         
-        console.log("[NoPause] Plugin started v1.2.0");
+        console.log("[NoPause for Quests] Plugin started v1.3.0 - Quest videos only");
     }
 
     stop() {
@@ -54,7 +56,7 @@ module.exports = class NoPause {
             window.removeEventListener('focus', this.focusHandler, true);
         }
         
-        console.log("[NoPause] Plugin stopped");
+        console.log("[NoPause for Quests] Plugin stopped");
     }
 
     patchVisibilityAPI() {
@@ -111,11 +113,40 @@ module.exports = class NoPause {
         document.hasFocus = () => true;
     }
 
+    isQuestVideo(video) {
+        // Έλεγχος για διάφορα χαρακτηριστικά quest videos
+        return (
+            (video.src && video.src.includes('quests')) ||
+            video.classList.contains('videoInner__45776') ||
+            video.closest('[class*="quest"]') !== null ||
+            video.closest('[class*="Quest"]') !== null ||
+            (video.poster && video.poster.includes('quests')) ||
+            // Εναλλακτικός έλεγχος για blob URL
+            (video.src && video.src.startsWith('blob:') && video.classList.contains('videoInner__45776')) ||
+            // Έλεγχος για parent containers που μπορεί να έχουν quest
+            (video.parentElement && (
+                video.parentElement.className.includes('quest') ||
+                video.parentElement.className.includes('Quest') ||
+                video.parentElement.innerHTML.includes('quests')
+            ))
+        );
+    }
+
     patchAllVideos() {
-        document.querySelectorAll('video').forEach(v => this.patchVideo(v));
+        document.querySelectorAll('video').forEach(v => {
+            if (this.isQuestVideo(v)) {
+                this.patchVideo(v);
+            }
+        });
     }
 
     patchVideo(video) {
+        // Αν ΔΕΝ είναι quest video, μην το επεξεργαστείς
+        if (!this.isQuestVideo(video)) {
+            console.log("[NoPause for Quests] Skipping non-quest video");
+            return;
+        }
+        
         if (this.patchedVideos.has(video)) return;
         
         const originalPause = video.pause.bind(video);
@@ -146,20 +177,23 @@ module.exports = class NoPause {
                 userWantsPause = false;
                 return originalPause();
             }
-            // Block automatic pause
-            console.log("[NoPause] Blocked pause attempt");
+            // Block automatic pause for quest videos
+            console.log("[NoPause for Quests] Blocked pause attempt on quest video");
             return undefined;
         };
         
         this.patchedVideos.add(video);
-        console.log("[NoPause] Patched video element");
+        console.log("[NoPause for Quests] Patched quest video element");
     }
 
     startVideoMonitor() {
         // Monitor videos and resume if paused unexpectedly
         const checkInterval = setInterval(() => {
             document.querySelectorAll('video').forEach(video => {
-                // Patch new videos
+                // Αν ΔΕΝ είναι quest video, άφησέ το ήσυχο
+                if (!this.isQuestVideo(video)) return;
+                
+                // Patch new quest videos
                 if (!this.patchedVideos.has(video)) {
                     this.patchVideo(video);
                 }
@@ -187,9 +221,17 @@ module.exports = class NoPause {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((node) => {
                     if (node.nodeName === 'VIDEO') {
-                        this.patchVideo(node);
+                        // Patch μόνο αν είναι quest video
+                        if (this.isQuestVideo(node)) {
+                            this.patchVideo(node);
+                        }
                     } else if (node.querySelectorAll) {
-                        node.querySelectorAll('video').forEach(v => this.patchVideo(v));
+                        node.querySelectorAll('video').forEach(v => {
+                            // Patch μόνο αν είναι quest video
+                            if (this.isQuestVideo(v)) {
+                                this.patchVideo(v);
+                            }
+                        });
                     }
                 });
             });
@@ -203,18 +245,29 @@ module.exports = class NoPause {
         panel.style.padding = "10px";
         panel.innerHTML = `
             <div style="color: var(--text-normal); font-size: 16px; margin-bottom: 10px;">
-                <strong>NoPause v1.2.0</strong>
+                <strong>NoPause for Quests v1.3.0</strong>
             </div>
             <div style="color: var(--text-muted); font-size: 14px;">
-                Εμποδίζει το Discord να κάνει pause τα videos όταν κάνεις alt-tab.
+                Εμποδίζει το Discord να κάνει pause τα <strong>QUEST videos</strong> όταν κάνεις alt-tab.
                 <br><br>
-                <strong>Features:</strong>
+                <strong>Πως λειτουργεί:</strong>
                 <ul style="margin-top: 10px;">
+                    <li>Ενεργοποιείται ΜΟΝΟ για quest videos</li>
                     <li>Override visibility API</li>
                     <li>Block blur/focus events</li>
-                    <li>Intercept video.pause()</li>
+                    <li>Intercept video.pause() για quests</li>
                     <li>Auto-resume αν γίνει pause</li>
                 </ul>
+                <br>
+                <strong>Αναγνωρίζει quest videos από:</strong>
+                <ul>
+                    <li>Class "videoInner__45776"</li>
+                    <li>URLs που περιέχουν "quests"</li>
+                    <li>Poster images από quests</li>
+                    <li>Blob URLs με quest classes</li>
+                </ul>
+                <br>
+                <em>Κανονικά videos δεν επηρεάζονται.</em>
             </div>
         `;
         return panel;
