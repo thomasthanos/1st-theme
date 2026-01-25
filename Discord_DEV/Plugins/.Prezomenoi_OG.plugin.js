@@ -143,16 +143,103 @@ module.exports = class RenameChannel {
         const channels = this.getChannelMap();
         const match = window.location.pathname.match(/channels\/\d+\/(\d+)/);
         if (!match) return;
-
+        
         const channelId = match[1];
         const newTitle = channels[channelId];
         if (!newTitle) return;
-
-        // Ψάχνουμε το συγκεκριμένο στοιχείο voice chat header
+        
+        // Method 1: Ψάχνουμε για το lineClamp div που περιέχει το channel name
+        const lineClampDivs = document.querySelectorAll('[class*="lineClamp"]');
+        lineClampDivs.forEach(div => {
+            // Ελέγχουμε αν το parent έχει class subtext ή subtitle
+            const parent = div.closest('[class*="subtext"], [class*="subtitle"]');
+            if (!parent) return;
+            
+            // Ψάχνουμε για link σε όλο το container
+            const container = div.closest('[class*="content"], [class*="panel"], [class*="wrapper"]');
+            if (!container) return;
+            
+            const link = container.querySelector('a[href*="/channels/"]');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
+            if (!linkMatch || linkMatch[1] !== channelId) return;
+            
+            // Αντικαθιστούμε το text node μέσα στο div
+            if (div.childNodes.length > 0) {
+                div.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        const currentText = node.textContent.trim();
+                        // Κρατάμε το " / Ghost Server" αν υπάρχει
+                        const parts = currentText.split(' / ');
+                        const serverName = parts.length > 1 ? ' / ' + parts[1] : '';
+                        const expectedText = newTitle + serverName;
+                        
+                        if (currentText !== expectedText) {
+                            node.textContent = expectedText;
+                            this.log(`[Voice lineClamp] Renamed "${currentText}" to "${expectedText}"`);
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Method 2: Direct approach - ψάχνουμε για το specific class που είδαμε
+        const subtextElements = document.querySelectorAll('[class*="subtext"][class*="channel"]');
+        subtextElements.forEach(element => {
+            const lineClamp = element.querySelector('[class*="lineClamp"]');
+            if (!lineClamp) return;
+            
+            // Βρίσκουμε το channel ID από το URL του parent container
+            const container = element.closest('[class*="content"], [class*="panel"]');
+            if (!container) return;
+            
+            const link = container.querySelector('a[href*="/channels/"]');
+            if (!link) return;
+            
+            const href = link.getAttribute('href');
+            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
+            if (!linkMatch || linkMatch[1] !== channelId) return;
+            
+            if (lineClamp.childNodes.length > 0) {
+                lineClamp.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        const currentText = node.textContent.trim();
+                        // Κρατάμε το " / Ghost Server" αν υπάρχει
+                        const parts = currentText.split(' / ');
+                        const serverName = parts.length > 1 ? ' / ' + parts[1] : '';
+                        const expectedText = newTitle + serverName;
+                        
+                        if (currentText !== expectedText) {
+                            node.textContent = expectedText;
+                            this.log(`[Voice subtext] Renamed "${currentText}" to "${expectedText}"`);
+                        }
+                    }
+                });
+            }
+        });
+        
+        // Method 3: Ψάχνουμε για voice call headers με το subtitle class
+        const subtitles = document.querySelectorAll('[class*="subtitle"]');
+        subtitles.forEach(subtitle => {
+            const channelLink = subtitle.querySelector('a[href*="/channels/"]');
+            if (!channelLink) return;
+            
+            const href = channelLink.getAttribute('href');
+            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
+            if (!linkMatch || linkMatch[1] !== channelId) return;
+            
+            const textElement = channelLink.querySelector('[class*="text"]');
+            if (textElement && textElement.textContent !== newTitle) {
+                textElement.textContent = newTitle;
+                textElement.setAttribute("data-prezomenoi-renamed", "true");
+            }
+        });
+        
+        // Method 4: Ψάχνουμε για h2 channelName (για άλλα voice UI)
         const voiceHeaders = document.querySelectorAll('h2[class*="channelName"]');
-
         voiceHeaders.forEach(voiceHeader => {
-            // Απλά αλλάζουμε το κείμενο αν είναι διαφορετικό
             if (voiceHeader.textContent !== newTitle) {
                 voiceHeader.textContent = newTitle;
                 voiceHeader.setAttribute("data-prezomenoi-renamed", "true");
@@ -336,6 +423,9 @@ module.exports = class RenameChannel {
         // Check for header updates (κανονικό και voice chat)
         if (node.querySelector && (node.querySelector('h1[class*="title"]') ||
             node.querySelector('h2[class*="channelName"]') ||
+            node.querySelector('[class*="subtitle"]') ||
+            node.querySelector('[class*="subtext"]') ||
+            node.querySelector('[class*="lineClamp"]') ||
             node.tagName === 'H1' ||
             node.tagName === 'H2')) {
             this.renameHeaderTitle();
