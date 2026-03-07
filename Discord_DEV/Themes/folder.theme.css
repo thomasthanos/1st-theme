@@ -1,4 +1,8 @@
-/* FolderManager Theme CSS */
+/* ============================================================
+   FolderManager Theme CSS — auto-generated from plugin JS
+   ============================================================ */
+
+/* ==================== NOTIFICATION WRAPPER ==================== */
 .art-wrapper {
     position: absolute;
     bottom: 135px;
@@ -41,6 +45,11 @@
     transform: translateY(5px) scale(0.95);
 }
 
+.art-notif:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(100, 200, 255, 0.6);
+    background: rgba(50, 50, 80, 0.7);
+}
+
 .art-notif-message {
     display: flex;
     flex-direction: column;
@@ -62,6 +71,7 @@
     letter-spacing: 0.5px;
 }
 
+/* ==================== COUNTDOWN ==================== */
 .art-countdown {
     position: absolute !important;
     bottom: 75px !important;
@@ -113,4 +123,477 @@
     color: #ffffff;
     text-shadow: 0 0 4px rgba(100, 200, 255, 0.5);
     line-height: 1;
+}
+
+/* ==================== SHARED PANEL BASE ==================== */
+.fm-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.fm-backdrop.high-z {
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+}
+
+.fm-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    background: linear-gradient(175deg, #2c2d33 0%, #1e1f24 55%, #18191d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 14px;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.75);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    font-family: "gg sans", sans-serif;
+    color: #dbdee1;
+    opacity: 0;
+    transition: transform 0.22s, opacity 0.18s;
+    overflow: hidden;
+}
+
+.fm-panel.high-z {
+    z-index: 10001;
+}
+
+.fm-panel.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* ==================== MAIN MODAL ==================== */
+.fm-modal-panel {
+    width: 460px;
+    max-width: 92vw;
+    max-height: 80vh;
+}
+
+.fm-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.fm-modal-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #5865f2, #3b4fd4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.fm-close-btn {
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    color: #80848e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-close-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #dbdee1;
+}
+
+.fm-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 16px 20px;
+}
+
+/* ==================== SECTION LABELS ==================== */
+.fm-section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #5c6070;
+    margin: 12px 4px 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==================== SETTINGS CARD ==================== */
+.fm-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.fm-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.fm-card-row:last-child {
+    border-bottom: none;
+}
+
+.fm-card-row-title {
+    font-weight: 500;
+}
+
+.fm-card-row-subtitle {
+    font-size: 11.5px;
+    color: #5c6070;
+    margin-top: 1px;
+}
+
+.fm-card-row-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fm-folder-count {
+    font-size: 12px;
+    color: #5c6070;
+}
+
+/* ==================== TOGGLE ==================== */
+.fm-toggle {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.fm-toggle-knob {
+    position: absolute;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.18s;
+    display: block;
+}
+
+/* ==================== INPUT ==================== */
+.fm-number-input {
+    width: 60px;
+    padding: 5px;
+    border-radius: 7px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #111214;
+    color: #dbdee1;
+    text-align: center;
+}
+
+/* ==================== BUTTONS ==================== */
+.fm-btn {
+    padding: 6px 14px;
+    border-radius: 7px;
+    border: none;
+    background: #5865f2;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.fm-btn:hover {
+    background: #4752c4;
+}
+
+.fm-btn-secondary {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    color: #b5bac1;
+    cursor: pointer;
+}
+
+.fm-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.fm-btn-primary {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #5865f2;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.fm-btn-primary:hover {
+    background: #4752c4;
+}
+
+/* ==================== UPDATE CARD ==================== */
+.fm-update-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 11px 14px;
+}
+
+.fm-update-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fm-update-result {
+    margin-top: 10px;
+    display: none;
+}
+
+.fm-update-result-inner {
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #b5bac1;
+    font-size: 12.5px;
+}
+
+/* ==================== FOLDER PICKER ==================== */
+.fm-folder-picker-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 99998;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.fm-picker-panel {
+    width: 420px;
+    max-width: 92vw;
+    max-height: 72vh;
+    z-index: 99999;
+}
+
+.fm-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.fm-picker-header-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #5865f2, #3b4fd4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-picker-title {
+    font-weight: 700;
+}
+
+.fm-picker-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 6px 10px;
+}
+
+.fm-picker-empty {
+    padding: 32px;
+    text-align: center;
+    color: #5c6070;
+}
+
+.fm-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid transparent;
+    transition: background 0.1s, border-color 0.1s;
+}
+
+.fm-picker-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.fm-picker-row.selected {
+    background: rgba(88, 101, 242, 0.18);
+    border-color: rgba(88, 101, 242, 0.35);
+}
+
+.fm-picker-icon-wrap {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.fm-picker-icon-wrap svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.fm-picker-name {
+    flex: 1;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fm-picker-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 11px;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.fm-picker-check.checked {
+    border-color: #5865f2;
+    background: #5865f2;
+    color: #fff;
+}
+
+.fm-picker-footer {
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fm-picker-count {
+    font-size: 12px;
+    color: #5c6070;
+}
+
+.fm-picker-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* ==================== ICON BUTTON ==================== */
+.fm-icon-btn {
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 12%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================== CHANGELOG ==================== */
+.fm-changelog {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.fm-changelog-panel {
+    width: 440px;
+    max-width: 92vw;
+    z-index: 10001;
+}
+
+.fm-changelog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.fm-changelog-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #5865f2, #3b4fd4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fm-changelog-version {
+    font-weight: 700;
+}
+
+.fm-changelog-subtitle {
+    font-size: 12px;
+    color: #5c6070;
+}
+
+.fm-changelog-body {
+    padding: 16px 20px;
+}
+
+.fm-changelog-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 9px;
+    margin-bottom: 6px;
+}
+
+.fm-changelog-item:last-child {
+    margin-bottom: 0;
+}
+
+.fm-changelog-emoji {
+    font-size: 15px;
+}
+
+.fm-changelog-footer {
+    padding: 14px 20px 18px;
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
