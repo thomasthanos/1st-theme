@@ -428,7 +428,138 @@ module.exports = class FolderManager {
                 <div class="art-countdown-time"><span class="timer-text">0' 0"</span></div>
             </div>
         `;
+        el.addEventListener('contextmenu', (e) => this.openCountdownPopout(e));
         guildsWrapper.appendChild(el);
+    }
+
+    openCountdownPopout(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const existing = document.querySelector('.fm-countdown-popout');
+        if (existing) { existing.remove(); return; }
+
+        // Ονόματα φακέλων από FolderStore
+        const FolderStore = BdApi.Webpack.getModule(m => m?.getGuildFolders);
+        const storeFolders = FolderStore?.getGuildFolders() || [];
+        const folderNameMap = {};
+        storeFolders.forEach(f => {
+            const key = f.folderId ? String(f.folderId) : f.guildIds?.[0];
+            if (key) folderNameMap[key] = f.folderName || null;
+        });
+
+        const allNavItems = [...document.querySelectorAll('[data-list-item-id^="guildsnav___"]')];
+        let folderElements = allNavItems.filter(el =>
+            el.querySelector('[class*="folder"]') || el.querySelector('[class*="Folder"]') ||
+            el.closest('[class*="folder"]') || el.closest('[class*="Folder"]')
+        );
+        if (!folderElements.length) folderElements = allNavItems;
+
+        const seenIds = new Set();
+        const folders = folderElements.map(el => {
+            const id = el.getAttribute('data-list-item-id');
+            if (!id || seenIds.has(id)) return null;
+            seenIds.add(id);
+            const rawId = id.replace('guildsnav___', '');
+            const nameEl = el.querySelector('[class*="expandedFolderName"]') || el.querySelector('[class*="folderName"]') || el.querySelector('[class*="name"]');
+            const label = folderNameMap[rawId] || el.getAttribute('aria-label') || nameEl?.textContent?.trim() || `Folder ${rawId}`;
+            return { id, label };
+        }).filter(Boolean);
+
+        const hiddenIds = new Set(this.settings.hideFolders.folderIds.split(',').map(s => s.trim()).filter(Boolean));
+
+        const popout = document.createElement('div');
+        popout.className = 'fm-countdown-popout';
+        popout.style.cssText = `
+            position:fixed;z-index:9999;
+            background:linear-gradient(160deg,#313338 0%,#2b2d31 100%);
+            border-radius:8px;
+            padding:8px;min-width:100px;max-width:150px;
+            border-top:1px solid rgba(255,255,255,0.2);
+            border-left:1px solid rgba(255,255,255,0.13);
+            border-right:1px solid rgba(0,0,0,0.4);
+            border-bottom:1px solid rgba(0,0,0,0.45);
+            box-shadow:0 8px 32px rgba(0,0,0,0.65),0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.07);
+            font-family:var(--font-primary,'gg sans',sans-serif);
+        `;
+
+        // Τοποθέτηση πάνω από το countdown
+        const countdownEl = document.querySelector('.art-countdown');
+        const rect = countdownEl ? countdownEl.getBoundingClientRect() : { right: e.clientX, top: e.clientY };
+        popout.style.left = (rect.right + 8) + 'px';
+        popout.style.bottom = (window.innerHeight - rect.top) + 'px';
+
+        // Header
+        const header = document.createElement('div');
+        header.style.cssText = 'font-size:11px;font-weight:600;color:rgba(255,255,255,0.45);text-transform:uppercase;padding:2px 4px 6px;letter-spacing:0.5px;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
+        header.textContent = 'Φάκελοι';
+        popout.appendChild(header);
+
+        // Scrollable list (max 4 ορατά)
+        const list = document.createElement('div');
+        if (folders.length > 4) {
+            list.style.cssText = 'max-height:124px;overflow-y:auto;';
+        }
+
+        if (!folders.length) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'color:rgba(255,255,255,0.4);font-size:13px;padding:4px 6px;';
+            empty.textContent = 'Δεν βρέθηκαν φάκελοι';
+            list.appendChild(empty);
+        }
+
+        folders.forEach(({ id, label }) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:4px;cursor:pointer;color:#ddd;font-size:13px;transition:background 0.12s,box-shadow 0.12s;';
+
+            let hidden = hiddenIds.has(id);
+
+            const icon = document.createElement('span');
+            icon.style.cssText = 'width:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+
+            const name = document.createElement('span');
+            name.style.cssText = 'flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 1px 3px rgba(0,0,0,0.7);';
+            name.textContent = label;
+
+            const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+            const svgEyeOff = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+            const updateRow = () => {
+                icon.innerHTML = hidden ? svgEyeOff : svgEye;
+                icon.style.color = hidden ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.7)';
+                row.style.opacity = hidden ? '0.6' : '1';
+            };
+            updateRow();
+
+            row.appendChild(icon);
+            row.appendChild(name);
+            row.onmouseenter = () => { row.style.background = 'rgba(255,255,255,0.1)'; row.style.boxShadow = 'inset 2px 0 0 rgba(88,101,242,0.75)'; };
+            row.onmouseleave = () => { row.style.background = ''; row.style.boxShadow = ''; };
+            row.onclick = () => {
+                const wasHidden = hidden;
+                hidden ? hiddenIds.delete(id) : hiddenIds.add(id);
+                hidden = !hidden;
+                updateRow();
+                this.settings.hideFolders.folderIds = [...hiddenIds].join(', ');
+                this.saveSettings();
+                const targetEl = document.querySelector(`[data-list-item-id="${id}"]`);
+                if (targetEl) {
+                    const listItem = targetEl.closest('[class*="listItem"]') || targetEl.closest('[class*="wrapper"]') || targetEl.parentElement;
+                    if (listItem) listItem.style.display = wasHidden ? '' : 'none';
+                }
+            };
+            list.appendChild(row);
+        });
+
+        popout.appendChild(list);
+        document.body.appendChild(popout);
+
+        const closeHandler = (ev) => {
+            if (!popout.contains(ev.target)) {
+                popout.remove();
+                document.removeEventListener('mousedown', closeHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('mousedown', closeHandler), 0);
     }
 
     startCountdown() {
