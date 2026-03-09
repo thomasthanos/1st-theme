@@ -21,7 +21,7 @@ module.exports = class FolderManager {
             enabled: true,
             folderIds: ""
         },
-        lastRun: 0
+        lastRun: ""
     };
 
     constructor() {
@@ -46,22 +46,63 @@ module.exports = class FolderManager {
     }
 
     initializeSettings() {
-        const loadedSettings = BdApi.Data.load("FolderManager", "settings");
-        if (!loadedSettings) {
-            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
-            this.settings.lastRun = 0;
-            this.saveSettings();
-        } else {
-            this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
-            Object.assign(this.settings, loadedSettings);
+        // Load all per-user settings map; currentUserId will be set in _startPlugin
+        this.allUsersSettings = BdApi.Data.load("FolderManager", "users") || {};
+        this.currentUserId = null;
+        // Use defaults until we know who's logged in
+        this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
+    }
+
+    getCurrentUserId() {
+        try {
+            const UserStore = BdApi.Webpack.getModule(m => m?.getCurrentUser && m?.getUser);
+            return UserStore?.getCurrentUser()?.id || null;
+        } catch(e) {
+            return null;
         }
+    }
+
+    loadUserSettings() {
+        const userId = this.getCurrentUserId();
+        if (!userId) {
+            this.log('Could not get user ID, using default settings');
+            return;
+        }
+
+        this.currentUserId = userId;
+        // Re-read from disk (constructor load may be too early)
+        this.allUsersSettings = BdApi.Data.load("FolderManager", "users") || {};
+
+        if (!this.allUsersSettings[userId]) {
+            this.allUsersSettings[userId] = JSON.parse(JSON.stringify(this.defaultSettings));
+
+            // Migration: only if NO other users exist yet (first-time migration from old format)
+            const isFirstUser = Object.keys(this.allUsersSettings).length === 1;
+            if (isFirstUser) {
+                const oldSettings = BdApi.Data.load("FolderManager", "settings");
+                if (oldSettings) {
+                    Object.assign(this.allUsersSettings[userId], oldSettings);
+                    this.log(`Migrated old settings to user ${userId}`);
+                }
+            }
+        }
+
+        this.settings = this.allUsersSettings[userId];
+        this.saveSettings();
+        this.log(`Loaded settings for user ${userId}`);
     }
 
     saveSettings() {
         clearTimeout(this._saveDebounce);
         this._saveDebounce = setTimeout(() => {
             try {
-                BdApi.Data.save("FolderManager", "settings", this.settings);
+                if (this.currentUserId) {
+                    this.allUsersSettings[this.currentUserId] = this.settings;
+                    BdApi.Data.save("FolderManager", "users", this.allUsersSettings);
+                } else {
+                    // Fallback before user ID is known
+                    BdApi.Data.save("FolderManager", "settings", this.settings);
+                }
             } catch (error) {
                 this.log("Error saving settings:", error.message);
             }
@@ -88,10 +129,11 @@ module.exports = class FolderManager {
     }
 
     _startPlugin() {
+        this.loadUserSettings();
+
         const lastVersion = BdApi.Data.load('FolderManager', 'lastShownVersion');
         const currentVersion = this.getVersion();
         if (lastVersion !== currentVersion) {
-            this.showChangelog(currentVersion);
             BdApi.Data.save('FolderManager', 'lastShownVersion', currentVersion);
         }
 
@@ -129,7 +171,7 @@ module.exports = class FolderManager {
             await this.waitForElement('[data-list-id="guildsnav"]', 15000);
             // If never run before, anchor lastRun to now so countdown starts correctly
             if (!this.settings.lastRun) {
-                this.settings.lastRun = Date.now();
+                this.settings.lastRun = new Date().toLocaleString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
                 this.saveSettings();
             }
             setTimeout(() => this.runAutoRead(), 2000);
@@ -232,7 +274,7 @@ module.exports = class FolderManager {
             if (successCount > 0) this.queueNotification(successCount);
             else this.log('No matching folders found in FolderStore');
 
-            this.settings.lastRun = Date.now();
+            this.settings.lastRun = new Date().toLocaleString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
             this.saveSettings();
             this.startCountdown();
 
@@ -258,7 +300,7 @@ module.exports = class FolderManager {
             }
         }
         if (successCount > 0) this.queueNotification(successCount);
-        this.settings.lastRun = Date.now();
+        this.settings.lastRun = new Date().toLocaleString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
         this.saveSettings();
         this.startCountdown();
     }
@@ -717,7 +759,7 @@ module.exports = class FolderManager {
         intervalInput.oninput = () => {
             const val = Math.min(120, Math.max(5, parseInt(intervalInput.value) || 5));
             this.settings.autoReadTrash.intervalMinutes = val;
-            this.settings.lastRun = Date.now(); this.saveSettings();
+            this.settings.lastRun = new Date().toLocaleString('el-GR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); this.saveSettings();
             this.startInterval(); this.startCountdown();
         };
         intervalRow.appendChild(intervalInput);
