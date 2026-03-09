@@ -1,6 +1,6 @@
 /**
  * @name FolderManager
- * @version 1.0.0
+ * @version 16.0.0
  * @description Αυτόματο διάβασμα φακέλων (AutoReadTrash) και κρύψιμο φακέλων (HideFolders) με custom UI.
  * @author ThomasT
  * @authorId 706932839907852389
