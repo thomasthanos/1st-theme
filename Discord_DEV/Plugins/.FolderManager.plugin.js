@@ -30,7 +30,7 @@ module.exports = class FolderManager {
         this._isShowingNotification = false;
         this._isRunning = false;
         this._updateInProgress = false;
-        this._justUpdated = false;
+        this._saveDebounce = null;
         this.modal = null;
         this.iconButton = null;
         this.observer = null;
@@ -42,14 +42,12 @@ module.exports = class FolderManager {
     }
 
     getVersion() {
-        return "12.4.20";
+        return "12.5.0";
     }
 
     initializeSettings() {
-        // Load all per-user settings map; currentUserId will be set in _startPlugin
-        this.allUsersSettings = BdApi.Data.load("FolderManager", "users") || {};
+        this.allUsersSettings = {};
         this.currentUserId = null;
-        // Use defaults until we know who's logged in
         this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
     }
 
@@ -130,16 +128,9 @@ module.exports = class FolderManager {
 
     _startPlugin() {
         this.loadUserSettings();
-
-        const lastVersion = BdApi.Data.load('FolderManager', 'lastShownVersion');
-        const currentVersion = this.getVersion();
-        if (lastVersion !== currentVersion) {
-            BdApi.Data.save('FolderManager', 'lastShownVersion', currentVersion);
-        }
-
-        this.injectIcon();
+        this.startObserver();
         if (this.settings.autoReadTrash.enabled) this.startAutoReadTrash();
-        if (this.settings.hideFolders.enabled) this.startHideFolders();
+        if (this.settings.hideFolders.enabled) this.hideFolders();
     }
 
     stop() {
@@ -151,13 +142,17 @@ module.exports = class FolderManager {
         if (this._style) this._style.remove();
         if (this.iconButton) this.iconButton.remove();
         if (this.observer) this.observer.disconnect();
-        
+        if (this.wrapper3d) this.wrapper3d.remove();
+        document.querySelector('.art-countdown')?.remove();
+
         this.interval = null;
         this.countdownInterval = null;
         this.modal = null;
         this._style = null;
         this.iconButton = null;
         this.observer = null;
+        this.wrapper3d = null;
+        this._modules = null;
         this._isRunning = false;
         this._isShowingNotification = false;
         this._notificationQueue = [];
@@ -388,27 +383,202 @@ module.exports = class FolderManager {
 
     injectStyles() {
         if (this._style) return;
-        try {
-            const fs = require('fs');
-            const path = require('path');
-            const cssPath = path.join(BdApi.Plugins.folder, 'folder.theme.css');
-            if (fs.existsSync(cssPath)) {
-                const css = fs.readFileSync(cssPath, 'utf8');
-                this._style = document.createElement('style');
-                this._style.id = 'fm-folder-theme';
-                this._style.textContent = css;
-                document.head.appendChild(this._style);
-                this.log('Loaded folder.theme.css from local plugins folder');
-                return;
-            }
-        } catch(e) {
-            this.log('Local CSS load failed, falling back to remote:', e.message);
-        }
-        // Fallback: remote
-        this._style = document.createElement('link');
-        this._style.rel = 'stylesheet';
-        this._style.href = 'https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/folder.theme.css';
+        const css = `
+/* ==================== NOTIFICATION WRAPPER ==================== */
+.art-wrapper {
+    position: absolute;
+    bottom: 135px;
+    left: 55%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 60px;
+    z-index: 9999;
+}
+.art-notif {
+    position: relative;
+    width: 51px;
+    height: 51px;
+    background: rgb(33, 37, 41);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #e0e0e0;
+    font-family: 'Whitney','Helvetica Neue',Helvetica,Arial,sans-serif;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3),0 0 10px rgba(49,60,66,0.42);
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.5s ease;
+}
+.art-notif.show { opacity:1; transform:translateY(0) scale(1); }
+.art-notif.hide { opacity:0; transform:translateY(5px) scale(0.95); }
+.art-notif:hover {
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4),0 0 15px rgba(100,200,255,0.6);
+    background: rgba(50,50,80,0.7);
+}
+.art-notif-message { display:flex; flex-direction:column; align-items:center; text-align:center; }
+.art-notif-number { font-size:18px; font-weight:700; color:#ffffff; text-shadow:0 0 5px rgba(100,200,255,0.5); margin-bottom:4px; }
+.art-notif-read { font-size:12px; color:#cccccc; letter-spacing:0.5px; }
+
+/* ==================== COUNTDOWN ==================== */
+.art-countdown {
+    position: absolute !important;
+    bottom: 75px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 48px !important;
+    max-width: 48px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+    background: rgba(33,37,41,0.9);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    font-family: 'Whitney','Helvetica Neue',Helvetica,Arial,sans-serif;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3),0 0 8px rgba(49,60,66,0.4);
+    z-index: 9999;
+    opacity: 0.9;
+    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.4s ease;
+    margin: 0 auto;
+    right: 0;
+}
+.art-countdown-title { display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+.art-countdown-next, .art-countdown-clear {
+    font-size: 7px; font-weight:600; color:#b9bbbe;
+    text-transform:uppercase; line-height:1; margin-bottom:2px; letter-spacing:0.5px;
+}
+.art-countdown-time { font-size:13px; font-weight:700; color:#ffffff; text-shadow:0 0 4px rgba(100,200,255,0.5); line-height:1; }
+
+/* ==================== SHARED PANEL BASE ==================== */
+.fm-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.fm-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0.95);
+    background: linear-gradient(175deg,#2c2d33 0%,#1e1f24 55%,#18191d 100%);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 14px;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.75);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    font-family: "gg sans",sans-serif;
+    color: #dbdee1;
+    opacity: 0;
+    transition: transform 0.22s, opacity 0.18s;
+    overflow: hidden;
+}
+.fm-panel.visible { opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+/* ==================== MAIN MODAL ==================== */
+.fm-modal-panel { width:460px; max-width:92vw; max-height:80vh; }
+.fm-modal-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 20px; border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.fm-modal-header-icon {
+    width:32px; height:32px; border-radius:8px;
+    background:linear-gradient(135deg,#5865f2,#3b4fd4);
+    display:flex; align-items:center; justify-content:center;
+}
+.fm-modal-title { font-size:16px; font-weight:700; }
+.fm-close-btn {
+    background:rgba(255,255,255,0.07); border:none; border-radius:8px;
+    width:30px; height:30px; cursor:pointer; color:#80848e;
+    display:flex; align-items:center; justify-content:center;
+}
+.fm-close-btn:hover { background:rgba(255,255,255,0.12); color:#dbdee1; }
+.fm-modal-content { flex:1; overflow-y:auto; padding:6px 16px 20px; }
+
+/* ==================== SECTION LABELS ==================== */
+.fm-section-label {
+    font-size:10.5px; font-weight:700; color:#5c6070;
+    margin:12px 4px 6px; text-transform:uppercase; letter-spacing:0.5px;
+}
+
+/* ==================== SETTINGS CARD ==================== */
+.fm-card {
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px; overflow:hidden; margin-bottom:20px;
+}
+.fm-card-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.fm-card-row:last-child { border-bottom:none; }
+.fm-card-row-title { font-weight:500; }
+.fm-card-row-subtitle { font-size:11.5px; color:#5c6070; margin-top:1px; }
+.fm-card-row-ctrl { display:flex; align-items:center; gap:6px; }
+.fm-folder-count { font-size:12px; color:#5c6070; }
+
+/* ==================== TOGGLE ==================== */
+.fm-toggle { width:36px; height:20px; border-radius:10px; cursor:pointer; position:relative; transition:background 0.2s; flex-shrink:0; }
+.fm-toggle-knob { position:absolute; top:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left 0.18s; display:block; }
+
+/* ==================== INPUT ==================== */
+.fm-number-input { width:60px; padding:5px; border-radius:7px; border:1px solid rgba(255,255,255,0.1); background:#111214; color:#dbdee1; text-align:center; }
+
+/* ==================== BUTTONS ==================== */
+.fm-btn { padding:6px 14px; border-radius:7px; border:none; background:#5865f2; color:#fff; cursor:pointer; font-size:12.5px; font-weight:600; }
+.fm-btn:hover { background:#4752c4; }
+.fm-btn-secondary { padding:7px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.06); color:#b5bac1; cursor:pointer; }
+.fm-btn-secondary:hover { background:rgba(255,255,255,0.1); }
+.fm-btn-primary { padding:7px 16px; border-radius:8px; border:none; background:#5865f2; color:#fff; cursor:pointer; font-weight:600; }
+.fm-btn-primary:hover { background:#4752c4; }
+
+/* ==================== UPDATE CARD ==================== */
+.fm-update-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:11px 14px; }
+.fm-update-row { display:flex; align-items:center; justify-content:space-between; }
+.fm-update-result { margin-top:10px; display:none; }
+.fm-update-result-inner { padding:9px 12px; border-radius:8px; background:rgba(255,255,255,0.03); color:#b5bac1; font-size:12.5px; }
+
+/* ==================== FOLDER PICKER ==================== */
+.fm-folder-picker-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); z-index:99998; opacity:0; transition:opacity 0.2s ease; }
+.fm-picker-panel { width:420px; max-width:92vw; max-height:72vh; z-index:99999; }
+.fm-picker-header { display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.fm-picker-header-icon { width:28px; height:28px; border-radius:7px; background:linear-gradient(135deg,#5865f2,#3b4fd4); display:flex; align-items:center; justify-content:center; }
+.fm-picker-title { font-weight:700; }
+.fm-picker-list { overflow-y:auto; flex:1; padding:6px 10px; }
+.fm-picker-empty { padding:32px; text-align:center; color:#5c6070; }
+.fm-picker-row { display:flex; align-items:center; gap:12px; padding:9px 10px; border-radius:9px; cursor:pointer; background:transparent; border:1px solid transparent; transition:background 0.1s,border-color 0.1s; }
+.fm-picker-row:hover { background:rgba(255,255,255,0.05); }
+.fm-picker-row.selected { background:rgba(88,101,242,0.18); border-color:rgba(88,101,242,0.35); }
+.fm-picker-icon-wrap { width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.fm-picker-icon-wrap svg { width:20px; height:20px; flex-shrink:0; }
+.fm-picker-name { flex:1; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fm-picker-check { width:18px; height:18px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); background:transparent; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:11px; transition:border-color 0.15s,background 0.15s; }
+.fm-picker-check.checked { border-color:#5865f2; background:#5865f2; color:#fff; }
+.fm-picker-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:space-between; }
+.fm-picker-count { font-size:12px; color:#5c6070; }
+.fm-picker-buttons { display:flex; gap:8px; }
+
+/* ==================== ICON BUTTON ==================== */
+.fm-icon-btn { cursor:pointer; padding:0; width:30px; height:30px; border-radius:12%; display:flex; align-items:center; justify-content:center; }
+`;
+        this._style = document.createElement('style');
+        this._style.id = 'fm-folder-theme';
+        this._style.textContent = css;
         document.head.appendChild(this._style);
+        this.log('Injected embedded CSS styles');
     }
 
     createCountdown() {
@@ -439,8 +609,7 @@ module.exports = class FolderManager {
         const existing = document.querySelector('.fm-countdown-popout');
         if (existing) { existing.remove(); return; }
 
-        // Ονόματα φακέλων από FolderStore
-        const FolderStore = BdApi.Webpack.getModule(m => m?.getGuildFolders);
+        const { FolderStore } = this.getModules();
         const storeFolders = FolderStore?.getGuildFolders() || [];
         const folderNameMap = {};
         storeFolders.forEach(f => {
@@ -607,14 +776,6 @@ module.exports = class FolderManager {
     }
 
     // ==================== HIDE FOLDERS ====================
-
-    startHideFolders() {
-        this.hideFolders();
-    }
-
-    stopHideFolders() {
-        this.showFolders();
-    }
 
     getHiddenIds() {
         return this.settings.hideFolders.folderIds
@@ -785,18 +946,26 @@ module.exports = class FolderManager {
         const closeModal = () => {
             backdrop.style.opacity = '0';
             panel.classList.remove('visible');
-            setTimeout(() => { backdrop.remove(); panel.remove(); this.modal = null; }, 200);
+            setTimeout(() => { backdrop.remove(); this.modal = null; }, 200);
         };
+
+        const layerRoot = document.querySelector('[data-mana-component="layer-modal"]') || document.body;
+        if (layerRoot !== document.body) layerRoot.style.position = 'relative';
 
         const backdrop = document.createElement('div');
         backdrop.className = 'fm-backdrop';
+        backdrop.style.cssText = 'position:absolute;inset:0;z-index:9999;pointer-events:all;';
         backdrop.onclick = e => { if (e.target === backdrop) closeModal(); };
-        document.body.appendChild(backdrop);
+        layerRoot.appendChild(backdrop);
         this.modal = backdrop;
 
         const panel = document.createElement('div');
         panel.className = 'fm-panel fm-modal-panel';
-        document.body.appendChild(panel);
+        panel.style.zIndex = '10000';
+        ['click','mousedown','keydown','keyup','keypress'].forEach(ev =>
+            panel.addEventListener(ev, e => e.stopPropagation())
+        );
+        backdrop.appendChild(panel);
         requestAnimationFrame(() => { backdrop.style.opacity = '1'; panel.classList.add('visible'); });
 
         // Header
@@ -812,6 +981,7 @@ module.exports = class FolderManager {
 
         const content = document.createElement('div');
         content.className = 'fm-modal-content';
+        content.style.cssText = 'overflow-y:auto;flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:12px;';
 
         const createToggle = (initial, onChange) => {
             const toggle = document.createElement('div');
@@ -837,9 +1007,9 @@ module.exports = class FolderManager {
             return btn;
         };
 
-        const makeRow = (html, last = false) => {
+        const makeRow = (html) => {
             const row = document.createElement('div');
-            row.className = 'fm-card-row' + (last ? ' last' : '');
+            row.className = 'fm-card-row';
             row.innerHTML = html;
             return row;
         };
@@ -857,7 +1027,17 @@ module.exports = class FolderManager {
         const enabledRow = makeRow('<div><div class="fm-card-row-title">AutoReadTrash</div><div class="fm-card-row-subtitle">Αυτόματο διάβασμα φακέλων</div></div>');
         const artToggle = createToggle(this.settings.autoReadTrash.enabled, v => {
             this.settings.autoReadTrash.enabled = v; this.saveSettings();
-            v ? this.startAutoReadTrash() : this.stop();
+            if (v) {
+                this.startAutoReadTrash();
+            } else {
+                clearInterval(this.interval);
+                clearInterval(this.countdownInterval);
+                this.interval = null;
+                this.countdownInterval = null;
+                this._isRunning = false;
+                document.querySelector('.art-countdown')?.remove();
+                if (this.wrapper3d) { this.wrapper3d.remove(); this.wrapper3d = null; }
+            }
         });
         enabledRow.appendChild(artToggle);
         artCard.appendChild(enabledRow);
@@ -896,10 +1076,10 @@ module.exports = class FolderManager {
         intervalRow.appendChild(intervalInput);
         artCard.appendChild(intervalRow);
 
-        const countdownRow = makeRow('<div>Αντίστροφη μέτρηση</div>', true);
+        const countdownRow = makeRow('<div>Αντίστροφη μέτρηση</div>');
         const countdownToggle = createToggle(this.settings.autoReadTrash.showCountdown, v => {
             this.settings.autoReadTrash.showCountdown = v; this.saveSettings();
-            v ? this.startCountdown() : clearInterval(this.countdownInterval);
+            this.startCountdown();
         });
         countdownRow.appendChild(countdownToggle);
         artCard.appendChild(countdownRow);
@@ -924,7 +1104,7 @@ module.exports = class FolderManager {
         hfEnabledRow.appendChild(hfToggle);
         hfCard.appendChild(hfEnabledRow);
 
-        const hfFoldersRow = makeRow('<div>Κρυμμένοι φάκελοι</div>', true);
+        const hfFoldersRow = makeRow('<div>Κρυμμένοι φάκελοι</div>');
         const hfCount = document.createElement('span');
         hfCount.className = 'fm-folder-count';
         const updateHfCount = () => {
@@ -1032,7 +1212,6 @@ module.exports = class FolderManager {
             const filePath = path.join(BdApi.Plugins.folder, ".FolderManager.plugin.js");
             fs.writeFileSync(filePath, code);
             BdApi.Plugins.enable("FolderManager");
-            this._justUpdated = true;
         } catch (err) {
             this.log("Error downloading update:", err.message);
             throw err;
@@ -1040,10 +1219,6 @@ module.exports = class FolderManager {
     }
 
     // ==================== ICON & OBSERVER ====================
-
-    injectIcon() {
-        this.startObserver();
-    }
 
     startObserver() {
         if (this.observer) return;
