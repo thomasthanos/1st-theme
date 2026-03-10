@@ -1616,3 +1616,255 @@ body {
   margin-left: 10px;
 }
 /* end */
+
+/* ============================================================
+   DISCORD THEME - NON-NITRO USERS ONLY
+   Popout: .user-profile-popout
+   Modal:  .user-profile-modal-v2
+   Lock:   :not(.has-animated-banner):not(.custom-theme-background)
+   ============================================================ */
+
+
+/* ============================================================
+   POPOUT
+   ============================================================ */
+
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .banner__68edb:not([style*="background-image"]) {
+  background-image: url("https://share.creavite.co/69b06d13e207736a321be249.gif") !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .banner__68edb:not([style*="background-image"])::after {
+  content: "GIF";
+  position: absolute; bottom: 4px; right: 4px;
+  background: rgba(0,0,0,0.6); color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 4px; border-radius: 3px; letter-spacing: 0.5px;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) {
+  --profile-gradient-secondary-color: hsla(40, 60%, 35%, 1) !important;
+  border: 2px solid var(--profile-gradient-secondary-color) !important;
+  border-radius: 10px !important;
+  padding: 4px !important;
+  overflow: hidden !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .inner_c0bea0 {
+  background: linear-gradient(180deg,
+    hsla(35, 50%, 22%, 1) 0%,
+    hsla(120, 25%, 15%, 1) 25%,
+    hsla(40, 30%, 10%, 1) 55%,
+    hsla(30, 20%, 7%, 1) 100%
+  ) !important;
+  border-radius: 8px !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .footer__5be3e {
+  background: hsla(30, 20%, 7%, 1) !important;
+  padding: 8px !important;
+  border-top: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .themedBackground__74017 {
+  background: hsla(35, 25%, 12%, 1) !important;
+  border-radius: 8px !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .placeholder__1b31f { color: hsla(40, 30%, 55%, 0.5) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .emojiButton__74017 { color: hsla(40, 40%, 55%, 0.7) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .emojiButton__74017:hover { color: hsla(40, 60%, 70%, 1) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .bannerButton_fb7f94 { background-color: hsla(0, 0%, 15%, 0.8) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .overlay_c0bea0.card__9d597 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .headerText__39ec2 { color: hsla(40, 50%, 60%, 1) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .defaultColor__5345c { color: hsla(40, 60%, 75%, 1) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .contextMenu__39ec2 svg path { fill: hsla(40, 40%, 55%, 0.7) !important; }
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .contextMenu__39ec2:hover svg path { fill: hsla(40, 60%, 70%, 1) !important; }
+
+/* Custom status - popout */
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .inner_ab8609 {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  border-radius: 8px !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609 {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  box-shadow: none !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609::before,
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609::after {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  box-sizing: border-box !important;
+}
+
+/* Bundle card - popout */
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .card__39b32 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .card__39b32 .button_a22cb0.primary_a22cb0 {
+  background: hsla(40, 70%, 30%, 1) !important;
+  color: hsla(40, 80%, 85%, 1) !important;
+}
+
+/* Games in rotation - popout */
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .container__62dd3 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .title_cf2d33 .defaultColor__5345c {
+  color: hsla(40, 55%, 60%, 1) !important;
+  font-weight: 600 !important;
+}
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .details_e1364f .defaultColor__5345c {
+  color: hsla(40, 55%, 72%, 1) !important;
+}
+
+/* Hide Friend button - popout only */
+.user-profile-popout .bannerButton_fb7f94[aria-label="Friend"] { display: none !important; }
+
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .banner__68edb:not([style*="background-image"]) {
+  background-image: url("https://share.creavite.co/69b06d13e207736a321be249.gif") !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_c0bea0 {
+  background: linear-gradient(180deg,
+    hsla(35, 50%, 22%, 1) 0%,
+    hsla(120, 25%, 15%, 1) 25%,
+    hsla(40, 30%, 10%, 1) 55%,
+    hsla(30, 20%, 7%, 1) 100%
+  ) !important;
+  border-radius: 8px !important;
+  position: relative !important;
+}
+
+/* Faded GIF background - simulate backgroundImage__9c3be του Nitro */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_c0bea0::before {
+  content: "" !important;
+  display: block !important;
+  background-image: url("https://share.creavite.co/69b06d13e207736a321be249.gif") !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  opacity: 0.25 !important;
+  position: absolute !important;
+  top: 0 !important; left: 0 !important;
+  width: 100% !important;
+  height: 35% !important;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%) !important;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+/* Content πάνω από το background */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .profile__9c3be {
+  position: relative !important;
+  z-index: 1 !important;
+  background: hsla(35, 45%, 10%, 0.55) !important;
+}
+
+/* Custom status - modal */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_ab8609 {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  border-radius: 8px !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609 {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  box-shadow: none !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609::before,
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .outer_ab8609::after {
+  background: hsla(35, 40%, 12%, 0.9) !important;
+  box-sizing: border-box !important;
+}
+
+/* Buttons - ΜΟΝΟ στο profileButtons__9c3be */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .profileButtons__9c3be {
+  --profile-gradient-button-color: hsla(40, 70%, 25%, 1) !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .profileButtons__9c3be .button_a22cb0.primary_a22cb0 {
+  background: hsla(40, 70%, 30%, 1) !important;
+  color: hsla(40, 80%, 85%, 1) !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .profileButtons__9c3be .button_a22cb0.secondary_a22cb0 {
+  background: hsla(35, 40%, 16%, 1) !important;
+  color: hsla(40, 70%, 70%, 1) !important;
+}
+
+/* Tab bar */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .tabListScroller__37bfc {
+  background: transparent !important;
+}
+
+/* Activity cards */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .overlay_c0bea0.card__39ec2 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+
+/* Bundle card - modal */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .card__39b32 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .card__39b32 .button_a22cb0.primary_a22cb0 {
+  background: hsla(40, 70%, 30%, 1) !important;
+  color: hsla(40, 80%, 85%, 1) !important;
+}
+
+/* Games in rotation - modal */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .container__62dd3 {
+  background: hsla(35, 30%, 10%, 0.8) !important;
+  border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
+  border-radius: 16px !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .title_cf2d33 .defaultColor__5345c {
+  color: hsla(40, 55%, 60%, 1) !important;
+  font-weight: 600 !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .details_e1364f .defaultColor__5345c {
+  color: hsla(40, 55%, 72%, 1) !important;
+}
+
+/* Section headers */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .headings_bf424d .defaultColor__5345c,
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .header_bf424d .defaultColor__5345c {
+  color: hsla(40, 55%, 60%, 1) !important;
+  font-weight: 600 !important;
+}
+
+/* Game titles */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .details__39ec2 .defaultColor__5345c,
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .headerText__39ec2 {
+  color: hsla(40, 55%, 72%, 1) !important;
+}
+
+/* Role tags */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .role_af3987 {
+  background: hsla(35, 40%, 14%, 1) !important;
+  border: 1px solid hsla(40, 50%, 30%, 0.5) !important;
+  border-radius: 20px !important;
+  padding: 3px 8px !important;
+}
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .roleName_af3987 { color: hsla(40, 60%, 70%, 1) !important; }
+
+/* Tab selected */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .item_aa8da2.selected_aa8da2 {
+  color: hsla(40, 60%, 70%, 1) !important;
+  border-bottom: 2px solid hsla(40, 60%, 35%, 1) !important;
+}
+
+/* More button */
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .contextMenu__39ec2 svg path { fill: hsla(40, 40%, 55%, 0.7) !important; }
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .contextMenu__39ec2:hover svg path { fill: hsla(40, 60%, 70%, 1) !important; }
