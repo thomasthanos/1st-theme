@@ -1561,7 +1561,58 @@ body {
   border-radius: 999px 0 0 999px;
 }
 
+/* mute -deafen redign */
 .audioButtonParent__5e764 .buttonChevron__5e764{
   display:none;
   overflow: hidden;
 }
+
+/* Hide mute and deafen buttons (τα πρώτα δύο κουμπιά) */
+.panels__5e434 > .container__37e49 .buttons__37e49 > div:not(:last-child) {
+  opacity: 0 !important;
+  width: 0px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transition: all 0.2s ease-in-out !important;
+  pointer-events: none;
+}
+
+/* Show mute and deafen buttons when hovering over the entire button area */
+.panels__5e434 > .container__37e49 .buttons__37e49:hover > div:not(:last-child) {
+  opacity: 1 !important;
+  width: 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: auto;
+}
+
+/* Φέρνουμε mute και deafen πιο κοντά - 5px απόσταση μεταξύ τους */
+.panels__5e434 > .container__37e49 .buttons__37e49:hover > div:first-child {
+  margin-right: -10px !important;
+}
+
+.panels__5e434 > .container__37e49 .buttons__37e49:hover > div:nth-child(2) {
+  margin-right: -10px !important;
+}
+
+/* Το κουμπί settings (τελευταίο) είναι πάντα ορατό και σταθερό */
+.panels__5e434 > .container__37e49 .buttons__37e49 > div:last-child {
+  opacity: 1 !important;
+  width: 32px !important;
+  display: flex !important;
+  margin-left: 0 !important;
+}
+
+/* Resize and move the profile button to take up all the space it can to look clean. */
+.avatarWrapper__37e49{
+  transition: all 0.3s ease-in-out;
+  width: 100%!important;
+  margin-left: -10px;
+  height: 53px;
+  border-radius: 0!important;
+}
+/* Move the avatar back to the right a bit to look clean. */
+.avatarWrapper__37e49 .avatar__37e49{
+  margin-left: 10px;
+}
+/* end */
