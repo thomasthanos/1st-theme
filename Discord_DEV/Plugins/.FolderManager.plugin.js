@@ -44,7 +44,6 @@ module.exports = class FolderManager {
         this.nextRunAt       = 0;
 
         // DOM refs
-        this.styleEl         = null;
         this.modalEl         = null;
         this.cdEl            = null;
         this.notifWrap       = null;
@@ -183,12 +182,8 @@ module.exports = class FolderManager {
         clearTimeout(this.saveTimer);
         this.saveTimer = setTimeout(() => {
             try {
-                if (this.userId) {
-                    this.allUsers[this.userId] = this.settings;
-                    BdApi.Data.save("FolderManager", "users", this.allUsers);
-                } else {
-                    BdApi.Data.save("FolderManager", "settings", this.settings);
-                }
+                this.allUsers[this.userId] = this.settings;
+                BdApi.Data.save("FolderManager", "users", this.allUsers);
             } catch (e) {
                 this._log("Save error:", e.message);
             }
@@ -274,12 +269,15 @@ module.exports = class FolderManager {
 
             const { Ack, Folders, Channels } = this._getMods();
 
-            // Αν τα modules δεν βρεθούν → fallback
-            if (!Ack?.Uq || !Folders || !Channels) {
+            // Αν τα βασικά modules δεν βρεθούν → fallback
+            if (!Ack || !Folders || !Channels) {
                 this._log("Modules δεν βρέθηκαν, fallback mode");
                 await this._doReadFallback(ids);
                 return;
             }
+
+            // Δυναμική εύρεση bulk ack (αντί hardcoded minified name)
+            const bulkAckFn = this._findBulkAck(Ack);
 
             const allFolders   = Folders.getGuildFolders();
             const selectedSet  = new Set(ids.map(id => id.replace("guildsnav___", "")));
@@ -290,12 +288,23 @@ module.exports = class FolderManager {
                 if (!selectedSet.has(key)) continue;
 
                 const channels = this._getChannelsForFolder(folder, Channels);
-                if (channels.length) {
-                    Ack.Uq(channels);
+                if (!channels.length) continue;
+
+                try {
+                    if (bulkAckFn) {
+                        bulkAckFn(channels);
+                    } else {
+                        // Fallback: ack κανάλια ένα-ένα
+                        for (const ch of channels) {
+                            try { Ack.ack(ch.channelId, ch.messageId); } catch {}
+                        }
+                    }
                     hits++;
                     this._log(`Φάκελος "${folder.folderName || key}" → ${channels.length} κανάλια διαβάστηκαν`);
-                    await this._sleep(300);
+                } catch (e) {
+                    this._log(`Ack error "${folder.folderName || key}":`, e.message);
                 }
+                await this._sleep(300);
             }
 
             if (hits > 0) this._queueNotif(hits);
@@ -303,13 +312,36 @@ module.exports = class FolderManager {
 
             this.settings.lastRun = this._now();
             this._save();
-            this._startCd();
 
         } catch (e) {
             this._log("Read error:", e.message);
         } finally {
             this.running = false;
+            this._startCd();
         }
+    }
+
+    // Βρίσκει τη bulk ack function δυναμικά (αντί hardcoded minified name)
+    _findBulkAck(Ack) {
+        if (!Ack) return null;
+
+        // Γνωστά ονόματα (stable + minified)
+        for (const name of ["bulkAck", "Uq"]) {
+            if (typeof Ack[name] === "function") return channels => Ack[name](channels);
+        }
+
+        // Αναζήτηση: function που δέχεται array (εκτός ack)
+        const skip = new Set(["ack", "constructor", "__esModule"]);
+        for (const key of Object.getOwnPropertyNames(Object.getPrototypeOf(Ack) || {})) {
+            if (skip.has(key) || typeof Ack[key] !== "function") continue;
+            return channels => Ack[key](channels);
+        }
+        for (const key of Object.keys(Ack)) {
+            if (skip.has(key) || typeof Ack[key] !== "function") continue;
+            return channels => Ack[key](channels);
+        }
+
+        return null;
     }
 
     async _doReadFallback(ids) {
@@ -330,7 +362,7 @@ module.exports = class FolderManager {
         if (hits > 0) this._queueNotif(hits);
         this.settings.lastRun = this._now();
         this._save();
-        this._startCd();
+        // _startCd() καλείται στο finally block του _doRead()
     }
 
     _markReadViaMenu(el) {
@@ -429,30 +461,7 @@ module.exports = class FolderManager {
         if (existing) { existing.remove(); return; }
 
         // Φτιάχνει λίστα φακέλων για quick-toggle
-        const { Folders } = this._getMods();
-        const nameMap = {};
-        (Folders?.getGuildFolders() || []).forEach(f => {
-            const k = f.folderId ? String(f.folderId) : f.guildIds?.[0];
-            if (k) nameMap[k] = f.folderName || null;
-        });
-
-        const navItems = [...document.querySelectorAll('[data-list-item-id^="guildsnav___"]')];
-        let folderEls  = navItems.filter(el =>
-            el.querySelector('[class*="folder"]') || el.querySelector('[class*="Folder"]') ||
-            el.closest('[class*="folder"]') || el.closest('[class*="Folder"]')
-        );
-        if (!folderEls.length) folderEls = navItems;
-
-        const seen = new Set();
-        const folders = folderEls.map(el => {
-            const id = el.getAttribute("data-list-item-id");
-            if (!id || seen.has(id)) return null;
-            seen.add(id);
-            const raw  = id.replace("guildsnav___", "");
-            const name = nameMap[raw] || el.getAttribute("aria-label") || `Folder ${raw}`;
-            return { id, name };
-        }).filter(Boolean);
-
+        const folders   = this._getNavFolders();
         const hiddenSet = new Set(this._splitIds(this.settings.hideFolders.folderIds));
 
         const popout = document.createElement("div");
@@ -524,6 +533,38 @@ module.exports = class FolderManager {
             }
         };
         setTimeout(() => document.addEventListener("mousedown", away), 0);
+    }
+
+    // ─────────────────────────────────────────────
+    //  NAV FOLDERS HELPER
+    // ─────────────────────────────────────────────
+
+    _getNavFolders() {
+        const { Folders } = this._getMods();
+        const nameMap = {};
+        (Folders?.getGuildFolders() || []).forEach(f => {
+            const k = f.folderId ? String(f.folderId) : f.guildIds?.[0];
+            if (k) nameMap[k] = f.folderName || null;
+        });
+
+        const navItems = [...document.querySelectorAll('[data-list-item-id^="guildsnav___"]')];
+        let folderEls = navItems.filter(el =>
+            el.querySelector('[class*="folder"]') || el.querySelector('[class*="Folder"]') ||
+            el.closest('[class*="folder"]') || el.closest('[class*="Folder"]')
+        );
+        if (!folderEls.length) folderEls = navItems;
+
+        const seen = new Set();
+        return folderEls.map(el => {
+            const id = el.getAttribute("data-list-item-id");
+            if (!id || seen.has(id)) return null;
+            seen.add(id);
+            const raw = id.replace("guildsnav___", "");
+            const nameEl = el.querySelector('[class*="expandedFolderName"]') || el.querySelector('[class*="folderName"]') || el.querySelector('[class*="name"]');
+            const name = nameMap[raw] || el.getAttribute("aria-label") || nameEl?.textContent?.trim() || `Folder ${raw}`;
+            const color = el.querySelector('[class*="folder"]')?.style?.backgroundColor || "#5865f2";
+            return { id, name, color };
+        }).filter(Boolean);
     }
 
     // ─────────────────────────────────────────────
@@ -863,33 +904,7 @@ module.exports = class FolderManager {
         document.querySelector(".fm-picker-overlay")?.remove();
 
         const selected = new Set(currentIds.split(",").map(s => s.trim()).filter(Boolean));
-
-        // Βρίσκει φακέλους από DOM
-        const navItems = [...document.querySelectorAll('[data-list-item-id^="guildsnav___"]')];
-        let folderEls  = navItems.filter(el =>
-            el.querySelector('[class*="folder"]') || el.querySelector('[class*="Folder"]') ||
-            el.closest('[class*="folder"]') || el.closest('[class*="Folder"]')
-        );
-        if (!folderEls.length) folderEls = navItems;
-
-        const { Folders } = this._getMods();
-        const nameMap     = {};
-        (Folders?.getGuildFolders() || []).forEach(f => {
-            const k = f.folderId ? String(f.folderId) : f.guildIds?.[0];
-            if (k) nameMap[k] = f.folderName || null;
-        });
-
-        const seen    = new Set();
-        const folders = folderEls.map(el => {
-            const id = el.getAttribute("data-list-item-id");
-            if (!id || seen.has(id)) return null;
-            seen.add(id);
-            const raw  = id.replace("guildsnav___", "");
-            const nameEl = el.querySelector('[class*="expandedFolderName"]') || el.querySelector('[class*="folderName"]') || el.querySelector('[class*="name"]');
-            const name = nameMap[raw] || el.getAttribute("aria-label") || nameEl?.textContent?.trim() || `Folder ${raw}`;
-            const color = el.querySelector('[class*="folder"]')?.style?.backgroundColor || "#5865f2";
-            return { id, name, color };
-        }).filter(Boolean);
+        const folders  = this._getNavFolders();
 
         // ── Build overlay ──
         const overlay = document.createElement("div");
@@ -1006,7 +1021,7 @@ module.exports = class FolderManager {
             const res     = await fetch(URL);
             const code    = await res.text();
             const remote  = code.match(/@version\s+([^\n]+)/)?.[1]?.trim();
-            const local   = "1.0.0";
+            const local   = BdApi.Plugins.get("FolderManager")?.version || "0.0.0";
 
             if (!remote) return this._setResult(resultEl, "❓ Δεν βρέθηκε έκδοση", "warn");
 
@@ -1175,21 +1190,6 @@ module.exports = class FolderManager {
     z-index: 9998; opacity: 0;
     transition: opacity .2s;
 }
-.fm-panel-base {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%,-50%) scale(.95);
-    background: linear-gradient(175deg,#2c2d33 0%,#1e1f24 55%,#18191d 100%);
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 14px;
-    box-shadow: 0 32px 80px rgba(0,0,0,.75);
-    display: flex; flex-direction: column;
-    font-family: "gg sans",sans-serif;
-    color: #dbdee1;
-    opacity: 0;
-    transition: transform .22s, opacity .18s;
-}
-.fm-panel-base.fm-modal--in { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-
 /* ── Main modal ── */
 .fm-modal {
     position: fixed; top: 50%; left: 50%;
