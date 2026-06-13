@@ -1,7 +1,7 @@
 /**
  * @name NoPause for Quests
  * @description Prevents Discord from pausing QUEST videos when you alt-tab or lose focus
- * @version 2.0.0
+ * @version 2.1.0
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/NoPause.plugin.js
@@ -24,7 +24,7 @@ module.exports = class NoPause {
         this.startObserver();
         this.startVideoMonitor();
         
-        console.log("[NoPause for Quests] Plugin started v1.3.0 - Quest videos only");
+        console.log("[NoPause for Quests] Plugin started v2.1.0 - stable detection (data-testid)");
     }
 
     stop() {
@@ -114,22 +114,40 @@ module.exports = class NoPause {
     }
 
     isQuestVideo(video) {
-        // Έλεγχος για διάφορα χαρακτηριστικά quest videos
-        return (
-            (video.src && video.src.includes('quests')) ||
-            video.classList.contains('videoInner__45776') ||
-            video.closest('[class*="quest"]') !== null ||
-            video.closest('[class*="Quest"]') !== null ||
-            (video.poster && video.poster.includes('quests')) ||
-            // Εναλλακτικός έλεγχος για blob URL
-            (video.src && video.src.startsWith('blob:') && video.classList.contains('videoInner__45776')) ||
-            // Έλεγχος για parent containers που μπορεί να έχουν quest
-            (video.parentElement && (
-                video.parentElement.className.includes('quest') ||
-                video.parentElement.className.includes('Quest') ||
-                video.parentElement.innerHTML.includes('quests')
-            ))
-        );
+        if (!video) return false;
+
+        // 1) Σταθερά data-testid attributes που χρησιμοποιεί το Discord
+        //    (δεν αλλάζουν σε κάθε update, σε αντίθεση με τα hashed classes)
+        try {
+            if (video.getAttribute('data-testid') === 'discord-web-video-player-video') {
+                return true;
+            }
+            if (video.closest('[data-testid="discord-web-video-player-container"]')) {
+                return true;
+            }
+            // 2) Οποιοδήποτε parent με data-quest-id (π.χ. το share button container)
+            if (video.closest('[data-quest-id]')) {
+                return true;
+            }
+            // 3) Modal που περιέχει quest controls (seek/progress του quest player)
+            const modal = video.closest('[role="dialog"], [class*="modalRoot"]');
+            if (modal && modal.querySelector('[data-testid^="discord-web-video-player"]')) {
+                return true;
+            }
+        } catch (e) { /* closest μπορεί να πετάξει αν ο κόμβος αποσπαστεί */ }
+
+        // 4) Fallback: URLs / posters που περιέχουν "quest"
+        if (video.src && /quest/i.test(video.src)) return true;
+        if (video.poster && /quest/i.test(video.poster)) return true;
+
+        // 5) Fallback: class names (παλιά + νέα μορφή) ώστε να καλύπτονται updates
+        try {
+            for (const cls of video.classList) {
+                if (/^videoInner/.test(cls)) return true;
+            }
+        } catch (e) { /* noop */ }
+
+        return false;
     }
 
     patchAllVideos() {
@@ -150,35 +168,40 @@ module.exports = class NoPause {
         if (this.patchedVideos.has(video)) return;
         
         const originalPause = video.pause.bind(video);
-        let userWantsPause = false;
-        let videoEnded = false;
+        const state = { userWantsPause: false, videoEnded: false, lastUserAction: 0 };
+        video._noPauseState = state;
         
         // Detect if video ended naturally
         video.addEventListener('ended', () => {
-            videoEnded = true;
+            state.videoEnded = true;
         });
         
         video.addEventListener('playing', () => {
-            videoEnded = false;
-            userWantsPause = false;
+            state.videoEnded = false;
+            state.userWantsPause = false;
         });
         
-        // Detect user-initiated pause (click on video or pause button)
-        video.addEventListener('click', () => {
-            userWantsPause = true;
-        });
+        // Detect user-initiated pause μέσω πραγματικού click/keydown πάνω στα controls.
+        // Σημειώνουμε χρόνο· ένα pause() εντός ~400ms από user action θεωρείται ηθελημένο.
+        const markUserAction = () => { state.lastUserAction = Date.now(); };
+        video.addEventListener('click', markUserAction, true);
+        const container = video.closest('[data-testid="discord-web-video-player-container"]') || video.parentElement;
+        if (container) {
+            container.addEventListener('click', markUserAction, true);
+            container.addEventListener('keydown', markUserAction, true);
+        }
         
         // Override pause method
         video.pause = function() {
-            if (videoEnded) {
+            if (state.videoEnded) {
                 return originalPause();
             }
-            if (userWantsPause) {
-                userWantsPause = false;
+            // Αν το pause προήλθε από πρόσφατη ενέργεια χρήστη -> επίτρεψέ το
+            if (Date.now() - state.lastUserAction < 400) {
                 return originalPause();
             }
-            // Block automatic pause for quest videos
-            console.log("[NoPause for Quests] Blocked pause attempt on quest video");
+            // Block automatic pause (alt-tab / lost focus) για quest videos
+            console.log("[NoPause for Quests] Blocked auto-pause on quest video");
             return undefined;
         };
         
@@ -200,8 +223,10 @@ module.exports = class NoPause {
                 
                 // If video is paused but not ended and was playing
                 if (video.paused && !video.ended && video.currentTime > 0 && video.currentTime < video.duration - 0.5) {
-                    // Check if it was auto-paused (not user action)
-                    if (video.dataset.wasPlaying === 'true') {
+                    const state = video._noPauseState;
+                    const userPausedRecently = state && (Date.now() - state.lastUserAction < 400);
+                    // Resume μόνο αν ΔΕΝ το σταμάτησε ο χρήστης και έπαιζε πριν
+                    if (!userPausedRecently && video.dataset.wasPlaying === 'true') {
                         video.play().catch(() => {});
                     }
                 }
@@ -245,7 +270,7 @@ module.exports = class NoPause {
         panel.style.padding = "10px";
         panel.innerHTML = `
             <div style="color: var(--text-normal); font-size: 16px; margin-bottom: 10px;">
-                <strong>NoPause for Quests v1.3.0</strong>
+                <strong>NoPause for Quests v2.1.0</strong>
             </div>
             <div style="color: var(--text-muted); font-size: 14px;">
                 Εμποδίζει το Discord να κάνει pause τα <strong>QUEST videos</strong> όταν κάνεις alt-tab.
@@ -261,10 +286,10 @@ module.exports = class NoPause {
                 <br>
                 <strong>Αναγνωρίζει quest videos από:</strong>
                 <ul>
-                    <li>Class "videoInner__45776"</li>
-                    <li>URLs που περιέχουν "quests"</li>
-                    <li>Poster images από quests</li>
-                    <li>Blob URLs με quest classes</li>
+                    <li>data-testid="discord-web-video-player-video"</li>
+                    <li>Container με data-testid του video player</li>
+                    <li>Parent με data-quest-id</li>
+                    <li>URLs/posters που περιέχουν "quest" (fallback)</li>
                 </ul>
                 <br>
                 <em>Κανονικά videos δεν επηρεάζονται.</em>
