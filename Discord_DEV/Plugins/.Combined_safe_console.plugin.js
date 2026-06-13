@@ -87,6 +87,8 @@ module.exports = class ThomasTCombined {
 
     startBlockConsole() {
         this._methods.forEach(method => {
+            // Avoid wrapping more than once (prevents infinite recursion on re-enable)
+            if (this._orig[method]) return;
             this._orig[method] = console[method].bind(console);
             console[method] = (...args) => {
                 const blocked = args.some(arg => {
@@ -124,29 +126,34 @@ module.exports = class ThomasTCombined {
     }
 
     startBlockNetworkRequests() {
-        const self = this._self;
+        const self = this;
 
         // Block fetch requests
-        if (window.fetch) {
+        if (window.fetch && !this._origFetch) {
+            // Keep the native fetch bound to window to avoid "Illegal invocation"
             this._origFetch = window.fetch;
-            window.fetch = (...args) => {
+            const boundFetch = window.fetch.bind(window);
+            window.fetch = function (...args) {
                 const url = args[0]?.url || args[0] || '';
                 const shouldBlock = self._networkBlockPatterns.some(pattern =>
                     pattern.test(url)
                 );
 
                 if (shouldBlock) {
-                    // Return a rejected promise that won't log errors
-                    return Promise.reject(new Error('Blocked by Combined_safe_console'));
+                    // Resolve with an empty-ish response instead of rejecting,
+                    // so Discord doesn't throw unhandled rejection errors.
+                    return Promise.resolve(new Response(null, { status: 204 }));
                 }
-                return this._origFetch(...args);
+                return boundFetch(...args);
             };
         }
 
         // Block XMLHttpRequest
-        if (window.XMLHttpRequest) {
+        if (window.XMLHttpRequest && !this._origXHR) {
             this._origXHR = window.XMLHttpRequest.prototype.open;
+            this._origSend = window.XMLHttpRequest.prototype.send;
             const origXHR = this._origXHR;
+            const origSend = this._origSend;
 
             window.XMLHttpRequest.prototype.open = function (method, url, ...rest) {
                 const shouldBlock = self._networkBlockPatterns.some(pattern =>
@@ -163,7 +170,6 @@ module.exports = class ThomasTCombined {
             };
 
             // Override send to prevent blocked requests
-            const origSend = window.XMLHttpRequest.prototype.send;
             window.XMLHttpRequest.prototype.send = function (...args) {
                 if (this._blocked) {
                     // Trigger error handler without actually sending
@@ -176,30 +182,40 @@ module.exports = class ThomasTCombined {
             };
         }
 
-        // Block console messages from network errors
-        const origError = console.error;
-        console.error = (...args) => {
-            const str = args.map(arg => String(arg)).join(' ');
-            if (str.includes('GET') && str.includes('404') && str.includes('Not Found')) {
-                return; // Block 404 network errors
-            }
-            if (str.includes('oauth2/applications') || str.includes('/api/v9/oauth2/applications')) {
-                return; // Block oauth2 errors
-            }
-            return origError(...args);
-        };
-        this._orig.error = origError;
+        // Block console messages from network errors.
+        // Use a dedicated storage key so we never clash with startBlockConsole().
+        if (!this._origConsoleError) {
+            const origError = console.error.bind(console);
+            this._origConsoleError = origError;
+            console.error = (...args) => {
+                const str = args.map(arg => String(arg)).join(' ');
+                if (str.includes('GET') && str.includes('404') && str.includes('Not Found')) {
+                    return; // Block 404 network errors
+                }
+                if (str.includes('oauth2/applications') || str.includes('/api/v9/oauth2/applications')) {
+                    return; // Block oauth2 errors
+                }
+                return origError(...args);
+            };
+        }
     }
 
     stopBlockNetworkRequests() {
         if (this._origFetch) {
             window.fetch = this._origFetch;
+            this._origFetch = null;
         }
         if (this._origXHR) {
             window.XMLHttpRequest.prototype.open = this._origXHR;
+            this._origXHR = null;
         }
-        if (this._orig.error) {
-            console.error = this._orig.error;
+        if (this._origSend) {
+            window.XMLHttpRequest.prototype.send = this._origSend;
+            this._origSend = null;
+        }
+        if (this._origConsoleError) {
+            console.error = this._origConsoleError;
+            this._origConsoleError = null;
         }
     }
 
