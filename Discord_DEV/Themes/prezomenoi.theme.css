@@ -6,9 +6,21 @@
     background-color: #000 !important;
     transform: scale(2) translateX(0px) translateY(8px);
 }
-.prezomenoi-og-active [class*="guildIcon"][class*="iconSizeMini"][class*="iconActiveMini"] {
+/* Guild icon όπου το Discord το βάζει σαν CSS background (voice panel, headers, tooltips).
+   Ταιριάζουμε με το guild id μέσα στο inline style, ΟΧΙ με hashed classes (iconSizeMini ->
+   iconActiveSmol κλπ αλλάζουν σε κάθε build) και ΟΧΙ πίσω από το .prezomenoi-og-active,
+   ώστε να δουλεύει και όταν βλέπεις άλλο server. */
+[class*="guildIcon"][style*="/icons/1216757265391161537/"] {
     background-image: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
     background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    border-radius: 20% !important;
+}
+/* Ίδιο icon όταν το Discord το κάνει render σαν <img> εκτός του guilds sidebar */
+img[src*="/icons/1216757265391161537/"] {
+    content: url("https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png") !important;
+    object-fit: cover;
     border-radius: 20% !important;
 }
 .prezomenoi-og-active [class*="voiceUser"] [class*="username"],

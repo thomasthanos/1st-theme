@@ -448,6 +448,7 @@ module.exports = class RenameChannel {
             "1216818976898941068": "🎬〢Movies",
             "1345100969393917953": "🔏〢Secret",
             "1490509630776934500": "🤫〢Mpillias",
+            "1517315171104849990": "🧪〢Exomologisi",
             "1459305637841473711": "🇩🇪〢secret channel",
             "1459297181721952307": "🇩🇪〢secret call"
         };
