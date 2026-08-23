@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 180" width="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1f22" />
+      <stop offset="50%" stop-color="#2b2d31" />
+      <stop offset="100%" stop-color="#313338" />
+    </linearGradient>
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5865F2" />
+      <stop offset="100%" stop-color="#57F287" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="180" rx="14" fill="url(#bg)" stroke="#3f4248" stroke-width="1.5" />
+  
+  <g filter="url(#glow)">
+    <text x="400" y="95" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="900" text-anchor="middle" letter-spacing="3" fill="url(#titleGrad)">1ST THEME</text>
+  </g>
+  <text x="400" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="13" font-weight="600" fill="#949ba4" text-anchor="middle" letter-spacing="2">BETTERDISCORD THEMES &amp; PLUGINS COLLECTION</text>
+</svg>
