@@ -1,0 +1,42 @@
+Copyright (c) 2026 Thomas Thanos. All rights reserved.
+
+This repository contains custom themes and plugins for BetterDiscord (the "Software").
+
+The Software is source-available, NOT open source. The source is published so that anyone
+can read, review, and use it for personal customization. Publishing it does not place it in
+the public domain and does not grant permission to redistribute or commercialize it.
+
+
+1. WHAT YOU MAY DO
+
+   a) Personal Use. You may download, install, and use the themes and plugins for your own
+      personal, non-commercial BetterDiscord client.
+
+   b) Read & Audit. You may view, read, and inspect the CSS and JavaScript source code.
+
+   c) Fork on GitHub. You may fork this repository on GitHub for review and personal contributions.
+
+
+2. WHAT YOU MAY NOT DO
+
+   Without prior written permission from the copyright holder, you may not:
+
+   a) Redistribute the Software, modified or unmodified, on other websites, theme repositories,
+      or theme sharing platforms.
+
+   b) Sell, sublicense, or commercially exploit any theme or plugin in this repository.
+
+   c) Claim original authorship or remove copyright and attribution headers.
+
+
+3. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+   IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY ARISING FROM THE USE OF THESE THEMES OR PLUGINS.
+
+
+4. NOT AFFILIATED
+
+   This project is not affiliated with, endorsed by, or connected to Discord Inc. or
+   BetterDiscord. Discord is a trademark of Discord Inc.
