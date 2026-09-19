@@ -1,440 +1,455 @@
 /**
  * @name Combined_safe_console
- * @version 3.9.1
- * @description Combines BlockConsole and DiscordLinkSafe with BetterDiscord settings panel using styled light buttons and improved fonts.
+ * @version 4.0.0
+ * @description Κρατάει την κονσόλα καθαρή από τον θόρυβο του Discord και των plugins (BlockConsole), δείχνει τα Discord invite links ως «Discord link» (DiscordLinkSafe) και μπλοκάρει τα RPC requests άγνωστων εφαρμογών.
  * @author ThomasT
  * @authorId 706932839907852389
- * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/Combined_safe_console.plugin.js
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js
  * @website https://github.com/thomasthanos
  */
 
+"use strict";
+
+const NAME = "Combined_safe_console";
+const DATA_KEY = "ThomasTCombined";
+const DEFAULTS = {
+    blockConsoleEnabled: true,
+    discordLinkSafeEnabled: true,
+    blockNetworkRequests: true,
+    clearConsoleOnStart: true,
+    allowedRpcAppIds: "1444008152617189486",
+    extraFilters: ""
+};
+const CONSOLE_METHODS = ["log", "info", "warn", "error", "debug", "trace"];
+const CLEAR_DELAY_MS = 8000;
+
+// Log prefixes of Discord modules and plugins that only produce noise.
+const NOISY_PREFIXES = [
+    "[FAST CONNECT]", "[default]", "[KeyboardLayoutMapUtils]", "[Spellchecker]", "[libdiscore]",
+    "[BetterDiscord]", "[RPCServer:WSS]", "[GatewaySocket]", "[MessageActionCreators]",
+    "[ChannelMessages]", "[Spotify]", "[OverlayStoreV3]", "[RPCServer:IPC]", "[BDFDB]",
+    "[PinDMs]", "[ReadAllNotificationsButton]", "[StaffTag]", "[OverlayBridgeStore]",
+    "[RunningGameStore]", "[ReadStateStore]", "[RTCControlSocket(stream)]", "[RTCControlSocket(default)]",
+    "[DirectVideo]", "[HDStreamingConsumableModal]", "[ConnectionEventFramerateReducer]",
+    "[OverlayRenderStore]", "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]",
+    "[MessageQueue]", "[Connection(default)]", "[hde-delete]", "[RTCLatencyTestManager]",
+    "[FetchBlockedDomain]", "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
+    "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
+    "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
+    "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]", "[OverlayUsageStatsManager]",
+    "[UserProfileModalActionCreators]", "[RPCServer:PostMessage]", "[RpcApplicationLogger]",
+    "[AVErrorManager]", "[Flux]", "[JANK]", "[GamesActionCreators]", "[OverlayV3Store]",
+    "[AnalyticsTrackImpressionContext]", "[sentry]", "[RTCConnection", "[RPC]", "[AnalyticsTrackingStore]",
+    "oauth2/applications", "sentry", "404 (Not Found)", "RTCConnection", "Cannot read properties of undefined"
+];
+const NOISY_PATTERNS = [
+    "GET.*404.*Not Found",
+    "RPC.*error",
+    "The resource .* was preloaded using link preload but not used",
+    "AbortError: The play[(][)] request was interrupted"
+];
+
+const RPC_LOOKUP = /\/oauth2\/applications\/(\d+)\/rpc(?:[/?#]|$)/;
+const INVITE_LINKS = ['a[href*="discord.gg/"]', 'a[href*="discord.com/invite/"]', 'a[href*="discordapp.com/invite/"]'];
+
+function escapeRegExp(text) {
+    const backslash = String.fromCharCode(92);
+    return text.replace(/[.*+?^${}()|[\]]/g, match => backslash + match);
+}
+
+function splitList(text) {
+    return String(text || "").split(/[,\n]/).map(part => part.trim()).filter(Boolean);
+}
+
+function linkSafeCss() {
+    const links = INVITE_LINKS.join(",\n");
+    const after = INVITE_LINKS.map(s => `${s}::after`).join(",\n");
+    const inEmbeds = INVITE_LINKS.map(s => `[id^="message-accessories-"] ${s}::after`).join(",\n");
+    const expired = INVITE_LINKS.flatMap(s => [
+        `[id^="message-accessories-"]:has([class*="inviteDestinationExpired"]) ${s}::after`,
+        `[id^="chat-messages-"]:has([class*="inviteDestinationExpired"]) [id^="message-content-"] ${s}::after`
+    ]).join(",\n");
+    // The link text is hidden with font-size 0 and replaced by a label, so React's own text
+    // nodes are never touched (editing the DOM of a message can crash Discord's renderer).
+    return `
+${links} {
+    font-size: 0 !important;
+    text-decoration: none !important;
+}
+${INVITE_LINKS.map(s => `${s} > *`).join(",\n")} {
+    display: none !important;
+}
+${after} {
+    content: "Discord link";
+    font-size: 1rem;
+    font-weight: 700;
+    color: #00b0f4;
+}
+${inEmbeds} {
+    font-size: 0.875rem;
+}
+${expired} {
+    color: #8B0000;
+}
+`;
+}
+
 module.exports = class ThomasTCombined {
     constructor() {
-        this.settings = BdApi.Data.load("ThomasTCombined", "settings") || {
-            blockConsoleEnabled: true,
-            discordLinkSafeEnabled: true,
-            blockNetworkRequests: true
-        };
-        this._orig = {};
-        this._origFetch = null;
-        this._origXHR = null;
-        this._prefixes = [
-            "[FAST CONNECT]", "[default]", "[KeyboardLayoutMapUtils]", "[Spellchecker]", "[libdiscore]",
-            "[BetterDiscord]", "[RPCServer:WSS]", "[GatewaySocket]", "[MessageActionCreators]",
-            "[ChannelMessages]", "[Spotify]", "[OverlayStoreV3]", "[RPCServer:IPC]", "[BDFDB]",
-            "[PinDMs]", "[ReadAllNotificationsButton]", "[StaffTag]", "[OverlayBridgeStore]",
-            "[RunningGameStore]", "[ReadStateStore]", "[RTCControlSocket(stream)]", "[RTCControlSocket(default)]",
-            "[DirectVideo]", "[HDStreamingConsumableModal]", "[ConnectionEventFramerateReducer]",
-            "[OverlayRenderStore]", "[discord_protos.discord_users.v1.FrecencyUserSetting]", "[Routing/Utils]",
-            "[MessageQueue]", "[Connection(default)]", "[hde-delete]", "[RTCLatencyTestManager]",
-            "[FetchBlockedDomain]", "[AVError]", "[discord_protos.discord_users.v1.PreloadedUserSettings]",
-            "[StreamTile]", "[PopoutWindowStore]", "[PostMessageTransport]", "[ComponentDispatchUtils]",
-            "[WindowVisibilityVideoManager]", "[MediaEngineNative]", "[AudioActionCreators]", "[Connection(stream)]",
-            "[HideMutedCategories]", "[ZeresPluginLibrary]", "[VideoStream]", "[OverlayUsageStatsManager]",
-            "[UserProfileModalActionCreators]", "[RPCServer:PostMessage]", "[RpcApplicationLogger]",
-            "[AVErrorManager]", "[Flux]", "[JANK]", "[GamesActionCreators]", "[OverlayV3Store]",
-            "[AnalyticsTrackImpressionContext]", "[sentry]", "[RTCConnection", "[RPC]", "[AnalyticsTrackingStore]",
-        ];
-        this._regexes = [
-            /\/api\/v9\/oauth2\/applications\/.*\/rpc/,
-            /discord\.com\/api\/.*\/oauth2\/applications/,
-            /sentry\./,
-            /GET.*404.*Not Found/,
-            /RTCConnection/,
-            /RPC.*error/,
-            /\[RTCConnection/,
-            /oauth2.*applications.*rpc/,
-            /Cannot read properties of undefined/,
-            /The resource .* was preloaded using link preload but not used/,
-            /AbortError: The play\(\) request was interrupted/
-        ];
-        this._networkBlockPatterns = [
-            /\/api\/v9\/oauth2\/applications\/.*\/rpc/,
-            /discord\.com\/api\/.*\/oauth2\/applications\/\d+\/rpc/
-        ];
-        this._methods = ["log", "info", "warn", "error", "debug", "trace"];
-        this._linkObserver = null;
-        this._justUpdated = false;
-
-        // Store a reference to this for use in XMLHttpRequest override
-        this._self = this;
+        this.settings = { ...DEFAULTS };
+        this.noise = null;
+        this.rpcAllowed = new Set();
+        this.consoleActive = false;
+        this.networkActive = false;
+        this.consoleHooks = [];
+        this.networkHooks = [];
+        this.httpPatched = false;
+        this.timers = new Set();
+        this.saveTimer = null;
+        this.blockedLogs = 0;
+        this.blockedRequests = 0;
     }
 
     start() {
-        setTimeout(() => {
-            console.clear();
-            setTimeout(() => {
-                console.log(
-                    "%c [Combined_safe_console] %c Η κονσόλα καθαρίστηκε! %c v3.9.1",
-                    "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
-                    "font-weight: bold; background: #616161; color: white; padding: 4px 8px;",
-                    "font-weight: bold; background: #2196f3; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
-                );
-            }, 10);
-
-            if (this.settings.blockConsoleEnabled) this.startBlockConsole();
-            if (this.settings.discordLinkSafeEnabled) this.startDiscordLinkSafe();
-            if (this.settings.blockNetworkRequests) this.startBlockNetworkRequests();
-        }, 8000);
+        this.settings = this.loadSettings();
+        this.compileFilters();
+        this.applyAll();
+        const onOff = value => (value ? "ναι" : "όχι");
+        const rpc = this.networkActive ? (this.httpPatched ? "ναι (HTTP + fetch/XHR)" : "ναι (μόνο fetch/XHR)") : "όχι";
+        console.log(`%c[${NAME}]`, "color: #2196f3; font-weight: 700;",
+            `Ενεργό · φίλτρο κονσόλας: ${onOff(this.consoleActive)} · DiscordLinkSafe: ${onOff(this.settings.discordLinkSafeEnabled)} · μπλοκ RPC: ${rpc}`);
+        if (this.settings.clearConsoleOnStart) {
+            this.later(() => this.clearConsole(), CLEAR_DELAY_MS);
+        }
     }
 
     stop() {
-        this.stopBlockConsole();
-        this.stopDiscordLinkSafe();
-        this.stopBlockNetworkRequests();
+        for (const id of this.timers) clearTimeout(id);
+        this.timers.clear();
+        this.flushSave();
+        this.consoleActive = false;
+        this.networkActive = false;
+        this.removeConsoleFilter();
+        this.removeNetworkBlock();
+        BdApi.DOM.removeStyle(`${NAME}-linksafe`);
     }
 
-    startBlockConsole() {
-        this._methods.forEach(method => {
-            // Avoid wrapping more than once (prevents infinite recursion on re-enable)
-            if (this._orig[method]) return;
-            this._orig[method] = console[method].bind(console);
-            console[method] = (...args) => {
-                const blocked = args.some(arg => {
-                    const str = typeof arg === "string" ? arg : String(arg);
-                    const shouldBlock =
-                        this._prefixes.some(pref => str.includes(pref)) ||
-                        this._regexes.some(reg => reg.test(str)) ||
-                        str.includes("oauth2/applications") ||
-                        str.includes("sentry") ||
-                        str.includes("404 (Not Found)") ||
-                        str.includes("Cannot read properties of undefined");
+    // ── settings ──────────────────────────────────────────────
 
-                    return shouldBlock;
-                });
-                if (blocked) return;
-                this._orig[method](...args);
-            };
-        });
-
-        // Block sentry specific initialization
-        if (window.Sentry) {
-            try {
-                window.Sentry.init = () => { };
-                window.Sentry.captureException = () => { };
-                window.Sentry.captureMessage = () => { };
-            } catch (e) { }
-        }
+    loadSettings() {
+        const saved = BdApi.Data.load(DATA_KEY, "settings");
+        return { ...DEFAULTS, ...(saved && typeof saved === "object" ? saved : {}) };
     }
 
-    stopBlockConsole() {
-        this._methods.forEach(method => {
-            if (this._orig[method]) console[method] = this._orig[method];
-        });
-        this._orig = {};
+    saveSoon() {
+        clearTimeout(this.saveTimer);
+        this.saveTimer = setTimeout(() => this.flushSave(), 400);
     }
 
-    startBlockNetworkRequests() {
-        const self = this;
-
-        // Block fetch requests
-        if (window.fetch && !this._origFetch) {
-            // Keep the native fetch bound to window to avoid "Illegal invocation"
-            this._origFetch = window.fetch;
-            const boundFetch = window.fetch.bind(window);
-            window.fetch = function (...args) {
-                const url = args[0]?.url || args[0] || '';
-                const shouldBlock = self._networkBlockPatterns.some(pattern =>
-                    pattern.test(url)
-                );
-
-                if (shouldBlock) {
-                    // Resolve with an empty-ish response instead of rejecting,
-                    // so Discord doesn't throw unhandled rejection errors.
-                    return Promise.resolve(new Response(null, { status: 204 }));
-                }
-                return boundFetch(...args);
-            };
-        }
-
-        // Block XMLHttpRequest
-        if (window.XMLHttpRequest && !this._origXHR) {
-            this._origXHR = window.XMLHttpRequest.prototype.open;
-            this._origSend = window.XMLHttpRequest.prototype.send;
-            const origXHR = this._origXHR;
-            const origSend = this._origSend;
-
-            window.XMLHttpRequest.prototype.open = function (method, url, ...rest) {
-                const shouldBlock = self._networkBlockPatterns.some(pattern =>
-                    pattern.test(url)
-                );
-
-                if (shouldBlock) {
-                    // Prevent the request
-                    this._blocked = true;
-                    this._blockedUrl = url;
-                    return;
-                }
-                return origXHR.apply(this, [method, url, ...rest]);
-            };
-
-            // Override send to prevent blocked requests
-            window.XMLHttpRequest.prototype.send = function (...args) {
-                if (this._blocked) {
-                    // Trigger error handler without actually sending
-                    setTimeout(() => {
-                        if (this.onerror) this.onerror.call(this, new Event('error'));
-                    }, 0);
-                    return;
-                }
-                return origSend.apply(this, args);
-            };
-        }
-
-        // Block console messages from network errors.
-        // Use a dedicated storage key so we never clash with startBlockConsole().
-        if (!this._origConsoleError) {
-            const origError = console.error.bind(console);
-            this._origConsoleError = origError;
-            console.error = (...args) => {
-                const str = args.map(arg => String(arg)).join(' ');
-                if (str.includes('GET') && str.includes('404') && str.includes('Not Found')) {
-                    return; // Block 404 network errors
-                }
-                if (str.includes('oauth2/applications') || str.includes('/api/v9/oauth2/applications')) {
-                    return; // Block oauth2 errors
-                }
-                return origError(...args);
-            };
-        }
+    flushSave() {
+        if (!this.saveTimer) return;
+        clearTimeout(this.saveTimer);
+        this.saveTimer = null;
+        BdApi.Data.save(DATA_KEY, "settings", this.settings);
     }
 
-    stopBlockNetworkRequests() {
-        if (this._origFetch) {
-            window.fetch = this._origFetch;
-            this._origFetch = null;
-        }
-        if (this._origXHR) {
-            window.XMLHttpRequest.prototype.open = this._origXHR;
-            this._origXHR = null;
-        }
-        if (this._origSend) {
-            window.XMLHttpRequest.prototype.send = this._origSend;
-            this._origSend = null;
-        }
-        if (this._origConsoleError) {
-            console.error = this._origConsoleError;
-            this._origConsoleError = null;
-        }
+    later(fn, ms) {
+        const id = setTimeout(() => {
+            this.timers.delete(id);
+            fn();
+        }, ms);
+        this.timers.add(id);
     }
 
-    startDiscordLinkSafe() {
-        this._linkObserver = new MutationObserver(() => this.replaceLinks());
-        this._linkObserver.observe(document.body, { childList: true, subtree: true });
-        this.replaceLinks();
+    compileFilters() {
+        const parts = [...NOISY_PREFIXES, ...splitList(this.settings.extraFilters)].map(escapeRegExp);
+        this.noise = new RegExp([...parts, ...NOISY_PATTERNS].join("|"));
+        this.rpcAllowed = new Set(splitList(this.settings.allowedRpcAppIds).filter(id => /^\d+$/.test(id)));
     }
 
-    stopDiscordLinkSafe() {
-        if (this._linkObserver) this._linkObserver.disconnect();
-        this._linkObserver = null;
+    applyAll() {
+        this.consoleActive = Boolean(this.settings.blockConsoleEnabled);
+        if (this.consoleActive) this.installConsoleFilter();
+
+        this.networkActive = Boolean(this.settings.blockNetworkRequests);
+        if (this.networkActive) this.installNetworkBlock();
+
+        if (this.settings.discordLinkSafeEnabled) BdApi.DOM.addStyle(`${NAME}-linksafe`, linkSafeCss());
+        else BdApi.DOM.removeStyle(`${NAME}-linksafe`);
     }
 
-    replaceLinks() {
-        const links = document.querySelectorAll('a[href*="discord.gg/"], a[href*="discord.com/invite/"]');
-        links.forEach(link => {
-            if (link.dataset._discordSafeModified) return;
-            const wrapper = link.closest('[id^="message-accessories"]');
-            const isExpired = wrapper?.querySelector('h3.inviteDestinationExpired_d5f3cd');
-            link.innerHTML = 'Discord link';
-            link.style.fontWeight = 'bold';
-            link.style.textDecoration = 'none';
-            link.style.color = isExpired ? '#8B0000' : '#00b0f4';
-            link.dataset._discordSafeModified = "true";
-        });
-    }
+    // ── BlockConsole ──────────────────────────────────────────
 
-    getSettingsPanel() {
-        const panel = document.createElement("div");
-        panel.id = "thomasT-settings-panel";
-        panel.style.padding = "20px";
-        panel.style.background = "linear-gradient(135deg, #2c2c2c, #1e1e1e)";
-        panel.style.borderRadius = "12px";
-        panel.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.4)";
-        panel.style.display = "flex";
-        panel.style.flexDirection = "column";
-        panel.style.alignItems = "center";
-        panel.style.gap = "16px";
-
-        panel.appendChild(this._createStyledToggle("Enable BlockConsole", this.settings.blockConsoleEnabled, (checked) => {
-            this.settings.blockConsoleEnabled = checked;
-            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
-            if (checked) this.startBlockConsole(); else this.stopBlockConsole();
-        }));
-
-        panel.appendChild(this._createStyledToggle("Enable DiscordLinkSafe", this.settings.discordLinkSafeEnabled, (checked) => {
-            this.settings.discordLinkSafeEnabled = checked;
-            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
-            if (checked) this.startDiscordLinkSafe(); else this.stopDiscordLinkSafe();
-        }));
-
-        panel.appendChild(this._createStyledToggle("Block Network Requests", this.settings.blockNetworkRequests, (checked) => {
-            this.settings.blockNetworkRequests = checked;
-            BdApi.Data.save("ThomasTCombined", "settings", this.settings);
-            if (checked) this.startBlockNetworkRequests(); else this.stopBlockNetworkRequests();
-        }));
-
-        const updateButton = document.createElement("button");
-        updateButton.textContent = "Check for Update";
-        updateButton.classList.add("update-check");
-
-        updateButton.onclick = async () => {
-            updateButton.textContent = "Checking...";
-            try {
-                const pluginName = "Combined_safe_console";
-                const updateUrl = "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js";
-                const filename = ".Combined_safe_console.plugin.js";
-
-                const localPlugin = BdApi.Plugins.get(pluginName);
-                if (!localPlugin) {
-                    BdApi.alert("Error", `Το ${pluginName} δεν είναι εγκατεστημένο.`);
-                    updateButton.textContent = "Check for Update";
-                    return;
-                }
-
-                const code = await fetch(updateUrl).then(r => r.text());
-                const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-                const localVersion = localPlugin.version;
-
-                if (!remoteVersion) {
-                    BdApi.alert("Error", `Δεν βρέθηκε έκδοση για ${pluginName}.`);
-                    updateButton.textContent = "Check for Update";
-                    return;
-                }
-
-                if (this.isNewerVersion(remoteVersion, localVersion)) {
-                    BdApi.Plugins.disable(pluginName);
-                    const fs = require("fs");
-                    const path = require("path");
-                    const filePath = path.join(BdApi.Plugins.folder, filename);
-                    fs.writeFileSync(filePath, code, "utf8");
-                    this._justUpdated = true;
-                    setTimeout(() => BdApi.Plugins.reload(pluginName), 1000);
-                    BdApi.alert("Success", `Το ${pluginName} ενημερώθηκε στην έκδοση ${remoteVersion}!`);
-                } else {
-                    BdApi.alert("Up to Date", `Το ${pluginName} είναι ήδη στην τελευταία έκδοση (${localVersion}).`);
-                }
-            } catch (e) {
-                BdApi.alert("Error", `Αποτυχία ελέγχου ή ενημέρωσης: ${e.message}`);
-            } finally {
-                updateButton.textContent = "Check for Update";
+    isNoise(args) {
+        for (const arg of args) {
+            if (typeof arg === "string") {
+                if (this.noise.test(arg)) return true;
             }
-        };
-
-        panel.appendChild(updateButton);
-
-        if (!document.getElementById("thomasT-custom-css")) {
-            const style = document.createElement("style");
-            style.id = "thomasT-custom-css";
-            style.textContent = `
-                .bd-modal-root.bd-modal-medium.bd-addon-modal#thomasT-addon-modal {
-                    width: 320px !important;
-                    max-width: 320px !important;
-                    min-width: 320px !important;
-                    background-color: #1e1e1e !important;
-                    border-radius: 14px !important;
-                    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
-                }
-                #thomasT-settings-panel button {
-                    border-radius: 999px !important;
-                    padding: 10px 24px !important;
-                    font-size: 13px !important;
-                    font-weight: 500 !important;
-                    border: none !important;
-                    color: #ffffff !important;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-                    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s !important;
-                }
-                #thomasT-settings-panel button.on {
-                    background-color: #4caf50 !important;
-                }
-                #thomasT-settings-panel button.off {
-                    background-color: #e57373 !important;
-                }
-                #thomasT-settings-panel button.update-check {
-                    background: linear-gradient(135deg, #2196f3, #1976d2) !important;
-                    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6) !important;
-                }
-                #thomasT-settings-panel button.update-check:hover {
-                    background: linear-gradient(135deg, #1976d2, #1565c0) !important;
-                    box-shadow: 0 6px 16px rgba(21, 101, 192, 0.7) !important;
-                }
-                #thomasT-settings-panel button:hover {
-                    filter: brightness(1.1) !important;
-                    transform: translateY(-2px) !important;
-                }
-                #thomasT-settings-panel span {
-                    color: #ffffff !important;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        setTimeout(() => {
-            const modal = document.querySelector('.bd-addon-modal');
-            if (modal) {
-                modal.id = "thomasT-addon-modal";
+            else if (arg instanceof Error) {
+                if (this.noise.test(String(arg.message))) return true;
             }
-        }, 100);
-
-        return panel;
-    }
-
-    _createStyledToggle(labelText, checked, onChange) {
-        const container = document.createElement("div");
-        container.style.marginBottom = "12px";
-        container.style.display = "flex";
-        container.style.flexDirection = "column";
-        container.style.alignItems = "center";
-        container.style.width = "100%";
-
-        const label = document.createElement("span");
-        label.textContent = labelText;
-        label.style.marginRight = "10px";
-        label.style.fontWeight = "600";
-        label.style.fontFamily = "Segoe UI, sans-serif";
-        label.style.fontSize = "14px";
-        label.style.color = "#fff";
-
-        const button = document.createElement("button");
-        button.textContent = checked ? "ON" : "OFF";
-        button.style.padding = "6px 16px";
-        button.style.border = "1px solid #ccc";
-        button.style.borderRadius = "6px";
-        button.style.cursor = "pointer";
-        button.style.backgroundColor = checked ? "#009106" : "#a90000";
-        button.style.color = "#fff";
-        button.style.fontFamily = "Segoe UI, sans-serif";
-        button.style.fontSize = "12px";
-        button.style.fontWeight = "500";
-        button.style.transition = "background-color 0.3s, transform 0.1s";
-
-        button.onmouseover = () => {
-            button.style.transform = "scale(1.05)";
-        };
-        button.onmouseout = () => {
-            button.style.transform = "scale(1)";
-        };
-
-        button.onclick = () => {
-            checked = !checked;
-            button.textContent = checked ? "ON" : "OFF";
-            button.style.backgroundColor = checked ? "#4caf50" : "#e57373";
-            onChange(checked);
-        };
-
-        container.appendChild(label);
-        container.appendChild(button);
-        return container;
-    }
-
-    isNewerVersion(remote, local) {
-        const r = remote.split(".").map(n => parseInt(n));
-        const l = local.split(".").map(n => parseInt(n));
-        for (let i = 0; i < Math.max(r.length, l.length); i++) {
-            if ((r[i] || 0) > (l[i] || 0)) return true;
-            if ((r[i] || 0) < (l[i] || 0)) return false;
         }
         return false;
+    }
+
+    // Every console method is wrapped once. Turning the filter off only flips a flag, so the
+    // wrappers never stack up; stop() restores the originals when nobody wrapped on top of them.
+    installConsoleFilter() {
+        if (this.consoleHooks.length) return;
+        const plugin = this;
+        const baseLog = console.log;
+        for (const method of CONSOLE_METHODS) {
+            const original = console[method];
+            if (typeof original !== "function") continue;
+            const wrapper = function (...args) {
+                if (plugin.consoleActive && plugin.isNoise(args)) {
+                    plugin.blockedLogs++;
+                    return undefined;
+                }
+                try {
+                    return original.apply(this, args);
+                }
+                catch {
+                    // Versions before 4.0.0 left a console.error behind on stop() that throws on
+                    // every call. Print through console.log instead of throwing into the caller.
+                    try { return baseLog.apply(console, args); } catch { return undefined; }
+                }
+            };
+            console[method] = wrapper;
+            this.consoleHooks.push({ method, original, wrapper });
+        }
+    }
+
+    removeConsoleFilter() {
+        for (const { method, original, wrapper } of this.consoleHooks) {
+            if (console[method] === wrapper) console[method] = original;
+        }
+        this.consoleHooks = [];
+    }
+
+    clearConsole() {
+        const clear = console.clear;
+        if (typeof clear === "function") clear.call(console);
+        console.log(
+            `%c ${NAME} %c Η κονσόλα καθαρίστηκε! %c v${this.version()} `,
+            "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
+            "font-weight: bold; background: #616161; color: white; padding: 4px 8px;",
+            "font-weight: bold; background: #2196f3; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
+        );
+    }
+
+    version() {
+        try { return BdApi.Plugins.get(NAME)?.version || "?"; } catch { return "?"; }
+    }
+
+    // ── RPC request block ─────────────────────────────────────
+
+    isBlockedUrl(url) {
+        if (!this.networkActive || url == null) return false;
+        const match = RPC_LOOKUP.exec(String(url));
+        return Boolean(match) && !this.rpcAllowed.has(match[1]);
+    }
+
+    installNetworkBlock() {
+        if (this.networkHooks.length) return;
+        const plugin = this;
+
+        // 1) Discord's own HTTP helper, which the RPC server uses to look up an application.
+        //    Rejecting here means no request is made at all, and no retries.
+        const http = this.findHttpApi();
+        if (http) {
+            BdApi.Patcher.instead(NAME, http, "get", (thisObject, args, original) => {
+                const [options, callback] = args;
+                const url = typeof options === "string" ? options : options?.url;
+                if (typeof callback !== "function" && plugin.isBlockedUrl(url)) {
+                    plugin.blockedRequests++;
+                    const body = { message: "Unknown Application", code: 10002 };
+                    return Promise.reject(Object.assign(new Error(`Blocked by ${NAME}`), { ok: false, status: 404, body, text: "", headers: {} }));
+                }
+                return original.apply(thisObject, args);
+            });
+            this.httpPatched = true;
+            this.networkHooks.push({ undo: () => { BdApi.Patcher.unpatchAll(NAME); this.httpPatched = false; } });
+        }
+        else {
+            console.warn(`[${NAME}] Δεν βρέθηκε το HTTP module του Discord· μένει μόνο το φίλτρο fetch/XHR.`);
+        }
+
+        // 2) fetch, for code paths that do not go through the HTTP helper.
+        const originalFetch = window.fetch;
+        if (typeof originalFetch === "function") {
+            const fetchWrapper = function (input, init) {
+                const url = typeof input === "string" ? input : input?.url;
+                if (plugin.isBlockedUrl(url)) {
+                    plugin.blockedRequests++;
+                    const body = JSON.stringify({ message: "Unknown Application", code: 10002 });
+                    return Promise.resolve(new Response(body, { status: 404, statusText: "Not Found", headers: { "Content-Type": "application/json" } }));
+                }
+                return originalFetch.apply(this, arguments);
+            };
+            window.fetch = fetchWrapper;
+            this.networkHooks.push({ undo: () => { if (window.fetch === fetchWrapper) window.fetch = originalFetch; } });
+        }
+
+        // 3) XMLHttpRequest. open() always runs normally (so setRequestHeader keeps working);
+        //    a blocked request is never sent and ends like a network error instead.
+        const proto = window.XMLHttpRequest?.prototype;
+        if (proto) {
+            const originalOpen = proto.open;
+            const originalSend = proto.send;
+            const blockedRequests = new WeakSet();
+            const openWrapper = function (method, url) {
+                if (plugin.isBlockedUrl(url)) blockedRequests.add(this);
+                else blockedRequests.delete(this);
+                return originalOpen.apply(this, arguments);
+            };
+            const sendWrapper = function () {
+                if (!blockedRequests.has(this)) return originalSend.apply(this, arguments);
+                blockedRequests.delete(this);
+                plugin.blockedRequests++;
+                const xhr = this;
+                setTimeout(() => {
+                    try {
+                        for (const [key, value] of [["readyState", 4], ["status", 0], ["statusText", ""], ["responseText", ""], ["response", ""]]) {
+                            Object.defineProperty(xhr, key, { configurable: true, get: () => value });
+                        }
+                    }
+                    catch {}
+                    xhr.dispatchEvent(new Event("readystatechange"));
+                    xhr.dispatchEvent(new ProgressEvent("error"));
+                    xhr.dispatchEvent(new ProgressEvent("loadend"));
+                }, 0);
+                return undefined;
+            };
+            proto.open = openWrapper;
+            proto.send = sendWrapper;
+            this.networkHooks.push({
+                undo: () => {
+                    if (proto.open === openWrapper) proto.open = originalOpen;
+                    if (proto.send === sendWrapper) proto.send = originalSend;
+                }
+            });
+        }
+    }
+
+    removeNetworkBlock() {
+        for (const hook of this.networkHooks.reverse()) {
+            try { hook.undo(); } catch {}
+        }
+        this.networkHooks = [];
+    }
+
+    // Discord's HTTP helper is a plain object { get, post, put, patch, del }.
+    findHttpApi() {
+        try {
+            return BdApi.Webpack.getModule(m => m
+                && typeof m === "object"
+                && typeof m.get === "function"
+                && typeof m.post === "function"
+                && typeof m.put === "function"
+                && typeof m.patch === "function"
+                && typeof m.del === "function"
+                && Object.keys(m).length <= 8, { searchExports: true }) || null;
+        }
+        catch {
+            return null;
+        }
+    }
+
+    // ── settings panel ────────────────────────────────────────
+
+    getSettingsPanel() {
+        const s = this.settings;
+        const update = (key, value) => {
+            s[key] = value;
+            this.saveSoon();
+            if (key === "extraFilters" || key === "allowedRpcAppIds") {
+                this.compileFilters();
+                return;
+            }
+            this.applyAll();
+        };
+        return BdApi.UI.buildSettingsPanel({
+            settings: [
+                {
+                    type: "category",
+                    id: "console",
+                    name: "BlockConsole",
+                    collapsible: true,
+                    shown: true,
+                    settings: [
+                        {
+                            type: "switch",
+                            id: "blockConsoleEnabled",
+                            name: "Φιλτράρισμα θορύβου στην κονσόλα",
+                            note: `Κρύβει γνωστά μηνύματα του Discord και των plugins (π.χ. [GatewaySocket], [BDFDB], sentry, 404). Κρυμμένα σε αυτή τη συνεδρία: ${this.blockedLogs}.`,
+                            value: s.blockConsoleEnabled,
+                            onChange: v => update("blockConsoleEnabled", v)
+                        },
+                        {
+                            type: "switch",
+                            id: "clearConsoleOnStart",
+                            name: "Καθαρισμός κονσόλας στην εκκίνηση",
+                            note: "Καθαρίζει την κονσόλα λίγα δευτερόλεπτα αφού φορτώσει το plugin.",
+                            value: s.clearConsoleOnStart,
+                            onChange: v => update("clearConsoleOnStart", v)
+                        },
+                        {
+                            type: "text",
+                            id: "extraFilters",
+                            name: "Επιπλέον φίλτρα",
+                            note: "Κείμενα χωρισμένα με κόμμα. Όποιο μήνυμα κονσόλας περιέχει κάποιο από αυτά δεν εμφανίζεται.",
+                            placeholder: "π.χ. [MyPlugin], κάποιο κείμενο",
+                            value: s.extraFilters,
+                            onChange: v => update("extraFilters", v)
+                        }
+                    ]
+                },
+                {
+                    type: "category",
+                    id: "links",
+                    name: "DiscordLinkSafe",
+                    collapsible: true,
+                    shown: true,
+                    settings: [
+                        {
+                            type: "switch",
+                            id: "discordLinkSafeEnabled",
+                            name: "Invite links ως «Discord link»",
+                            note: "Κρύβει το URL των προσκλήσεων (discord.gg, discord.com/invite). Κόκκινο όταν η πρόσκληση έχει λήξει.",
+                            value: s.discordLinkSafeEnabled,
+                            onChange: v => update("discordLinkSafeEnabled", v)
+                        }
+                    ]
+                },
+                {
+                    type: "category",
+                    id: "network",
+                    name: "RPC requests",
+                    collapsible: true,
+                    shown: true,
+                    settings: [
+                        {
+                            type: "switch",
+                            id: "blockNetworkRequests",
+                            name: "Μπλοκάρισμα RPC requests άγνωστων εφαρμογών",
+                            note: `Σταματάει τα /oauth2/applications/<id>/rpc requests (και τα 404 που γεμίζουν την κονσόλα). Μπλοκαρίστηκαν σε αυτή τη συνεδρία: ${this.blockedRequests}.`,
+                            value: s.blockNetworkRequests,
+                            onChange: v => update("blockNetworkRequests", v)
+                        },
+                        {
+                            type: "text",
+                            id: "allowedRpcAppIds",
+                            name: "Εφαρμογές που επιτρέπονται",
+                            note: "Application IDs χωρισμένα με κόμμα· αυτές οι εφαρμογές συνδέονται κανονικά στο RPC. Το 1444008152617189486 είναι το Touch Deck.",
+                            placeholder: "1444008152617189486",
+                            value: s.allowedRpcAppIds,
+                            onChange: v => update("allowedRpcAppIds", v)
+                        }
+                    ]
+                }
+            ]
+        });
     }
 };

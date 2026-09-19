@@ -1,804 +1,509 @@
 /**
  * @name Prezomenoi_OG
- * @version 6.2.2
- * @description Μαρκάρει φακέλους ως αναγνωσμένους με βάση τα ID τους, με το παλιό δεξί κλικ + click, responsive UI, Material-style settings και έλεγχο τιμών.
+ * @version 7.0.0
+ * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
- * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/Prezomenoi_OG.plugin.js
+ * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js
  * @updateUrl https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js
  * @website https://github.com/thomasthanos
  */
 
+"use strict";
+
+const NAME = "Prezomenoi_OG";
+const GUILD_ID = "1216757265391161537";
+const THEME_LINK_ID = "prezomenoi-og-style";
+const THEME_URL = "https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/prezomenoi.theme.css";
+const BODY_CLASS = "prezomenoi-og-active";
+
+const SERVER_NAME = "Xountikoi OG";
+const SERVER_TEXT = "Ghost Server";       // what is shown on screen
+const SERVER_LABEL = "Prezomenoi LOCAL";  // what aria-label / data-text get
+
+const USERS = [
+    { id: "411178013103751190", original: ["AnimalRapist"], target: "Akrivos", color: "#1F8249" },
+    { id: "681933873877352472", original: ["Karaflopekatsos", "Tony Redgrave"], target: "Mpillias", color: "#734986" },
+    { id: "1076347460500324363", original: ["Skiguros"], target: "Giannhs", color: "#1F8249" },
+    { id: "633412575601623049", original: ["Pipirokauletas", "アスタ"], target: "Petros", color: "#206694" },
+    { id: "804860278788456469", original: ["nyxterida", "ANNOUSKA"], target: "Eirini", color: "#FF69B4" },
+    { id: "684773505157431347", original: ["FlaviBot"], target: "FlaviBot", color: "#FFD700" },
+    { id: "324631108731928587", original: ["Simple Poll"], target: "Simple Poll", color: "#FFD700" },
+    { id: "778355613373693953", original: ["Kontosouvli lover", "@Kontosouvli lover"], target: "Andreas", color: "#8B0000" },
+    { id: null, original: ["Seniora Chara"], target: "Chara", color: "#9b59b6" }
+];
+
+const CHANNELS = {
+    "1216778033550196856": "📜〢Rules",
+    "1217201547054944377": "🎵〢Music",
+    "1216757354574385203": "💬〢Chat",
+    "1333458086094045385": "📽️〢Clips",
+    "1344770404023144550": "📰〢Epikairotita",
+    "1357173641745404006": "☘️〢Drugs",
+    "1355323003084341359": "🌐〢Nord VPN",
+    "1216757265936154689": "📞〢Larose",
+    "1250083136818122813": "☣️〢Karkinos",
+    "1216761517194739936": "⚖️〢Dikastirio",
+    "1216818976898941068": "🎬〢Movies",
+    "1345100969393917953": "🔏〢Secret",
+    "1490509630776934500": "🤫〢Mpillias",
+    "1517315171104849990": "🧪〢Exomologisi",
+    "1459305637841473711": "🇩🇪〢secret channel",
+    "1459297181721952307": "🇩🇪〢secret call"
+};
+
+const CATEGORIES = {
+    "1216757265936154686": "💬",
+    "1216757265936154687": "📱",
+    "1459305587413094420": "🇩🇪"
+};
+
+// Places where the user types. Changing text there would corrupt the message editor.
+const EDITABLE = '[contenteditable="true"], [role="textbox"], textarea, input';
+const SKIP_PARENTS = new Set(["SCRIPT", "STYLE", "TEXTAREA", "INPUT", "NOSCRIPT"]);
+const ATTRIBUTES = ["aria-label", "data-text"];
+const CHANNEL_ITEM = '[data-list-item-id^="channels___"]';
+const CHANNEL_LINK = `a[href*="/channels/${GUILD_ID}/"]`;
+const HEADER = 'h1, h2, [data-window-chrome="true"]';
+const MAX_TRACKED = 4000;
+
+function escapeRegExp(text) {
+    const backslash = String.fromCharCode(92);
+    return text.replace(/[.*+?^${}()|[\]]/g, match => backslash + match);
+}
+
+function alternation(words) {
+    return [...words].sort((a, b) => b.length - a.length).map(escapeRegExp).join("|");
+}
+
 module.exports = class RenameChannel {
     constructor() {
-        this._justUpdated = false;
-        this._updateInProgress = false;
-        this.modal = null;
-        this.iconButton = null;
+        this.running = false;
         this.observer = null;
-        this.locationCheckInterval = null;
-    }
-
-    get USERS() {
-        return [
-            { id: "411178013103751190", original: ["AnimalRapist"], target: "Akrivos", color: "#1F8249" },
-            { id: "681933873877352472", original: ["Karaflopekatsos", "Tony Redgrave"], target: "Mpillias", color: "#734986" },
-            { id: "1076347460500324363", original: ["Skiguros"], target: "Giannhs", color: "#1F8249" },
-            { id: "633412575601623049", original: ["Pipirokauletas", "アスタ"], target: "Petros", color: "#206694" },
-            { id: "804860278788456469", original: ["nyxterida", "ANNOUSKA"], target: "Eirini", color: "#FF69B4" },
-            { id: "684773505157431347", original: ["FlaviBot"], target: "FlaviBot", color: "#FFD700" },
-            { id: "324631108731928587", original: ["Simple Poll"], target: "Simple Poll", color: "#FFD700" },
-            { id: "778355613373693953", original: ["Kontosouvli lover", "@Kontosouvli lover"], target: "Andreas", color: "#8B0000" },
-            { id: null, original: ["Seniora Chara"], target: "Chara", color: "#9b59b6" }
-        ];
+        this.pending = new Set();
+        this.frame = 0;
+        this.fallback = 0;
+        this.stores = {};
+        this.unsubscribers = [];
+        this.inGuild = false;
+        this.names = new Map();
+        this.namesAt = 0;
+        // Everything changed on screen, so stop() can put it back.
+        this.textChanges = new Map();
+        this.attrChanges = new Map();
+        this.colorChanges = new Map();
     }
 
     start() {
-        this.log("[Prezomenoi_OG] Plugin activated");
-        const link = document.createElement('link');
-        link.id = 'prezomenoi-og-style';
-        link.rel = 'stylesheet';
-        link.href = 'https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/prezomenoi.theme.css?t=' + Date.now();
-        document.head.appendChild(link);
-
-        this.renameAll();
-
-        const updateGuildClass = () => {
-            if (this.isCorrectGuild()) {
-                document.body.classList.add('prezomenoi-og-active');
-            } else {
-                document.body.classList.remove('prezomenoi-og-active');
-            }
-        };
-
-        updateGuildClass();
-
-        this.observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        this.renameInNode(node);
-                    }
-                });
-            });
-        });
-        this.observer.observe(document.body, { childList: true, subtree: true });
-
-        this.currentLocation = window.location.pathname;
-        this.locationCheckInterval = setInterval(() => {
-            if (window.location.pathname !== this.currentLocation) {
-                this.currentLocation = window.location.pathname;
-                this.renameAll();
-                updateGuildClass();
-            }
-        }, 500);
-
-        this.injectIcon();
-    }
-
-    isCorrectGuild() {
-        const match = window.location.pathname.match(/^\/channels\/(\d+)\//);
-        return match && match[1] === "1216757265391161537";
-    }
-
-    renameAll() {
-        if (!this.isCorrectGuild()) {
-            this.removeNoRoleCss();
-            return;
+        this.running = true;
+        this.compile();
+        const W = BdApi.Webpack;
+        for (const [key, store] of [["guild", "SelectedGuildStore"], ["channel", "SelectedChannelStore"], ["channels", "ChannelStore"]]) {
+            try { this.stores[key] = W.getStore(store); } catch {}
         }
-        this.renameChannels();
-        this.renameCategories();
-        this.renameHeaderTitle();
-        this.renameVoiceChatHeader(); // Προσθήκη για voice chat
-        this.renameUsers();
-        this.renameRepliedMessages();
-        this.textReplace(document.body);
-        this.applyOfflineColors();
-    }
+        this.addTheme();
+        this.refreshNames(true);
+        this.updateGuildState();
+        this.subscribe();
 
-    renameChannels() {
-        const channels = this.getChannelMap();
-        Object.entries(channels).forEach(([channelId, newName]) => {
-            const elements = document.querySelectorAll(`[data-list-item-id="channels___${channelId}"]`);
-            elements.forEach(el => {
-                const nameEl = el.querySelector("div[class*='name']");
-                if (nameEl && nameEl.textContent !== newName) {
-                    nameEl.textContent = newName;
-                }
-            });
-        });
-    }
-
-    renameCategories() {
-        const categories = {
-            "1216757265936154686": "💬",
-            "1216757265936154687": "📱",
-            "1459305587413094420": "🇩🇪"
-        };
-        Object.entries(categories).forEach(([categoryId, newName]) => {
-            const headers = document.querySelectorAll(`[data-list-item-id="channels___${categoryId}"] h3`);
-            headers.forEach(header => {
-                const nameEl = header.querySelector("div[class*='overflow']");
-                if (nameEl && nameEl.textContent !== newName) {
-                    nameEl.textContent = newName;
-                }
-            });
-        });
-    }
-
-    renameHeaderTitle() {
-        const channels = this.getChannelMap();
-        const match = window.location.pathname.match(/channels\/\d+\/(\d+)/);
-        if (!match) return;
-        const newTitle = channels[match[1]];
-        if (!newTitle) return;
-
-        const header = document.querySelector("h1[class*='title']");
-        if (header && !header.textContent.includes(newTitle)) {
-            header.textContent = newTitle;
-        }
-    }
-
-    renameVoiceChatHeader() {
-        const channels = this.getChannelMap();
-        const match = window.location.pathname.match(/channels\/\d+\/(\d+)/);
-        if (!match) return;
-
-        const channelId = match[1];
-        const newTitle = channels[channelId];
-        if (!newTitle) return;
-
-        // Method 1: Ψάχνουμε για το lineClamp div που περιέχει το channel name
-        const lineClampDivs = document.querySelectorAll('[class*="lineClamp"]');
-        lineClampDivs.forEach(div => {
-            // Ελέγχουμε αν το parent έχει class subtext ή subtitle
-            const parent = div.closest('[class*="subtext"], [class*="subtitle"]');
-            if (!parent) return;
-
-            // Ψάχνουμε για link σε όλο το container
-            const container = div.closest('[class*="content"], [class*="panel"], [class*="wrapper"]');
-            if (!container) return;
-
-            const link = container.querySelector('a[href*="/channels/"]');
-            if (!link) return;
-
-            const href = link.getAttribute('href');
-            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
-            if (!linkMatch || linkMatch[1] !== channelId) return;
-
-            // Αντικαθιστούμε το text node μέσα στο div
-            if (div.childNodes.length > 0) {
-                div.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        const currentText = node.textContent.trim();
-                        // Κρατάμε το " / Ghost Server" αν υπάρχει
-                        const parts = currentText.split(' / ');
-                        const serverName = parts.length > 1 ? ' / ' + parts[1] : '';
-                        const expectedText = newTitle + serverName;
-
-                        if (currentText !== expectedText) {
-                            node.textContent = expectedText;
-                            this.log(`[Voice lineClamp] Renamed "${currentText}" to "${expectedText}"`);
-                        }
-                    }
-                });
-            }
-        });
-
-        // Method 2: Direct approach - ψάχνουμε για το specific class που είδαμε
-        const subtextElements = document.querySelectorAll('[class*="subtext"][class*="channel"]');
-        subtextElements.forEach(element => {
-            const lineClamp = element.querySelector('[class*="lineClamp"]');
-            if (!lineClamp) return;
-
-            // Βρίσκουμε το channel ID από το URL του parent container
-            const container = element.closest('[class*="content"], [class*="panel"]');
-            if (!container) return;
-
-            const link = container.querySelector('a[href*="/channels/"]');
-            if (!link) return;
-
-            const href = link.getAttribute('href');
-            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
-            if (!linkMatch || linkMatch[1] !== channelId) return;
-
-            if (lineClamp.childNodes.length > 0) {
-                lineClamp.childNodes.forEach(node => {
-                    if (node.nodeType === Node.TEXT_NODE) {
-                        const currentText = node.textContent.trim();
-                        // Κρατάμε το " / Ghost Server" αν υπάρχει
-                        const parts = currentText.split(' / ');
-                        const serverName = parts.length > 1 ? ' / ' + parts[1] : '';
-                        const expectedText = newTitle + serverName;
-
-                        if (currentText !== expectedText) {
-                            node.textContent = expectedText;
-                            this.log(`[Voice subtext] Renamed "${currentText}" to "${expectedText}"`);
-                        }
-                    }
-                });
-            }
-        });
-
-        // Method 3: Ψάχνουμε για voice call headers με το subtitle class
-        const subtitles = document.querySelectorAll('[class*="subtitle"]');
-        subtitles.forEach(subtitle => {
-            const channelLink = subtitle.querySelector('a[href*="/channels/"]');
-            if (!channelLink) return;
-
-            const href = channelLink.getAttribute('href');
-            const linkMatch = href.match(/channels\/\d+\/(\d+)/);
-            if (!linkMatch || linkMatch[1] !== channelId) return;
-
-            const textElement = channelLink.querySelector('[class*="text"]');
-            if (textElement && textElement.textContent !== newTitle) {
-                textElement.textContent = newTitle;
-                textElement.setAttribute("data-prezomenoi-renamed", "true");
-            }
-        });
-
-        // Method 4: Ψάχνουμε για h2 channelName (για άλλα voice UI)
-        const voiceHeaders = document.querySelectorAll('h2[class*="channelName"]');
-        voiceHeaders.forEach(voiceHeader => {
-            if (voiceHeader.textContent !== newTitle) {
-                voiceHeader.textContent = newTitle;
-                voiceHeader.setAttribute("data-prezomenoi-renamed", "true");
-            }
-        });
-    }
-
-    renameUsers() {
-        const userMap = {};
-        this.USERS.forEach(user => {
-            if (user.id) userMap[user.id] = user;
-        });
-
-        const allUsernameDivs = document.querySelectorAll("div[class*='username']");
-        allUsernameDivs.forEach(div => {
-            if (div.getAttribute("data-prezomenoi-renamed")) return; // Skip if already processed
-
-            const avatarDiv = div.closest(".content__07f91")?.querySelector(".userAvatar__55bab");
-            const isVoiceCall = div.closest("[class*='voiceUser']");
-
-            if (!avatarDiv && !isVoiceCall) return;
-
-            let userId;
-            if (avatarDiv) {
-                const match = avatarDiv.style.backgroundImage.match(/avatars\/(\d+)\//);
-                if (!match) return;
-                userId = match[1];
-            } else if (isVoiceCall) {
-                const voiceUserDiv = div.closest("[class*='voiceUser']");
-                if (!voiceUserDiv) return;
-                const userIdMatch = voiceUserDiv.getAttribute("data-user-id") || voiceUserDiv.id?.match(/voice-user-(\d+)/)?.[1];
-                if (!userIdMatch) return;
-                userId = userIdMatch;
-            }
-
-            const userInfo = userMap[userId];
-            if (userInfo) {
-                if (div.textContent !== userInfo.target) {
-                    const computedStyle = window.getComputedStyle(div);
-                    const originalFontSize = computedStyle.fontSize;
-
-                    div.textContent = userInfo.target;
-                    div.style.color = userInfo.color;
-                    div.setAttribute("data-prezomenoi-renamed", "true");
-
-                    if (isVoiceCall) {
-                        div.style.fontSize = originalFontSize;
-                    }
-                }
-            }
-        });
-
-        // Fallback for names in lists where ID might isn't easily accessible or generally by text
-        this.USERS.forEach(user => {
-            user.original.forEach(origName => {
-                document.querySelectorAll(`[data-text="${origName}"]`).forEach(el => {
-                    if (el.textContent !== user.target) {
-                        el.textContent = user.target;
-                        el.style.color = user.color;
-                    }
-                });
-            });
-        });
-    }
-
-    applyOfflineColors(rootNode = document) {
-        if (!rootNode || !rootNode.querySelectorAll) return;
-        const defaultCustomColor = "#C0C0C0";
-        rootNode.querySelectorAll("[class*='username']").forEach(el => {
-            const isOffline = el.closest('[class*="offline"]');
-            if (isOffline) {
-                el.style.setProperty("color", defaultCustomColor, "important");
-            }
-        });
-    }
-
-    renameRepliedMessages() {
-        const selectors = this.USERS.flatMap(u => u.original.map(name => `[aria-label*='${name}']`)).join(", ");
-        const replyAriaElements = document.querySelectorAll(selectors);
-
-        replyAriaElements.forEach(el => {
-            const oldAria = el.getAttribute("aria-label");
-            if (!oldAria) return;
-
-            this.USERS.forEach(user => {
-                user.original.forEach(origName => {
-                    if (oldAria.includes(origName)) {
-                        el.setAttribute("aria-label", oldAria.replace(origName, user.target));
-                    }
-                });
-            });
-        });
-
-        document.querySelectorAll("*").forEach(el => {
-            if (el.childElementCount === 0) {
-                const trimmed = el.textContent.trim();
-                const matchedUser = this.USERS.find(u => u.original.includes(trimmed));
-                if (matchedUser) {
-                    if (el.textContent !== matchedUser.target) {
-                        el.textContent = matchedUser.target;
-                        el.style.color = matchedUser.color;
-                    }
-                }
-            }
-        });
-    }
-
-    textReplace(rootNode) {
-        if (!rootNode) return;
-
-        this.replaceTextInNode(rootNode, "Xountikoi OG", "Ghost Server");
-
-        this.USERS.forEach(user => {
-            user.original.forEach(origName => {
-                this.replaceTextInNode(rootNode, origName, user.target);
-            });
-        });
-
-
-        const elementsWithAttrs = rootNode.querySelectorAll("[aria-label], [data-text], [title], [alt]");
-        elementsWithAttrs.forEach(el => {
-            const ariaVal = el.getAttribute("aria-label");
-            if (ariaVal && ariaVal.includes("Xountikoi OG")) {
-                el.setAttribute("aria-label", ariaVal.replace("Xountikoi OG", "Prezomenoi LOCAL"));
-            }
-
-            const dtVal = el.getAttribute("data-text");
-            if (dtVal && dtVal.includes("Xountikoi OG")) {
-                el.setAttribute("data-text", dtVal.replace("Xountikoi OG", "Prezomenoi LOCAL"));
-                if (el.textContent.includes("Xountikoi OG"))
-                    el.textContent = el.textContent.replace("Xountikoi OG", "Prezomenoi LOCAL");
-            }
-
-            this.USERS.forEach(user => {
-                user.original.forEach(origName => {
-                    const currentAria = el.getAttribute("aria-label");
-                    if (currentAria && currentAria.includes(origName)) {
-                        el.setAttribute("aria-label", currentAria.replace(origName, user.target));
-                    }
-
-                    const currentDt = el.getAttribute("data-text");
-                    if (currentDt && currentDt.includes(origName)) {
-                        el.setAttribute("data-text", currentDt.replace(origName, user.target));
-                        // Safe double check for text content if it matches data-text pattern
-                        if (el.textContent.includes(origName)) {
-                            el.textContent = el.textContent.replace(origName, user.target);
-                        }
-                    }
-                });
-            });
-        });
-    }
-
-    replaceTextInNode(node, oldStr, newStr) {
-        if (!node) return;
-        if (node.nodeType === Node.TEXT_NODE) {
-            if (node.nodeValue.includes(oldStr))
-                node.nodeValue = node.nodeValue.replaceAll(oldStr, newStr);
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            node.childNodes.forEach(child => {
-                this.replaceTextInNode(child, oldStr, newStr);
-            });
-        }
-    }
-
-    renameInNode(node) {
-        this.textReplace(node);
-        this.applyOfflineColors(node);
-
-        // Check for channel list updates
-        if (node.querySelector && (
-            node.querySelector('[data-list-item-id^="channels___"]') ||
-            (node.getAttribute && node.getAttribute('data-list-item-id')?.startsWith('channels___')) ||
-            node.querySelector('[class*="sidebar"]') ||
-            (node.classList && Array.from(node.classList).some(c => c.includes("sidebar")))
-        )) {
-            this.renameChannels();
-            this.renameCategories();
-        }
-
-        // Check for header updates (κανονικό και voice chat)
-        if (node.querySelector && (node.querySelector('h1[class*="title"]') ||
-            node.querySelector('h2[class*="channelName"]') ||
-            node.querySelector('[class*="subtitle"]') ||
-            node.querySelector('[class*="subtext"]') ||
-            node.querySelector('[class*="lineClamp"]') ||
-            node.tagName === 'H1' ||
-            node.tagName === 'H2')) {
-            this.renameHeaderTitle();
-            this.renameVoiceChatHeader(); // Καλεί και για voice chat
-        }
-    }
-
-    getChannelMap() {
-        return {
-            "1216778033550196856": "📜〢Rules",
-            "1217201547054944377": "🎵〢Music",
-            "1216757354574385203": "💬〢Chat",
-            "1333458086094045385": "📽️〢Clips",
-            "1344770404023144550": "📰〢Epikairotita",
-            "1357173641745404006": "☘️〢Drugs",
-            "1355323003084341359": "🌐〢Nord VPN",
-            "1216757265936154689": "📞〢Larose",
-            "1250083136818122813": "☣️〢Karkinos",
-            "1216761517194739936": "⚖️〢Dikastirio",
-            "1216818976898941068": "🎬〢Movies",
-            "1345100969393917953": "🔏〢Secret",
-            "1490509630776934500": "🤫〢Mpillias",
-            "1517315171104849990": "🧪〢Exomologisi",
-            "1459305637841473711": "🇩🇪〢secret channel",
-            "1459297181721952307": "🇩🇪〢secret call"
-        };
-    }
-
-    removeNoRoleCss() {
-        const s = document.getElementById("noRoleCustomCss");
-        if (s) s.remove();
+        this.observer = new MutationObserver(records => this.onMutations(records));
+        this.observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+        this.processRoot(document.body);
+        const resolved = [...this.names.values()].filter(entry => entry.from).length;
+        this.log(`Ενεργό · ονόματα καναλιών/κατηγοριών: ${resolved}/${this.names.size} από το Discord · ${USERS.length} μέλη · στον server τώρα: ${this.inGuild ? "ναι" : "όχι"}`);
     }
 
     stop() {
-        this.log("[Prezomenoi_OG] Plugin deactivated");
-        if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
+        this.running = false;
+        this.observer?.disconnect();
+        this.observer = null;
+        cancelAnimationFrame(this.frame);
+        clearTimeout(this.fallback);
+        this.frame = 0;
+        this.fallback = 0;
+        this.pending.clear();
+        for (const off of this.unsubscribers) {
+            try { off(); } catch {}
         }
-        if (this.locationCheckInterval) {
-            clearInterval(this.locationCheckInterval);
-            this.locationCheckInterval = null;
-        }
-        if (this.modal) {
-            this.modal.remove();
-            this.modal = null;
-        }
-        this.removeIcon();
-        const style = document.getElementById("prezomenoi-og-style");
-        if (style) style.remove();
-        this.renameAll();
+        this.unsubscribers = [];
+        document.getElementById(THEME_LINK_ID)?.remove();
+        document.body.classList.remove(BODY_CLASS);
+        const restored = this.revertAll();
+        this.log(`Απενεργοποιήθηκε · αναιρέθηκαν ${restored} αλλαγές`);
     }
 
-    injectIcon() {
-        const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
+    // ── setup ─────────────────────────────────────────────────
 
-        let pluginCard = null;
-        pluginCards.forEach(card => {
-            const titleElement = card.querySelector('[class*="bd-addon-header"]');
-            if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
-                pluginCard = card;
-            }
-        });
-
-        if (pluginCard) {
-            const controls = pluginCard.querySelector('[class*="bd-controls"]');
-            if (controls) {
-                if (!controls.querySelector('[aria-label="Plugin Updater"]')) {
-                    this.createAndInjectIcon(controls);
-                }
+    compile() {
+        this.textMap = new Map([[SERVER_NAME, SERVER_TEXT]]);
+        this.attrMap = new Map([[SERVER_NAME, SERVER_LABEL]]);
+        this.exactUsers = new Map();
+        this.usersById = new Map();
+        for (const user of USERS) {
+            if (user.id) this.usersById.set(user.id, user);
+            for (const name of user.original) {
+                this.exactUsers.set(name, user);
+                if (name === user.target) continue;
+                // "@Kontosouvli lover" is covered by "Kontosouvli lover" and keeps its "@".
+                if (user.original.some(other => other !== name && name.includes(other))) continue;
+                this.textMap.set(name, user.target);
+                this.attrMap.set(name, user.target);
             }
         }
-
-        this.iconCheckInterval = setInterval(() => {
-            const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
-            let pluginCard = null;
-            pluginCards.forEach(card => {
-                const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
-                    pluginCard = card;
-                }
-            });
-
-            if (pluginCard) {
-                const controls = pluginCard.querySelector('[class*="bd-controls"]');
-                if (controls && !controls.querySelector('[aria-label="Plugin Updater"]')) {
-                    this.createAndInjectIcon(controls);
-                }
-            }
-        }, 500);
-
-        this.startObserver();
+        this.textPattern = new RegExp(alternation(this.textMap.keys()), "g");
+        this.attrPattern = new RegExp(alternation(this.attrMap.keys()), "g");
+        // Cheap pre-check before looking at a text node in detail.
+        this.quickText = new RegExp(alternation([...this.textMap.keys(), ...this.exactUsers.keys(), " / "]));
     }
 
-    startObserver() {
-        if (this.observer) {
-            return;
-        }
-
-        const targetNode = document.body;
-        const config = { childList: true, subtree: true };
-
-        this.observer = new MutationObserver((mutations, observer) => {
-            const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
-            let pluginCard = null;
-            pluginCards.forEach(card => {
-                const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("Prezomenoi_OG")) {
-                    pluginCard = card;
-                }
-            });
-
-            if (pluginCard) {
-                const controls = pluginCard.querySelector('[class*="bd-controls"]');
-                if (controls) {
-                    if (!controls.querySelector('[aria-label="Plugin Updater"]')) {
-                        this.createAndInjectIcon(controls);
-                    }
-                }
-            }
-        });
-
-        this.observer.observe(targetNode, config);
+    addTheme() {
+        if (document.getElementById(THEME_LINK_ID)) return;
+        const link = document.createElement("link");
+        link.id = THEME_LINK_ID;
+        link.rel = "stylesheet";
+        link.href = `${THEME_URL}?t=${Date.now()}`;
+        document.head.appendChild(link);
     }
 
-    createAndInjectIcon(controls) {
-        const iconButton = document.createElement("button");
-        iconButton.setAttribute("aria-label", "Plugin Updater");
-        iconButton.className = "bd-button bd-button-filled bd-addon-button bd-button-color-brand prezomenoi-icon-button";
-
-        const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgIcon.setAttribute("width", "16");
-        svgIcon.setAttribute("height", "16");
-        svgIcon.setAttribute("viewBox", "0 0 24 24");
-        svgIcon.innerHTML = `
-            <path d="M12 2a10 10 0 0 1 10 10c0 2.5-1 4.8-2.6 6.5l-3.5-3.5"></path>
-            <path d="M12 22a10 10 0 0 1-10-10c0-2.5 1-4.8 2.6-6.5l3.5 3.5"></path>
-            <path d="M8.1 8.1L2 4"></path>
-            <path d="M15.9 15.9L22 20"></path>
-        `;
-        iconButton.appendChild(svgIcon);
-
-        iconButton.onclick = () => this.openModal();
-        controls.appendChild(iconButton);
-        this.iconButton = iconButton;
-    }
-
-    removeIcon() {
-        if (this.iconButton) {
-            this.iconButton.remove();
-            this.iconButton = null;
-        }
-        if (this.iconCheckInterval) {
-            clearInterval(this.iconCheckInterval);
-            this.iconCheckInterval = null;
-        }
-    }
-
-    openModal() {
-        this.log("[Prezomenoi_OG] Opening updater modal");
-        if (this.modal) {
-            this.modal.remove();
-        }
-
-        const modalOverlay = document.createElement("div");
-        modalOverlay.className = "prezomenoi-modal-overlay";
-        setTimeout(() => {
-            modalOverlay.classList.add("visible");
-        }, 10);
-
-        const modalContent = document.createElement("div");
-        modalContent.className = "prezomenoi-modal-content";
-        setTimeout(() => {
-            modalContent.classList.add("visible");
-        }, 100);
-
-        const title = document.createElement("h2");
-        title.className = "prezomenoi-modal-title";
-        title.textContent = "🔧 Prezomenoi OG Updater";
-        modalContent.appendChild(title);
-
-        const description = document.createElement("p");
-        description.className = "prezomenoi-modal-description";
-        description.textContent = "Έλεγχος και ενημέρωση του Prezomenoi OG plugin με ένα κλικ.";
-        modalContent.appendChild(description);
-
-        const buttonWrapper = document.createElement("div");
-        buttonWrapper.className = "prezomenoi-modal-button-wrapper";
-
-        const button = document.createElement("button");
-        button.className = "prezomenoi-modal-button";
-        button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
-
-        for (let i = 0; i < 5; i++) {
-            const particle = document.createElement("span");
-            particle.className = "particle";
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.top = `${Math.random() * 100}%`;
-            button.appendChild(particle);
-        }
-
-        button.onclick = async () => {
-            if (this._updateInProgress) return;
-            this._updateInProgress = true;
-            button.style.pointerEvents = "none";
-            button.style.animation = "none";
-            button.innerHTML = `<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> Ενημέρωση...`;
-            await this.checkAndUpdate(modalContent);
-            this._updateInProgress = false;
-            button.style.pointerEvents = "auto";
-            button.style.animation = "";
-            button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
+    subscribe() {
+        const onSelect = () => {
+            if (!this.running) return;
+            const was = this.inGuild;
+            this.updateGuildState();
+            if (this.inGuild) this.refreshNames(!was);
+            // Headers and the channel list show the new channel; new messages arrive as mutations.
+            this.queueAll(document.querySelectorAll(`${HEADER}, ${CHANNEL_ITEM}`));
         };
-
-        buttonWrapper.appendChild(button);
-        modalContent.appendChild(buttonWrapper);
-
-        const resultBox = document.createElement("div");
-        resultBox.id = "update-results";
-        resultBox.innerHTML = "<b>Αποτελέσματα:</b><br>Πατήστε το κουμπί για να ξεκινήσει ο έλεγχος.";
-        modalContent.appendChild(resultBox);
-
-        const scanLine = document.createElement("div");
-        scanLine.className = "scan-line";
-        resultBox.appendChild(scanLine);
-
-        const closeButton = document.createElement("button");
-        closeButton.className = "prezomenoi-modal-close-button";
-        closeButton.textContent = "✕";
-        closeButton.onclick = () => {
-            modalOverlay.classList.remove("visible");
-            setTimeout(() => modalOverlay.remove(), 500);
-        };
-        modalContent.appendChild(closeButton);
-
-        modalOverlay.appendChild(modalContent);
-        document.body.appendChild(modalOverlay);
-        this.modal = modalOverlay;
-
-        modalOverlay.onclick = (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.classList.remove("visible");
-                setTimeout(() => modalOverlay.remove(), 500);
-            }
-        };
+        for (const store of [this.stores.guild, this.stores.channel]) {
+            if (typeof store?.addChangeListener !== "function") continue;
+            store.addChangeListener(onSelect);
+            this.unsubscribers.push(() => store.removeChangeListener(onSelect));
+        }
+        if (!this.stores.guild) {
+            // Without the store, fall back to watching the URL (cheap string compare).
+            let path = location.pathname;
+            const id = setInterval(() => {
+                if (location.pathname === path) return;
+                path = location.pathname;
+                onSelect();
+            }, 1000);
+            this.unsubscribers.push(() => clearInterval(id));
+        }
     }
 
-    async checkAndUpdate(container) {
-        const results = container ? container.querySelector("#update-results") : null;
-        if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
-
-        const pluginName = "Prezomenoi_OG";
-        const updateUrl = "https://thomasthanos.github.io/1st-theme/Discord_DEV/Themes/prezomenoi.theme.css?t=" + Date.now();
-        const filename = ".Prezomenoi_OG.plugin.js";
-
+    selectedGuildId() {
         try {
-            const localPlugin = BdApi.Plugins.get(pluginName);
-            if (!localPlugin) {
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `❓ το <b>${pluginName}</b> δεν είναι εγκατεστημένο.<br>`;
-                    msg.style.color = "#ff5555";
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
-                return;
-            }
-
-            const code = await fetch(updateUrl).then(r => r.text());
-            const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-            const localVersion = localPlugin.version;
-
-            if (!remoteVersion) {
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `❓ Δεν βρέθηκε έκδοση για <b>${pluginName}</b>.<br>`;
-                    msg.style.color = "#ff5555";
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
-                return;
-            }
-
-            if (this.isNewerVersion(remoteVersion, localVersion)) {
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `📦 Βρέθηκε νέα έκδοση για <b>${pluginName}</b>: <code>${remoteVersion}</code>. Ενημέρωση σε εξέλιξη...<br>`;
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
-                await this.downloadUpdate({ filename, updateUrl }, code);
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `✅ Το <b>${pluginName}</b> ενημερώθηκε στην έκδοση <code>${remoteVersion}</code>!<br>`;
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
-            } else {
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `✅ Το <b>${pluginName}</b> είναι ενημερωμένο (<code>${localVersion}</code>).<br>`;
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
-            }
-        } catch (err) {
-            if (results) {
-                const msg = document.createElement("div");
-                msg.innerHTML = `❌ Σφάλμα για <b>${pluginName}</b>: ${err.message}<br>`;
-                msg.style.color = "#ff5555";
-                msg.style.opacity = "0";
-                msg.style.animation = "terminalText 0.5s ease forwards";
-                results.appendChild(msg);
-            }
+            const id = this.stores.guild?.getGuildId?.();
+            if (id !== undefined) return id;
         }
-
-        if (results) {
-            const msg = document.createElement("div");
-            msg.innerHTML = `<br><b>Ο έλεγχος ολοκληρώθηκε!</b>`;
-            msg.style.color = "linear-gradient(90deg, #66ffff, #00ccff)";
-            msg.style.textAlign = "center";
-            msg.style.display = "block";
-            msg.style.marginTop = "10px";
-            msg.style.opacity = "0";
-            msg.style.animation = "terminalText 0.5s ease forwards";
-            results.appendChild(msg);
-        }
-        this.showCustomToast("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", "success");
+        catch {}
+        return /^\/channels\/(\d+)\//.exec(location.pathname)?.[1] || null;
     }
 
-    isNewerVersion(remote, local) {
-        const r = remote.split(".").map(n => parseInt(n));
-        const l = local.split(".").map(n => parseInt(n));
-        for (let i = 0; i < Math.max(r.length, l.length); i++) {
-            if ((r[i] || 0) > (l[i] || 0)) return true;
-            if ((r[i] || 0) < (l[i] || 0)) return false;
-        }
-        return false;
-    }
-
-    downloadUpdate(plugin, code) {
+    selectedChannelId() {
         try {
-            BdApi.Plugins.disable("Prezomenoi_OG");
-            const fs = require("fs");
-            const path = require("path");
-            const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
-            fs.writeFileSync(filePath, code, "utf8");
-            this._justUpdated = true;
-            setTimeout(() => BdApi.Plugins.reload("Prezomenoi_OG"), 1000);
-        } catch (err) {
-            this.showCustomToast(`Αποτυχία ενημέρωσης του Prezomenoi_OG: ${err.message}`, "error");
-            throw err;
+            const id = this.stores.channel?.getChannelId?.();
+            if (id !== undefined) return id;
+        }
+        catch {}
+        return /^\/channels\/\d+\/(\d+)/.exec(location.pathname)?.[1] || null;
+    }
+
+    updateGuildState() {
+        this.inGuild = this.selectedGuildId() === GUILD_ID;
+        document.body.classList.toggle(BODY_CLASS, this.inGuild);
+    }
+
+    // Original channel names come from Discord's ChannelStore, so renames keep working
+    // when a channel is renamed on the server.
+    refreshNames(force = false) {
+        const total = Object.keys(CHANNELS).length + Object.keys(CATEGORIES).length;
+        if (!force && this.names.size === total && Date.now() - this.namesAt < 60000) return;
+        const names = new Map();
+        for (const [id, to] of Object.entries({ ...CHANNELS, ...CATEGORIES })) {
+            let from = null;
+            try { from = this.stores.channels?.getChannel?.(id)?.name || null; } catch {}
+            names.set(id, { from, to });
+        }
+        this.names = names;
+        this.namesAt = Date.now();
+        this.namesByText = new Map();
+        for (const entry of names.values()) {
+            if (entry.from && entry.from !== entry.to) this.namesByText.set(entry.from, entry.to);
         }
     }
 
-    showCustomToast(text, type = "info") {
-        const toast = document.createElement("div");
-        toast.textContent = text;
-        toast.className = `prezomenoi-toast ${type}`;
-        document.body.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = "0";
-            setTimeout(() => toast.remove(), 400);
-        }, 3000);
+    // ── mutation handling (batched once per frame) ────────────
+
+    onMutations(records) {
+        for (const record of records) {
+            if (record.type === "characterData") {
+                this.pending.add(record.target);
+                continue;
+            }
+            for (const node of record.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) this.pending.add(node);
+            }
+        }
+        this.schedule();
     }
+
+    queueAll(nodes) {
+        for (const node of nodes) this.pending.add(node);
+        this.schedule();
+    }
+
+    // Runs on the next frame. requestAnimationFrame does not fire while Discord is minimised,
+    // so a timeout makes sure the queue is still processed (and does not keep growing).
+    schedule() {
+        if (this.frame || !this.pending.size || !this.running) return;
+        const run = () => {
+            cancelAnimationFrame(this.frame);
+            clearTimeout(this.fallback);
+            this.frame = 0;
+            this.fallback = 0;
+            if (this.running) this.flush();
+        };
+        this.frame = requestAnimationFrame(run);
+        this.fallback = setTimeout(run, 300);
+    }
+
+    flush() {
+        const nodes = [...this.pending];
+        this.pending.clear();
+        if (Date.now() - this.namesAt > 5000 && [...this.names.values()].some(e => !e.from)) this.refreshNames(true);
+        for (const node of nodes) {
+            if (!node.isConnected) continue;
+            if (node.nodeType === Node.TEXT_NODE) this.processTextNode(node, true);
+            else this.processRoot(node);
+        }
+        this.prune();
+    }
+
+    // ── processing ────────────────────────────────────────────
+
+    isEditable(element) {
+        return !element || SKIP_PARENTS.has(element.tagName) || Boolean(element.closest(EDITABLE));
+    }
+
+    processRoot(root) {
+        if (root.nodeType !== Node.ELEMENT_NODE || this.isEditable(root)) return;
+
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            if (this.quickText.test(node.nodeValue)) this.processTextNode(node, false);
+        }
+
+        this.processAttributes(root);
+        for (const element of root.querySelectorAll("[aria-label], [data-text]")) this.processAttributes(element);
+
+        this.renameChannelsIn(root);
+        this.renameMessageAuthors(root);
+    }
+
+    processTextNode(node, withContext) {
+        const parent = node.parentElement;
+        const value = node.nodeValue;
+        if (!value || this.isEditable(parent)) return;
+        const trimmed = value.trim();
+
+        let next = value.replace(this.textPattern, match => this.textMap.get(match) ?? match);
+
+        // Voice panel style "<channel> / <server>".
+        const split = next.indexOf(" / ");
+        if (split > 0) {
+            const head = next.slice(0, split).trim();
+            const tail = next.slice(split + 3).trim();
+            const renamed = this.namesByText?.get(head);
+            if (renamed && (tail === SERVER_TEXT || tail === SERVER_NAME)) next = `${renamed} / ${tail}`;
+        }
+
+        if (next !== value) this.setText(node, next);
+        const user = this.exactUsers.get(trimmed);
+        if (user) this.setColor(parent, user.color);
+
+        // A single text node that changed on its own (characterData) or was added alone:
+        // check whether it sits in a channel item, a channel link or a header.
+        if (withContext && parent) {
+            const context = parent.closest(`${CHANNEL_ITEM}, ${CHANNEL_LINK}, ${HEADER}`);
+            if (context) this.renameChannelsIn(context);
+        }
+    }
+
+    processAttributes(element) {
+        for (const attr of ATTRIBUTES) {
+            const value = element.getAttribute(attr);
+            if (!value) continue;
+            this.attrPattern.lastIndex = 0;
+            if (!this.attrPattern.test(value)) continue;
+            const next = value.replace(this.attrPattern, match => this.attrMap.get(match) ?? match);
+            if (next !== value) this.setAttr(element, attr, next);
+        }
+    }
+
+    renameChannelsIn(root) {
+        if (!this.names.size) return;
+        const scope = root.nodeType === Node.ELEMENT_NODE ? root : root.parentElement;
+        if (!scope) return;
+
+        // Channel list items carry the channel id, so they are renamed in any context.
+        const items = scope.matches(CHANNEL_ITEM) ? [scope] : [];
+        const inside = scope.closest(CHANNEL_ITEM);
+        if (inside && inside !== scope) items.push(inside);
+        items.push(...scope.querySelectorAll(CHANNEL_ITEM));
+        for (const item of items) {
+            const id = item.getAttribute("data-list-item-id").slice("channels___".length);
+            const entry = this.names.get(id);
+            if (entry) this.renameInside(item, entry, true);
+        }
+
+        // Links to a channel of this server (voice panel, mentions, embeds).
+        const links = scope.matches(CHANNEL_LINK) ? [scope] : [];
+        const linkAround = scope.closest(CHANNEL_LINK);
+        if (linkAround && linkAround !== scope) links.push(linkAround);
+        links.push(...scope.querySelectorAll(CHANNEL_LINK));
+        for (const link of links) {
+            const id = /\/channels\/\d+\/(\d+)/.exec(link.getAttribute("href") || "")?.[1];
+            const entry = id && this.names.get(id);
+            if (entry) this.renameInside(link, entry, false);
+        }
+
+        // Headers show the selected channel's name.
+        if (!this.inGuild) return;
+        const entry = this.names.get(this.selectedChannelId());
+        if (!entry?.from) return;
+        const headers = scope.matches(HEADER) ? [scope] : [];
+        const headerAround = scope.closest(HEADER);
+        if (headerAround && headerAround !== scope) headers.push(headerAround);
+        headers.push(...scope.querySelectorAll(HEADER));
+        for (const header of headers) this.renameInside(header, entry, false);
+    }
+
+    renameInside(container, entry, isListItem) {
+        const { from, to } = entry;
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+        let renamed = false;
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const value = node.nodeValue;
+            if (from && value.trim() === from) {
+                this.setText(node, value.replace(from, to));
+                renamed = true;
+            }
+            else if (value.trim() === to) {
+                renamed = true;
+            }
+        }
+        // Without ChannelStore the original name is unknown; the list item's name element is used.
+        if (!renamed && !from && isListItem) {
+            const nameElement = container.querySelector('[class*="name"]');
+            const walkerByClass = nameElement && document.createTreeWalker(nameElement, NodeFilter.SHOW_TEXT);
+            const node = walkerByClass?.nextNode();
+            if (node && node.nodeValue.trim() && node.nodeValue !== to) this.setText(node, to);
+        }
+    }
+
+    // Message headers: the author's avatar URL contains the user id, which also catches
+    // display names that are not in the USERS list.
+    renameMessageAuthors(root) {
+        const images = root.matches?.('img[src*="/avatars/"]') ? [root] : [];
+        images.push(...root.querySelectorAll('img[src*="/avatars/"]'));
+        for (const image of images) {
+            const id = /\/avatars\/(\d+)\//.exec(image.getAttribute("src") || "")?.[1];
+            const user = id && this.usersById.get(id);
+            if (!user) continue;
+            if (image.closest('[id^="message-reply-context-"], [id^="message-accessories-"], [id^="message-content-"]')) continue;
+            const message = image.closest('[id^="chat-messages-"]');
+            const host = message?.querySelector('[id^="message-username-"]');
+            if (!host) continue;
+            const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node && !node.nodeValue.trim()) node = walker.nextNode();
+            if (!node) continue;
+            if (node.nodeValue !== user.target) this.setText(node, user.target);
+            this.setColor(node.parentElement, user.color);
+            const labelled = node.parentElement?.closest("[data-text]");
+            if (labelled && host.contains(labelled) && labelled.getAttribute("data-text") !== user.target) {
+                this.setAttr(labelled, "data-text", user.target);
+            }
+        }
+    }
+
+    // ── change tracking ───────────────────────────────────────
+
+    setText(node, value) {
+        const known = this.textChanges.get(node);
+        if (!known || known.applied !== node.nodeValue) this.textChanges.set(node, { original: node.nodeValue, applied: value });
+        else known.applied = value;
+        node.nodeValue = value;
+    }
+
+    setAttr(element, attr, value) {
+        let attrs = this.attrChanges.get(element);
+        if (!attrs) {
+            attrs = new Map();
+            this.attrChanges.set(element, attrs);
+        }
+        const current = element.getAttribute(attr);
+        const known = attrs.get(attr);
+        if (!known || known.applied !== current) attrs.set(attr, { original: current, applied: value });
+        else known.applied = value;
+        element.setAttribute(attr, value);
+    }
+
+    setColor(element, color) {
+        if (!element) return;
+        const before = element.style.color;
+        element.style.color = color;
+        const applied = element.style.color;
+        if (before === applied) return;
+        const known = this.colorChanges.get(element);
+        if (!known || known.applied !== before) this.colorChanges.set(element, { original: before, applied });
+        else known.applied = applied;
+    }
+
+    prune() {
+        const total = this.textChanges.size + this.attrChanges.size + this.colorChanges.size;
+        if (total < MAX_TRACKED) return;
+        for (const map of [this.textChanges, this.attrChanges, this.colorChanges]) {
+            for (const node of map.keys()) {
+                if (!node.isConnected) map.delete(node);
+            }
+        }
+    }
+
+    // Puts back only what still shows our value; anything Discord re-rendered since is left alone.
+    revertAll() {
+        let restored = 0;
+        for (const [node, change] of this.textChanges) {
+            if (node.isConnected && node.nodeValue === change.applied) {
+                node.nodeValue = change.original;
+                restored++;
+            }
+        }
+        for (const [element, attrs] of this.attrChanges) {
+            if (!element.isConnected) continue;
+            for (const [attr, change] of attrs) {
+                if (element.getAttribute(attr) !== change.applied) continue;
+                if (change.original == null) element.removeAttribute(attr);
+                else element.setAttribute(attr, change.original);
+                restored++;
+            }
+        }
+        for (const [element, change] of this.colorChanges) {
+            if (element.isConnected && element.style.color === change.applied) {
+                element.style.color = change.original;
+                restored++;
+            }
+        }
+        this.textChanges.clear();
+        this.attrChanges.clear();
+        this.colorChanges.clear();
+        return restored;
+    }
+
     log(...args) {
         console.log(
-            "%c [Prezomenoi_OG v6.2.2] %c " + args.join(" "),
+            `%c [${NAME}] %c ${args.join(" ")}`,
             "font-weight: bold; background: #424242; color: white; padding: 4px 8px; border-radius: 6px 0 0 6px;",
             "font-weight: bold; background: #313131; color: white; padding: 4px 8px; border-radius: 0 6px 6px 0;"
         );

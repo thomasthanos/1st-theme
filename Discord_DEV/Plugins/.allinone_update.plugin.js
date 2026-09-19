@@ -1,7 +1,7 @@
 /**
  * @name UpdateAllMyPlugins
- * @version 2.5.4
- * @description Κάνει έλεγχο και αυτόματη ενημέρωση για όλα τα προσωπικά plugins του ThomasT με πλήρες custom UI.
+ * @version 3.0.0
+ * @description Βρίσκει μόνο του όλα τα plugins του ThomasT που έχεις εγκατεστημένα και τα κρατάει ενημερωμένα από το GitHub: αυτόματος έλεγχος, έλεγχος εγκυρότητας πριν την εγκατάσταση και backup της προηγούμενης έκδοσης.
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/.allinone_update.plugin.js
@@ -9,553 +9,649 @@
  * @website https://github.com/thomasthanos
  */
 
+"use strict";
+
+const NAME = "UpdateAllMyPlugins";
+const AUTHOR_ID = "706932839907852389";
+// Only files served from the author's GitHub account are ever installed.
+const TRUSTED_URL = /^https:\/\/raw\.githubusercontent\.com\/thomasthanos\/[^?#\s]+\.plugin\.js$/i;
+// Older releases declared a wrong @updateUrl; these are tried when the declared one fails.
+const FALLBACK_URLS = {
+    Timer: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.timer.plugin.js"
+};
+const DEFAULTS = {
+    autoCheck: true,
+    autoInstall: true,
+    intervalHours: 6,
+    notify: true,
+    keepBackup: true,
+    lastCheck: 0
+};
+const STARTUP_DELAY_MS = 15000;
+const RECENT_CHECK_MS = 10 * 60 * 1000;
+const PANEL_RECHECK_MS = 30 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 20000;
+const BACKUP_DIR = ".update-backups";
+
+const STATUS_TEXT = {
+    idle: "Αναμονή ελέγχου",
+    checking: "Έλεγχος…",
+    current: "✓ Ενημερωμένο",
+    installing: "Εγκατάσταση…"
+};
+
+const STYLES = `
+.uamp-panel { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+.uamp-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.uamp-summary { flex: 1; min-width: 200px; color: var(--text-muted, #949ba4); font-size: 13px; line-height: 18px; }
+.uamp-list { display: flex; flex-direction: column; border-radius: 8px; overflow: hidden; background: var(--background-secondary, rgba(0, 0, 0, 0.15)); }
+.uamp-row { display: grid; grid-template-columns: minmax(120px, 1.2fr) minmax(90px, 0.9fr) minmax(130px, 1.7fr) auto; align-items: center; gap: 10px; padding: 9px 12px; border-top: 1px solid var(--background-modifier-accent, rgba(255, 255, 255, 0.06)); color: var(--text-normal, #dbdee1); font-size: 14px; }
+.uamp-row:first-child { border-top: none; }
+.uamp-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.uamp-tag { margin-left: 6px; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 500; color: var(--text-muted, #949ba4); background: var(--background-modifier-accent, rgba(255, 255, 255, 0.08)); }
+.uamp-version { font-family: var(--font-code, Consolas, monospace); font-size: 12.5px; color: var(--text-muted, #949ba4); white-space: nowrap; }
+.uamp-status { font-size: 13px; overflow-wrap: anywhere; }
+.uamp-current .uamp-status, .uamp-updated .uamp-status { color: var(--status-positive, #23a55a); }
+.uamp-available .uamp-status { color: var(--status-warning, #f0b232); font-weight: 600; }
+.uamp-error .uamp-status { color: var(--status-danger, #f23f43); }
+.uamp-ahead .uamp-status { color: var(--text-link, #00a8fc); }
+.uamp-empty { padding: 12px; color: var(--text-muted, #949ba4); font-size: 14px; }
+.uamp-button { white-space: nowrap; }
+`;
+
+function stripBom(text) {
+    return text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+}
+
+function parseMeta(source) {
+    const match = /^\s*\/\*\*([\s\S]*?)\*\//.exec(stripBom(source));
+    if (!match) return null;
+    const meta = {};
+    for (const line of match[1].split(/\r?\n/)) {
+        const field = /^\s*\*?\s*@([A-Za-z]+)\s+(.+?)\s*$/.exec(line);
+        if (field && !(field[1] in meta)) meta[field[1]] = field[2];
+    }
+    return meta;
+}
+
+// "2.0,0" (an old typo) and "v1.2.3-beta" both parse; missing parts count as 0.
+function versionParts(version) {
+    return String(version ?? "")
+        .trim()
+        .replace(/^v/i, "")
+        .split(/[-+\s]/)[0]
+        .split(/[.,_]/)
+        .map(part => parseInt(part, 10))
+        .map(n => (Number.isFinite(n) ? n : 0));
+}
+
+function compareVersions(a, b) {
+    const x = versionParts(a);
+    const y = versionParts(b);
+    for (let i = 0; i < Math.max(x.length, y.length); i++) {
+        const diff = (x[i] || 0) - (y[i] || 0);
+        if (diff) return diff > 0 ? 1 : -1;
+    }
+    return 0;
+}
+
+function inspectRemote(code, expectedName) {
+    if (typeof code !== "string" || code.length < 64) throw new Error("το αρχείο στο GitHub είναι άδειο");
+    if (code.length > 5 * 1024 * 1024) throw new Error("το αρχείο στο GitHub είναι υπερβολικά μεγάλο");
+    const source = stripBom(code);
+    if (/^\s*</.test(source)) throw new Error("ήρθε σελίδα HTML αντί για plugin");
+    const meta = parseMeta(source);
+    if (!meta?.name || !meta?.version) throw new Error("λείπει το @name ή το @version");
+    if (meta.name !== expectedName) throw new Error(`το URL δίνει άλλο plugin (${meta.name})`);
+    try {
+        // Same wrapper BetterDiscord uses to load plugins; this only compiles, nothing runs.
+        new Function("require", "module", "exports", "__filename", "__dirname", source);
+    }
+    catch (err) {
+        throw new Error(`συντακτικό σφάλμα στη νέα έκδοση: ${err.message}`);
+    }
+    return { meta, source };
+}
+
+function httpGet(url, signal) {
+    if (typeof BdApi.Net?.fetch === "function") {
+        return BdApi.Net.fetch(url, { timeout: FETCH_TIMEOUT_MS, signal, headers: { "Cache-Control": "no-cache" } });
+    }
+    return fetch(url, { cache: "no-store", signal });
+}
+
+function relativeTime(ms) {
+    const abs = Math.abs(ms);
+    const future = ms > 0;
+    const units = [[86400000, "μέρα", "μέρες"], [3600000, "ώρα", "ώρες"], [60000, "λεπτό", "λεπτά"]];
+    for (const [size, one, many] of units) {
+        if (abs < size) continue;
+        const n = Math.round(abs / size);
+        const word = n === 1 ? one : many;
+        return future ? `σε ${n} ${word}` : `πριν από ${n} ${word}`;
+    }
+    return future ? "σε λίγο" : "μόλις τώρα";
+}
+
+function statusText(entry) {
+    switch (entry.status) {
+        case "available": return `Νέα έκδοση ${entry.remoteVersion}`;
+        case "ahead": return `Τοπική έκδοση νεότερη (GitHub: ${entry.remoteVersion})`;
+        case "updated": return `✓ Ενημερώθηκε (από ${entry.previousVersion})`;
+        case "error": return `✕ ${entry.error}`;
+        default: return STATUS_TEXT[entry.status] || entry.status;
+    }
+}
+
+function PanelButton({ onClick, disabled, color = "brand", children }) {
+    const h = BdApi.React.createElement;
+    return h("button", {
+        type: "button",
+        disabled,
+        onClick,
+        className: `bd-button bd-button-filled bd-button-color-${color} bd-button-small uamp-button${disabled ? " bd-button-disabled" : ""}`
+    }, h("div", { className: "bd-button-content" }, children));
+}
+
+function StatusRow({ entry, plugin, busy }) {
+    const h = BdApi.React.createElement;
+    const version = entry.status === "available" ? `${entry.localVersion} → ${entry.remoteVersion}` : entry.localVersion;
+    return h("div", { className: `uamp-row uamp-${entry.status}` },
+        h("div", { className: "uamp-name", title: entry.filename },
+            entry.name,
+            entry.enabled === false ? h("span", { className: "uamp-tag" }, "ανενεργό") : null),
+        h("div", { className: "uamp-version" }, version),
+        h("div", { className: "uamp-status", title: entry.error || "" }, statusText(entry)),
+        entry.status === "available"
+            ? h(PanelButton, { color: "green", disabled: busy, onClick: () => plugin.installEntries([entry], "manual") }, "Ενημέρωση")
+            : h("span")
+    );
+}
+
+function StatusPanel({ plugin }) {
+    const React = BdApi.React;
+    const h = React.createElement;
+    const [, rerender] = React.useReducer(n => n + 1, 0);
+    React.useEffect(() => plugin.subscribe(rerender), [plugin]);
+    // Keeps the "πριν από / σε" times fresh while the panel is open.
+    React.useEffect(() => {
+        const id = setInterval(rerender, 30000);
+        return () => clearInterval(id);
+    }, []);
+
+    const entries = [...plugin.entries.values()];
+    const available = entries.filter(e => e.status === "available");
+    const busy = Boolean(plugin.checking) || plugin.installing;
+
+    return h("div", { className: "uamp-panel" },
+        h("div", { className: "uamp-toolbar" },
+            h("div", { className: "uamp-summary" }, plugin.summaryText()),
+            h(PanelButton, { disabled: busy, onClick: () => plugin.checkAll({ reason: "manual" }) }, plugin.checking ? "Έλεγχος…" : "Έλεγχος τώρα"),
+            available.length
+                ? h(PanelButton, { color: "green", disabled: busy, onClick: () => plugin.installEntries(available, "manual") }, `Ενημέρωση όλων (${available.length})`)
+                : null
+        ),
+        entries.length
+            ? h("div", { className: "uamp-list" }, entries.map(entry => h(StatusRow, { key: entry.name, entry, plugin, busy })))
+            : h("div", { className: "uamp-empty" }, "Δεν βρέθηκαν εγκατεστημένα plugins του ThomasT με @updateUrl.")
+    );
+}
+
 module.exports = class UpdateAllMyPlugins {
-    constructor() {
-        this.plugins = {
-            "Combined_safe_console": {
-                filename: ".Combined_safe_console.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Combined_safe_console.plugin.js"
-            },
-            "Prezomenoi_OG": {
-                filename: ".Prezomenoi_OG.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.Prezomenoi_OG.plugin.js"
-            },
-            "FolderManager": {
-                filename: ".FolderManager.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/.FolderManager.plugin.js"
-            },
-            "timer.plugin": {
-                filename: ".timer.plugin.js",
-                updateUrl: "https://raw.githubusercontent.com/thomasthanos/1st-theme/main/Discord_DEV/Plugins/timer.plugin.js"
-            }
-        };
-        this.modal = null;
-        this.iconButton = null;
-        this.observer = null;
-        this.isUpdating = false;
+    constructor(meta) {
+        this.meta = meta;
+        this.entries = new Map();
+        this.listeners = new Set();
+        this.timers = new Set();
+        this.settings = { ...DEFAULTS };
+        this.checking = null;
+        this.installing = false;
+        this.running = false;
+        this.nextTimer = null;
+        this.nextAt = 0;
+        this.abortController = null;
+        this.notice = null;
     }
 
     start() {
-        console.log("[UpdateAllMyPlugins] Starting plugin...");
-        this.injectIcon();
+        this.running = true;
+        this.settings = this.loadSettings();
+        BdApi.DOM.addStyle(NAME, STYLES);
+        this.refreshEntries();
+        const sinceLast = Date.now() - (this.settings.lastCheck || 0);
+        // A reload right after an update (including a self-update) should not re-check at once.
+        this.scheduleNext(Math.max(STARTUP_DELAY_MS, RECENT_CHECK_MS - sinceLast));
+        this.log(`Ενεργό · παρακολουθεί ${this.entries.size} plugins: ${[...this.entries.keys()].join(", ") || "-"}`);
     }
 
     stop() {
-        console.log("[UpdateAllMyPlugins] Stopping plugin...");
-        this.removeIcon();
-        if (this.modal) {
-            this.modal.remove();
-            this.modal = null;
+        this.running = false;
+        for (const id of this.timers) clearTimeout(id);
+        this.timers.clear();
+        this.nextTimer = null;
+        this.nextAt = 0;
+        this.abortController?.abort();
+        this.abortController = null;
+        try { this.notice?.close?.(); } catch {}
+        this.notice = null;
+        BdApi.DOM.removeStyle(NAME);
+        this.listeners.clear();
+    }
+
+    // ── settings ──────────────────────────────────────────────
+
+    loadSettings() {
+        const saved = BdApi.Data.load(NAME, "settings");
+        const settings = { ...DEFAULTS, ...(saved && typeof saved === "object" ? saved : {}) };
+        if (![1, 3, 6, 12, 24].includes(settings.intervalHours)) settings.intervalHours = DEFAULTS.intervalHours;
+        return settings;
+    }
+
+    saveSettings() {
+        BdApi.Data.save(NAME, "settings", this.settings);
+    }
+
+    setSetting(key, value) {
+        this.settings[key] = value;
+        this.saveSettings();
+        if (key === "autoCheck" || key === "intervalHours") {
+            const sinceLast = Date.now() - (this.settings.lastCheck || 0);
+            const interval = this.settings.intervalHours * 3600000;
+            this.scheduleNext(Math.max(STARTUP_DELAY_MS, interval - sinceLast));
         }
-        if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
+        this.emit();
+    }
+
+    // ── timers and change notifications ───────────────────────
+
+    later(fn, ms) {
+        const id = setTimeout(() => {
+            this.timers.delete(id);
+            if (this.running) fn();
+        }, ms);
+        this.timers.add(id);
+        return id;
+    }
+
+    scheduleNext(delay) {
+        if (this.nextTimer) {
+            clearTimeout(this.nextTimer);
+            this.timers.delete(this.nextTimer);
+        }
+        this.nextTimer = null;
+        this.nextAt = 0;
+        if (!this.running || !this.settings.autoCheck) return;
+        this.nextAt = Date.now() + delay;
+        this.nextTimer = this.later(() => {
+            this.nextTimer = null;
+            this.checkAll({ reason: "auto" });
+        }, delay);
+    }
+
+    subscribe(listener) {
+        this.listeners.add(listener);
+        return () => this.listeners.delete(listener);
+    }
+
+    emit() {
+        for (const listener of this.listeners) {
+            try { listener(); } catch {}
         }
     }
 
-    injectIcon() {
-        const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
+    // ── discovery ─────────────────────────────────────────────
 
-        let pluginCard = null;
-        pluginCards.forEach(card => {
-            const titleElement = card.querySelector('[class*="bd-addon-header"]');
-            if (titleElement && titleElement.textContent.includes("UpdateAllMyPlugins")) {
-                pluginCard = card;
-            }
-        });
-
-        if (pluginCard) {
-            const controls = pluginCard.querySelector('[class*="bd-controls"]');
-            if (controls) {
-
-                if (!controls.querySelector('[aria-label="Plugin Updater"]')) {
-                    this.createAndInjectIcon(controls);
-                } else {
-
-                }
-            }
-        } else {
-            console.warn("[UpdateAllMyPlugins] UpdateAllMyPlugins plugin card not found");
-        }
-
-        this.startObserver();
+    managedPlugins() {
+        let all = [];
+        try { all = BdApi.Plugins.getAll(); } catch {}
+        return all
+            .filter(addon => addon
+                && typeof addon.updateUrl === "string"
+                && TRUSTED_URL.test(addon.updateUrl.trim())
+                && (addon.authorId === AUTHOR_ID || String(addon.author || "").trim().toLowerCase() === "thomast"))
+            .sort((a, b) => String(a.name).localeCompare(String(b.name)));
     }
 
-    startObserver() {
-        if (this.observer) {
-            return;
+    refreshEntries() {
+        const seen = new Set();
+        for (const addon of this.managedPlugins()) {
+            seen.add(addon.name);
+            const entry = this.entries.get(addon.name) || { name: addon.name, status: "idle", remoteVersion: null, error: null, source: null };
+            entry.localVersion = addon.version;
+            entry.filename = addon.filename;
+            entry.updateUrl = addon.updateUrl.trim();
+            try { entry.enabled = BdApi.Plugins.isEnabled(addon.name); } catch { entry.enabled = true; }
+            // Updated some other way since the last check.
+            if (entry.status === "available" && compareVersions(entry.remoteVersion, addon.version) <= 0) {
+                entry.status = "current";
+                entry.source = null;
+            }
+            this.entries.set(addon.name, entry);
         }
+        for (const name of [...this.entries.keys()]) {
+            if (!seen.has(name)) this.entries.delete(name);
+        }
+    }
 
-        const targetNode = document.body;
-        const config = { childList: true, subtree: true };
+    summaryText() {
+        const parts = [];
+        const last = this.settings.lastCheck;
+        parts.push(last ? `Τελευταίος έλεγχος: ${relativeTime(last - Date.now())}` : "Δεν έχει γίνει έλεγχος ακόμα");
+        if (!this.settings.autoCheck) parts.push("αυτόματος έλεγχος ανενεργός");
+        else if (this.nextAt) parts.push(`επόμενος ${relativeTime(Math.max(0, this.nextAt - Date.now()))}`);
+        if (this.installing) parts.push("εγκατάσταση σε εξέλιξη…");
+        return parts.join(" · ");
+    }
 
-        this.observer = new MutationObserver((mutations, observer) => {
-            const pluginCards = document.querySelectorAll('[class*="bd-addon-card"]');
-            let pluginCard = null;
-            pluginCards.forEach(card => {
-                const titleElement = card.querySelector('[class*="bd-addon-header"]');
-                if (titleElement && titleElement.textContent.includes("UpdateAllMyPlugins")) {
-                    pluginCard = card;
-                }
+    // ── checking ──────────────────────────────────────────────
+
+    checkAll({ reason = "manual", install = false } = {}) {
+        if (!this.running) return Promise.resolve();
+        if (this.checking) return this.checking;
+        this.checking = this.runCheck(reason, install)
+            .catch(err => this.warn("Ο έλεγχος απέτυχε:", err))
+            .finally(() => {
+                this.checking = null;
+                this.emit();
             });
+        this.emit();
+        return this.checking;
+    }
 
-            if (pluginCard) {
-                const controls = pluginCard.querySelector('[class*="bd-controls"]');
-                if (controls) {
-                    if (!controls.querySelector('[aria-label="Plugin Updater"]')) {
-                        this.createAndInjectIcon(controls);
-                    } else {
+    async runCheck(reason, install) {
+        this.refreshEntries();
+        const entries = [...this.entries.values()];
+        this.abortController = new AbortController();
+        const { signal } = this.abortController;
+        await Promise.all(entries.map(entry => this.checkEntry(entry, signal)));
+        if (!this.running) return;
+
+        this.settings.lastCheck = Date.now();
+        this.saveSettings();
+        const available = entries.filter(e => e.status === "available");
+        const failed = entries.filter(e => e.status === "error");
+        this.log(`Έλεγχος (${reason}): ${entries.length} plugins · ${available.length} ενημερώσεις · ${failed.length} σφάλματα`);
+
+        if (available.length && (install || this.settings.autoInstall)) {
+            await this.installEntries(available, reason);
+        }
+        else if (available.length && reason === "auto") {
+            this.announceAvailable(available);
+        }
+        else if (reason === "manual") {
+            const parts = [];
+            if (available.length) parts.push(available.length === 1 ? "1 νέα έκδοση διαθέσιμη" : `${available.length} νέες εκδόσεις διαθέσιμες`);
+            if (failed.length) parts.push(failed.length === 1 ? "1 σφάλμα (δες τη λίστα)" : `${failed.length} σφάλματα (δες τη λίστα)`);
+            if (!parts.length) parts.push("Όλα τα plugins είναι ενημερωμένα");
+            BdApi.UI.showToast(parts.join(" · "), { type: failed.length ? "warning" : available.length ? "info" : "success" });
+        }
+        if (this.running) this.scheduleNext(this.settings.intervalHours * 3600000);
+    }
+
+    async checkEntry(entry, signal) {
+        entry.status = "checking";
+        entry.error = null;
+        this.emit();
+        try {
+            const code = await this.download(entry, signal);
+            const { meta, source } = inspectRemote(code, entry.name);
+            entry.remoteVersion = meta.version;
+            const cmp = compareVersions(meta.version, entry.localVersion);
+            entry.status = cmp > 0 ? "available" : cmp < 0 ? "ahead" : "current";
+            entry.source = cmp > 0 ? source : null;
+        }
+        catch (err) {
+            entry.status = "error";
+            entry.error = signal.aborted ? "ακυρώθηκε" : (err?.message || String(err));
+            entry.source = null;
+            if (this.running) this.warn(`${entry.name}: ${entry.error}`);
+        }
+        this.emit();
+    }
+
+    async download(entry, signal) {
+        const urls = [entry.updateUrl];
+        const fallback = FALLBACK_URLS[entry.name];
+        if (fallback && fallback !== entry.updateUrl) urls.push(fallback);
+        let lastError = null;
+        for (const url of urls) {
+            try {
+                const response = await httpGet(`${url}?t=${Date.now()}`, signal);
+                if (!response.ok) {
+                    throw new Error(response.status === 404 ? "δεν βρέθηκε στο GitHub (404)" : `το GitHub απάντησε HTTP ${response.status}`);
+                }
+                return await response.text();
+            }
+            catch (err) {
+                lastError = err;
+                if (signal.aborted) break;
+            }
+        }
+        throw lastError || new Error("αποτυχία λήψης");
+    }
+
+    // ── installing ────────────────────────────────────────────
+
+    async installEntries(list, reason) {
+        if (!this.running || this.installing) return;
+        const pending = list.filter(entry => entry.status === "available" && entry.source);
+        if (!pending.length) return;
+        this.installing = true;
+        this.emit();
+        try { this.notice?.close?.(); } catch {}
+        this.notice = null;
+
+        const done = [];
+        const failed = [];
+        // The updater replaces itself last: writing its own file makes BetterDiscord restart it.
+        const self = pending.find(entry => entry.name === NAME);
+        const ordered = pending.filter(entry => entry !== self);
+        if (self) ordered.push(self);
+        try {
+            for (const entry of ordered) {
+                if (!this.running) break;
+                try {
+                    if (entry === self) {
+                        this.settings.lastCheck = Date.now();
+                        this.saveSettings();
                     }
-                } else {
-                    console.warn("[UpdateAllMyPlugins] Controls section not found in plugin card via observer");
+                    this.installEntry(entry);
+                    done.push(entry);
+                }
+                catch (err) {
+                    entry.status = "error";
+                    entry.error = `η εγκατάσταση απέτυχε: ${err.message}`;
+                    failed.push(entry);
+                    this.warn(`${entry.name}: ${entry.error}`);
+                    this.emit();
                 }
             }
-        });
-
-        this.observer.observe(targetNode, config);
-    }
-
-    createAndInjectIcon(controls) {
-
-        const iconButton = document.createElement("button");
-        iconButton.setAttribute("aria-label", "Plugin Updater");
-        iconButton.className = "bd-button bd-button-filled bd-addon-button bd-button-color-brand";
-        iconButton.style.cursor = "pointer";
-        iconButton.style.padding = "0";
-        iconButton.style.marginLeft = "0px";
-        iconButton.style.display = "flex";
-        iconButton.style.alignItems = "center";
-        iconButton.style.justifyContent = "center";
-        iconButton.style.width = "30px";
-        iconButton.style.height = "30px";
-        iconButton.style.borderRadius = "50%";
-        iconButton.style.transition = "background 0.2s ease";
-        iconButton.style.zIndex = "1000";
-
-        iconButton.onmouseover = () => {
-            iconButton.style.background = "rgba(255, 255, 255, 0.1)";
-        };
-        iconButton.onmouseout = () => {
-            iconButton.style.background = "none";
-        };
-
-        const svgIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svgIcon.setAttribute("width", "16");
-        svgIcon.setAttribute("height", "16");
-        svgIcon.setAttribute("viewBox", "0 0 24 24");
-        svgIcon.setAttribute("fill", "none");
-        svgIcon.setAttribute("stroke", "currentColor");
-        svgIcon.setAttribute("stroke-width", "2");
-        svgIcon.setAttribute("stroke-linecap", "round");
-        svgIcon.setAttribute("stroke-linejoin", "round");
-        svgIcon.innerHTML = `
-            <path d="M12 2a10 10 0 0 1 10 10c0 2.5-1 4.8-2.6 6.5l-3.5-3.5"></path>
-            <path d="M12 22a10 10 0 0 1-10-10c0-2.5 1-4.8 2.6-6.5l3.5 3.5"></path>
-            <path d="M8.1 8.1L2 4"></path>
-            <path d="M15.9 15.9L22 20"></path>
-        `;
-        iconButton.appendChild(svgIcon);
-
-        iconButton.onclick = () => this.openModal();
-        controls.appendChild(iconButton);
-        this.iconButton = iconButton;
-
-    }
-
-    removeIcon() {
-        if (this.iconButton) {
-
-            this.iconButton.remove();
-            this.iconButton = null;
         }
+        finally {
+            this.installing = false;
+            this.emit();
+        }
+        this.announceInstalled(done, failed, reason);
     }
 
-    openModal() {
-
-        if (this.modal) {
-            this.modal.remove();
-        }
-
-        const modalOverlay = document.createElement("div");
-        modalOverlay.style.position = "fixed";
-        modalOverlay.style.top = "0";
-        modalOverlay.style.left = "0";
-        modalOverlay.style.width = "100%";
-        modalOverlay.style.height = "100%";
-        modalOverlay.style.background = "linear-gradient(180deg, rgba(10, 10, 20, 0.9) 0%, rgba(20, 20, 40, 0.9) 100%)";
-        modalOverlay.style.backdropFilter = "blur(5px)";
-        modalOverlay.style.display = "flex";
-        modalOverlay.style.alignItems = "center";
-        modalOverlay.style.justifyContent = "center";
-        modalOverlay.style.zIndex = "1000";
-        modalOverlay.style.opacity = "0";
-        modalOverlay.style.transition = "opacity 0.5s ease";
-
-        setTimeout(() => {
-            modalOverlay.style.opacity = "1";
-        }, 10);
-
-        const modalContent = document.createElement("div");
-        modalContent.style.padding = "30px";
-        modalContent.style.background = "rgba(25, 25, 35, 0.7)";
-        modalContent.style.border = "1px solid rgba(255, 255, 255, 0.1)";
-        modalContent.style.borderRadius = "20px";
-        modalContent.style.backdropFilter = "blur(15px)";
-        modalContent.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.05)";
-        modalContent.style.color = "#e0e0e0";
-        modalContent.style.fontFamily = "'Orbitron', 'Segoe UI', sans-serif";
-        modalContent.style.maxWidth = "550px";
-        modalContent.style.width = "90%";
-        modalContent.style.maxHeight = "85vh";
-        modalContent.style.overflowY = "auto";
-        modalContent.style.position = "relative";
-        modalContent.style.transform = "scale(0.9)";
-        modalContent.style.transition = "transform 0.4s ease, box-shadow 0.4s ease";
-
-        setTimeout(() => {
-            modalContent.style.transform = "scale(1)";
-            modalContent.style.boxShadow = "0 15px 40px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(255, 255, 255, 0.1)";
-        }, 100);
-
-        const title = document.createElement("h2");
-        title.textContent = "🔧 ThomasT Plugin Updater";
-        title.style.textAlign = "center";
-        title.style.color = "#00ffcc";
-        title.style.fontSize = "28px";
-        title.style.fontWeight = "600";
-        title.style.marginBottom = "20px";
-        title.style.textShadow = "0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5)";
-        title.style.letterSpacing = "1px";
-        title.style.animation = "neonGlow 1.5s ease-in-out infinite alternate";
-        
-        const styleSheet = document.createElement("style");
-        styleSheet.textContent = `
-            @keyframes neonGlow {
-                from {
-                    text-shadow: 0 0 10px rgba(0, 255, 204, 0.8), 0 0 20px rgba(0, 255, 204, 0.5), 0 0 30px rgba(0, 255, 204, 0.3);
-                }
-                to {
-                    text-shadow: 0 0 15px rgba(0, 255, 204, 1), 0 0 30px rgba(0, 255, 204, 0.7), 0 0 50px rgba(0, 255, 204, 0.5);
-                }
-            }
-            @keyframes pulseGlow {
-                0% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-                50% { box-shadow: 0 0 15px rgba(0, 255, 204, 0.8), 0 0 25px rgba(0, 255, 204, 0.5); }
-                100% { box-shadow: 0 0 5px rgba(0, 255, 204, 0.5), 0 0 10px rgba(0, 255, 204, 0.3); }
-            }
-            @keyframes slideUp {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-            @keyframes holographicFlicker {
-                0%, 100% { opacity: 1; }
-                50% { opacity: 0.8; }
-            }
-            @keyframes particleGlow {
-                0% { transform: translate(0, 0); opacity: 0.5; }
-                50% { transform: translate(5px, -5px); opacity: 1; }
-                100% { transform: translate(0, 0); opacity: 0.5; }
-            }
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-            @keyframes terminalText {
-                from { transform: translateY(10px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(styleSheet);
-        modalContent.appendChild(title);
-
-        const description = document.createElement("p");
-        description.textContent = "Έλεγχος και ενημέρωση όλων των προσωπικών plugins του ThomasT με ένα κλικ.";
-        description.style.textAlign = "center";
-        description.style.fontSize = "16px";
-        description.style.color = "#a0a0c0";
-        description.style.marginBottom = "30px";
-        description.style.lineHeight = "1.6";
-        description.style.opacity = "0";
-        description.style.animation = "slideUp 0.6s ease forwards 0.3s";
-        modalContent.appendChild(description);
-
-        const buttonWrapper = document.createElement("div");
-        buttonWrapper.style.position = "relative";
-        buttonWrapper.style.display = "flex";
-        buttonWrapper.style.justifyContent = "center";
-        buttonWrapper.style.margin = "0 auto";
-        buttonWrapper.style.width = "fit-content";
-
-        const button = document.createElement("button");
-        button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
-        button.style.padding = "14px 32px";
-        button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2))";
-        button.style.color = "#00ffcc";
-        button.style.border = "2px solid #00ffcc";
-        button.style.borderRadius = "12px";
-        button.style.fontSize = "16px";
-        button.style.fontWeight = "600";
-        button.style.cursor = "pointer";
-        button.style.transition = "all 0.3s ease";
-        button.style.textTransform = "uppercase";
-        button.style.letterSpacing = "1.5px";
-        button.style.position = "relative";
-        button.style.overflow = "hidden";
-        button.style.animation = "holographicFlicker 2s ease infinite";
-        button.style.boxShadow = "0 0 15px rgba(0, 255, 204, 0.5)";
-
-        for (let i = 0; i < 5; i++) {
-            const particle = document.createElement("span");
-            particle.style.position = "absolute";
-            particle.style.width = "4px";
-            particle.style.height = "4px";
-            particle.style.background = "#00ffcc";
-            particle.style.borderRadius = "50%";
-            particle.style.opacity = "0.5";
-            particle.style.animation = `particleGlow ${2 + i * 0.5}s ease-in-out infinite`;
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.top = `${Math.random() * 100}%`;
-            button.appendChild(particle);
-        }
-
-        button.onmouseover = () => {
-            button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.4), rgba(0, 204, 153, 0.4))";
-            button.style.transform = "translateY(-4px)";
-            button.style.boxShadow = "0 0 25px rgba(0, 255, 204, 0.8)";
-        };
-        button.onmouseout = () => {
-            button.style.background = "linear-gradient(145deg, rgba(0, 255, 204, 0.2), rgba(0, 204, 153, 0.2))";
-            button.style.transform = "translateY(0)";
-            button.style.boxShadow = "0 0 15px rgba(0, 255, 204, 0.5)";
-        };
-        button.onclick = async () => {
-            if (this.isUpdating) return;
-            this.isUpdating = true;
-            button.style.pointerEvents = "none";
-            button.style.animation = "none";
-            button.innerHTML = `<span style="display: inline-block; animation: spin 1s linear infinite;">🔄</span> Ενημέρωση...`;
-            await this.checkAndUpdate(modalContent);
-            this.isUpdating = false;
-            button.style.pointerEvents = "auto";
-            button.style.animation = "holographicFlicker 2s ease infinite";
-            button.textContent = "🔄 Έλεγχος & Ενημέρωση Τώρα";
-        };
-
-        buttonWrapper.appendChild(button);
-        modalContent.appendChild(buttonWrapper);
-
-        const resultBox = document.createElement("div");
-        resultBox.id = "update-results";
-        resultBox.style.marginTop = "30px";
-        resultBox.style.padding = "20px";
-        resultBox.style.background = "rgba(15, 15, 25, 0.9)";
-        resultBox.style.border = "2px solid rgba(0, 255, 204, 0.3)";
-        resultBox.style.borderRadius = "12px";
-        resultBox.style.fontSize = "14px";
-        resultBox.style.color = "#00ffcc";
-        resultBox.style.lineHeight = "1.6";
-        resultBox.style.position = "relative";
-        resultBox.style.overflow = "hidden";
-        resultBox.style.opacity = "0";
-        resultBox.style.animation = "slideUp 0.6s ease forwards 0.5s";
-        resultBox.style.fontFamily = "'Courier New', monospace";
-        resultBox.style.boxShadow = "inset 0 0 10px rgba(0, 255, 204, 0.2)";
-        
-        resultBox.style.backgroundImage = "linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px)";
-        resultBox.style.backgroundSize = "20px 20px";
-
-        const scanLine = document.createElement("div");
-        scanLine.style.position = "absolute";
-        scanLine.style.top = "0";
-        scanLine.style.left = "0";
-        scanLine.style.width = "100%";
-        scanLine.style.height = "2px";
-        scanLine.style.background = "linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.5), transparent)";
-        scanLine.style.animation = "terminalText 3s linear infinite";
-        resultBox.appendChild(scanLine);
-
-        resultBox.innerHTML = "<b>Αποτελέσματα:</b><br>Πατήστε το κουμπί για να ξεκινήσει ο έλεγχος.";
-
-        resultBox.onmouseover = () => {
-            resultBox.style.borderColor = "rgba(0, 255, 204, 0.6)";
-            resultBox.style.boxShadow = "inset 0 0 15px rgba(0, 255, 204, 0.4)";
-        };
-        resultBox.onmouseout = () => {
-            resultBox.style.borderColor = "rgba(0, 255, 204, 0.3)";
-            resultBox.style.boxShadow = "inset 0 0 10px rgba(0, 255, 204, 0.2)";
-        };
-
-        modalContent.appendChild(resultBox);
-
-        const closeButton = document.createElement("button");
-        closeButton.textContent = "✕";
-        closeButton.style.position = "absolute";
-        closeButton.style.top = "15px";
-        closeButton.style.right = "15px";
-        closeButton.style.background = "none";
-        closeButton.style.border = "1px solid rgba(255, 255, 255, 0.2)";
-        closeButton.style.borderRadius = "50%";
-        closeButton.style.width = "30px";
-        closeButton.style.height = "30px";
-        closeButton.style.color = "#e0e0e0";
-        closeButton.style.fontSize = "16px";
-        closeButton.style.cursor = "pointer";
-        closeButton.style.display = "flex";
-        closeButton.style.alignItems = "center";
-        closeButton.style.justifyContent = "center";
-        closeButton.style.transition = "all 0.3s ease";
-
-        closeButton.onmouseover = () => {
-            closeButton.style.color = "#ff5555";
-            closeButton.style.borderColor = "#ff5555";
-            closeButton.style.boxShadow = "0 0 10px rgba(255, 85, 85, 0.5)";
-        };
-        closeButton.onmouseout = () => {
-            closeButton.style.color = "#e0e0e0";
-            closeButton.style.borderColor = "rgba(255, 255, 255, 0.2)";
-            closeButton.style.boxShadow = "none";
-        };
-        closeButton.onclick = () => {
-            modalOverlay.style.opacity = "0";
-            setTimeout(() => modalOverlay.remove(), 500);
-        };
-
-        modalContent.appendChild(closeButton);
-        modalOverlay.appendChild(modalContent);
-        document.body.appendChild(modalOverlay);
-        this.modal = modalOverlay;
-
-        modalOverlay.onclick = (e) => {
-            if (e.target === modalOverlay) {
-                modalOverlay.style.opacity = "0";
-                setTimeout(() => modalOverlay.remove(), 500);
-            }
-        };
-    }
-
-    async checkAndUpdate(container) {
-
-        const results = container ? container.querySelector("#update-results") : null;
-        if (results) results.innerHTML = "<b>Αποτελέσματα:</b><br>";
+    installEntry(entry) {
+        const source = entry.source;
+        if (!source) throw new Error("δεν υπάρχει κατεβασμένη έκδοση");
+        const current = BdApi.Plugins.get(entry.name);
+        if (!current) throw new Error("το plugin δεν είναι πια εγκατεστημένο");
 
         const fs = require("fs");
         const path = require("path");
+        const folder = BdApi.Plugins.folder;
+        const filename = path.basename(String(current.filename || entry.filename || ""));
+        if (!filename.endsWith(".plugin.js")) throw new Error(`άκυρο όνομα αρχείου (${filename})`);
+        const target = path.join(folder, filename);
 
-        for (const [name, plugin] of Object.entries(this.plugins)) {
+        entry.status = "installing";
+        this.emit();
+
+        if (this.settings.keepBackup && fs.existsSync(target)) {
             try {
-                const localPlugin = BdApi.Plugins.get(name);
-                const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
-                const isFilePresent = fs.existsSync(filePath);
-
-                if (!localPlugin) {
-                    if (isFilePresent) {
-                        if (results) {
-                            const msg = document.createElement("div");
-                            msg.innerHTML = `❓ Δεν βρέθηκε το αρχείο για το <b>${name}</b> στο GitHub.<br>`;
-                            msg.style.color = "#ff5555"; // Red color for error
-                            msg.style.opacity = "0";
-                            msg.style.animation = "terminalText 0.5s ease forwards";
-                            results.appendChild(msg);
-                        }
-                    } else {
-                        if (results) {
-                            const msg = document.createElement("div");
-                            msg.innerHTML = `❓ Το <b>${name}</b> δεν είναι εγκατεστημένο.<br>`;
-                            msg.style.color = "#ff5555"; // Red color for error
-                            msg.style.opacity = "0";
-                            msg.style.animation = "terminalText 0.5s ease forwards";
-                            results.appendChild(msg);
-                        }
-                    }
-                    continue;
-                }
-
-                const code = await fetch(plugin.updateUrl + "?t=" + Date.now()).then(r => r.text());
-                const remoteVersion = code.match(/@version\s+([^\n]+)/)?.[1].trim();
-                const localVersion = localPlugin.version;
-
-                if (!remoteVersion) {
-                    if (results) {
-                        const msg = document.createElement("div");
-                        msg.innerHTML = `❓ Δεν βρέθηκε έκδοση για <b>${name}</b>.<br>`;
-                        msg.style.opacity = "0";
-                        msg.style.animation = "terminalText 0.5s ease forwards";
-                        results.appendChild(msg);
-                    }
-                    continue;
-                }
-
-                if (this.isNewerVersion(remoteVersion, localVersion)) {
-                    if (results) {
-                        const msg = document.createElement("div");
-                        msg.innerHTML = `📦 Βρέθηκε νέα έκδοση για <b>${name}</b>: <code>${remoteVersion}</code>. Ενημέρωση σε εξέλιξη...<br>`;
-                        msg.style.opacity = "0";
-                        msg.style.animation = "terminalText 0.5s ease forwards";
-                        results.appendChild(msg);
-                    }
-                    await this.updatePlugin(plugin, code, name);
-                    if (results) {
-                        const msg = document.createElement("div");
-                        msg.innerHTML = `✅ Το <b>${name}</b> ενημερώθηκε στην έκδοση <code>${remoteVersion}</code>!<br>`;
-                        msg.style.opacity = "0";
-                        msg.style.animation = "terminalText 0.5s ease forwards";
-                        results.appendChild(msg);
-                    }
-                } else {
-                    if (results) {
-                        const msg = document.createElement("div");
-                        msg.innerHTML = `✅ Το <b>${name}</b> είναι ενημερωμένο (<code>${localVersion}</code>).<br>`;
-                        msg.style.opacity = "0";
-                        msg.style.animation = "terminalText 0.5s ease forwards";
-                        results.appendChild(msg);
-                    }
-                }
-            } catch (err) {
-                if (results) {
-                    const msg = document.createElement("div");
-                    msg.innerHTML = `❌ Σφάλμα για <b>${name}</b>: ${err.message}<br>`;
-                    msg.style.opacity = "0";
-                    msg.style.animation = "terminalText 0.5s ease forwards";
-                    results.appendChild(msg);
-                }
+                const dir = path.join(folder, BACKUP_DIR);
+                if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+                fs.writeFileSync(path.join(dir, `${filename}.bak`), fs.readFileSync(target, "utf8"), "utf8");
+            }
+            catch (err) {
+                this.warn(`${entry.name}: το backup απέτυχε (${err.message}), η ενημέρωση συνεχίζει`);
             }
         }
 
-        if (results) {
-            const msg = document.createElement("div");
-            msg.innerHTML = `<br><b>Ο έλεγχος ολοκληρώθηκε!</b>`;
-            msg.style.color = "linear-gradient(90deg, #66ffff, #00ccff)"; // Gradient cyan to blue
-            msg.style.textAlign = "center";
-            msg.style.display = "block";
-            msg.style.marginTop = "10px";
-            msg.style.opacity = "0";
-            msg.style.animation = "terminalText 0.5s ease forwards";
-            results.appendChild(msg);
-        }
-        BdApi.showToast("Ο έλεγχος και η ενημέρωση ολοκληρώθηκαν!", { type: "success" });
-    }
-
-    async updatePlugin(plugin, code, name) {
+        // Write next to the target and rename over it, so BetterDiscord never reads half a file.
+        // The temporary name does not end in .plugin.js, so BetterDiscord ignores it.
+        const temp = `${target}.download`;
+        fs.writeFileSync(temp, source, "utf8");
         try {
-            BdApi.Plugins.disable(name);
-            const fs = require("fs");
-            const path = require("path");
-            const filePath = path.join(BdApi.Plugins.folder, plugin.filename);
-            fs.writeFileSync(filePath, code, "utf8");
-            BdApi.Plugins.enable(name);
-        } catch (err) {
-            BdApi.showToast(`Αποτυχία ενημέρωσης του ${name}: ${err.message}`, { type: "error" });
-            throw err;
+            fs.renameSync(temp, target);
         }
+        catch {
+            fs.writeFileSync(target, source, "utf8");
+            try { fs.unlinkSync(temp); } catch {}
+        }
+
+        entry.previousVersion = entry.localVersion;
+        entry.localVersion = entry.remoteVersion;
+        entry.status = "updated";
+        entry.source = null;
+        this.log(`${entry.name}: ${entry.previousVersion} → ${entry.localVersion}`);
+        this.emit();
+        if (entry.name !== NAME) this.later(() => this.ensureReloaded(entry), 3000);
     }
 
-    isNewerVersion(remote, local) {
-        const r = remote.split(".").map(n => parseInt(n));
-        const l = local.split(".").map(n => parseInt(n));
-        for (let i = 0; i < Math.max(r.length, l.length); i++) {
-            if ((r[i] || 0) > (l[i] || 0)) return true;
-            if ((r[i] || 0) < (l[i] || 0)) return false;
+    // BetterDiscord watches the plugins folder and reloads changed files itself.
+    // This only steps in when that did not happen.
+    ensureReloaded(entry) {
+        const addon = BdApi.Plugins.get(entry.name);
+        if (!addon || compareVersions(addon.version, entry.localVersion) >= 0) return;
+        this.warn(`${entry.name}: δεν ξαναφορτώθηκε αυτόματα, γίνεται reload`);
+        try { BdApi.Plugins.reload(entry.name); }
+        catch (err) { this.warn(`${entry.name}: το reload απέτυχε`, err); }
+    }
+
+    // ── notifications ─────────────────────────────────────────
+
+    notify(options, fallbackText) {
+        try {
+            const handle = BdApi.UI.showNotification?.(options);
+            if (handle) return handle;
         }
-        return false;
+        catch {}
+        const type = ["success", "warning", "error"].includes(options.type) ? options.type : "info";
+        BdApi.UI.showToast(fallbackText || options.title, { type, timeout: 7000 });
+        return null;
+    }
+
+    lines(texts) {
+        const h = BdApi.React.createElement;
+        return texts.map((text, i) => h("div", { key: i }, text));
+    }
+
+    announceAvailable(list) {
+        if (!this.settings.notify) return;
+        this.notice = this.notify({
+            id: `${NAME}-available`,
+            title: list.length === 1 ? "Νέα έκδοση plugin" : `${list.length} νέες εκδόσεις plugins`,
+            content: this.lines(list.map(e => `${e.name}: ${e.localVersion} → ${e.remoteVersion}`)),
+            type: "info",
+            duration: Infinity,
+            actions: [{ label: "Ενημέρωση", onClick: () => this.installEntries(list, "notification") }]
+        }, `${list.length} ενημερώσεις plugins διαθέσιμες (ρυθμίσεις ${NAME})`);
+    }
+
+    announceInstalled(done, failed, reason) {
+        if (!done.length && !failed.length) return;
+        const texts = done.map(e => `${e.name}: ${e.previousVersion} → ${e.localVersion}`);
+        for (const e of failed) texts.push(`${e.name}: ${e.error}`);
+        if (!this.settings.notify && reason === "auto" && !failed.length) return;
+        this.notify({
+            id: `${NAME}-installed`,
+            title: done.length ? (done.length === 1 ? "Ενημερώθηκε 1 plugin" : `Ενημερώθηκαν ${done.length} plugins`) : "Η ενημέρωση απέτυχε",
+            content: this.lines(texts),
+            type: failed.length ? "warning" : "success",
+            duration: 10000
+        }, texts.join(" · "));
+    }
+
+    // ── settings panel ────────────────────────────────────────
+
+    getSettingsPanel() {
+        this.refreshEntries();
+        if (this.running && !this.checking && Date.now() - (this.settings.lastCheck || 0) > PANEL_RECHECK_MS) {
+            this.checkAll({ reason: "panel" });
+        }
+        const h = BdApi.React.createElement;
+        const s = this.settings;
+        return BdApi.UI.buildSettingsPanel({
+            settings: [
+                {
+                    type: "custom",
+                    id: "status",
+                    name: "Plugins",
+                    note: "Βρίσκονται αυτόματα: κάθε εγκατεστημένο plugin του ThomasT με @updateUrl από το GitHub του.",
+                    inline: false,
+                    children: h(StatusPanel, { plugin: this })
+                },
+                {
+                    type: "switch",
+                    id: "autoCheck",
+                    name: "Αυτόματος έλεγχος",
+                    note: "Ελέγχει στην εκκίνηση του Discord και μετά ανά τακτά διαστήματα.",
+                    value: s.autoCheck,
+                    onChange: value => this.setSetting("autoCheck", value)
+                },
+                {
+                    type: "dropdown",
+                    id: "intervalHours",
+                    name: "Συχνότητα ελέγχου",
+                    value: s.intervalHours,
+                    options: [
+                        { label: "Κάθε 1 ώρα", value: 1 },
+                        { label: "Κάθε 3 ώρες", value: 3 },
+                        { label: "Κάθε 6 ώρες", value: 6 },
+                        { label: "Κάθε 12 ώρες", value: 12 },
+                        { label: "Μία φορά τη μέρα", value: 24 }
+                    ],
+                    onChange: value => this.setSetting("intervalHours", Number(value))
+                },
+                {
+                    type: "switch",
+                    id: "autoInstall",
+                    name: "Αυτόματη εγκατάσταση",
+                    note: "Οι νέες εκδόσεις μπαίνουν μόνες τους, αφού ελεγχθεί ότι το αρχείο είναι έγκυρο plugin. Αν το κλείσεις, θα σου εμφανίζεται ειδοποίηση με κουμπί «Ενημέρωση».",
+                    value: s.autoInstall,
+                    onChange: value => this.setSetting("autoInstall", value)
+                },
+                {
+                    type: "switch",
+                    id: "notify",
+                    name: "Ειδοποιήσεις",
+                    note: "Ειδοποίηση όταν βρεθούν ή εγκατασταθούν νέες εκδόσεις.",
+                    value: s.notify,
+                    onChange: value => this.setSetting("notify", value)
+                },
+                {
+                    type: "switch",
+                    id: "keepBackup",
+                    name: "Backup της προηγούμενης έκδοσης",
+                    note: `Πριν από κάθε ενημέρωση κρατάει το παλιό αρχείο στον φάκελο plugins/${BACKUP_DIR}.`,
+                    value: s.keepBackup,
+                    onChange: value => this.setSetting("keepBackup", value)
+                }
+            ]
+        });
+    }
+
+    // ── logging ───────────────────────────────────────────────
+
+    log(...args) {
+        console.log(`%c[${NAME}]`, "color: #00c8a0; font-weight: 700;", ...args);
+    }
+
+    warn(...args) {
+        console.warn(`%c[${NAME}]`, "color: #00c8a0; font-weight: 700;", ...args);
     }
 };
