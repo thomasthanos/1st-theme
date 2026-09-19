@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 7.0.0
+ * @version 7.0.2
  * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -66,6 +66,28 @@ const CHANNEL_ITEM = '[data-list-item-id^="channels___"]';
 const CHANNEL_LINK = `a[href*="/channels/${GUILD_ID}/"]`;
 const HEADER = 'h1, h2, [data-window-chrome="true"]';
 const MAX_TRACKED = 4000;
+const HIDE_ATTR = "data-prezomenoi-hidden";
+const STYLES = `[${HIDE_ATTR}="1"] { display: none !important; }`;
+
+// Names on screen are not always the raw Discord name: other plugins (BetterChatNames)
+// capitalise them and drop dashes/underscores, and emoji may be images. Comparing only
+// letters and digits, lowercased, still matches the right channel.
+function looseName(text) {
+    return text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+}
+
+// What a user actually reads inside an element: Discord turns emoji in names into
+// <img alt="X">, so the name is spread over several nodes instead of one text node.
+function displayText(element) {
+    let text = "";
+    for (const node of element.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE) text += node.nodeValue;
+        else if (node.nodeType === Node.ELEMENT_NODE && node.getAttribute(HIDE_ATTR) !== "1") {
+            text += node.tagName === "IMG" ? (node.getAttribute("alt") || "") : displayText(node);
+        }
+    }
+    return text;
+}
 
 function escapeRegExp(text) {
     const backslash = String.fromCharCode(92);
@@ -88,6 +110,7 @@ module.exports = class RenameChannel {
         this.inGuild = false;
         this.names = new Map();
         this.namesAt = 0;
+        this.reported = new Set();
         // Everything changed on screen, so stop() can put it back.
         this.textChanges = new Map();
         this.attrChanges = new Map();
@@ -101,6 +124,7 @@ module.exports = class RenameChannel {
         for (const [key, store] of [["guild", "SelectedGuildStore"], ["channel", "SelectedChannelStore"], ["channels", "ChannelStore"]]) {
             try { this.stores[key] = W.getStore(store); } catch {}
         }
+        BdApi.DOM.addStyle(NAME, STYLES);
         this.addTheme();
         this.refreshNames(true);
         this.updateGuildState();
@@ -109,6 +133,18 @@ module.exports = class RenameChannel {
         this.observer = new MutationObserver(records => this.onMutations(records));
         this.observer.observe(document.body, { childList: true, subtree: true, characterData: true });
         this.processRoot(document.body);
+        // The channel list is not always rendered yet at start; this reports what was found.
+        this.diagTimer = setTimeout(() => {
+            if (!this.running) return;
+            const items = document.querySelectorAll(CHANNEL_ITEM);
+            let mapped = 0;
+            for (const item of items) {
+                if (this.names.has(item.getAttribute("data-list-item-id").slice("channels___".length))) mapped++;
+            }
+            const missing = [...this.names.entries()].filter(([, entry]) => !entry.from).map(([id]) => id);
+            this.log(`Λίστα καναλιών: ${items.length} items στο DOM, ${mapped} από τη λίστα μετονομασίας`
+                + (missing.length ? ` · άγνωστα στο Discord (μάλλον διαγραμμένα): ${missing.join(", ")}` : ""));
+        }, 5000);
         const resolved = [...this.names.values()].filter(entry => entry.from).length;
         this.log(`Ενεργό · ονόματα καναλιών/κατηγοριών: ${resolved}/${this.names.size} από το Discord · ${USERS.length} μέλη · στον server τώρα: ${this.inGuild ? "ναι" : "όχι"}`);
     }
@@ -119,8 +155,10 @@ module.exports = class RenameChannel {
         this.observer = null;
         cancelAnimationFrame(this.frame);
         clearTimeout(this.fallback);
+        clearTimeout(this.diagTimer);
         this.frame = 0;
         this.fallback = 0;
+        this.diagTimer = 0;
         this.pending.clear();
         for (const off of this.unsubscribers) {
             try { off(); } catch {}
@@ -128,8 +166,30 @@ module.exports = class RenameChannel {
         this.unsubscribers = [];
         document.getElementById(THEME_LINK_ID)?.remove();
         document.body.classList.remove(BODY_CLASS);
+        BdApi.DOM.removeStyle(NAME);
         const restored = this.revertAll();
         this.log(`Απενεργοποιήθηκε · αναιρέθηκαν ${restored} αλλαγές`);
+    }
+
+    // ── read by the Touch Deck app ────────────────────────────
+    // touch-screen-app/src/main/discord-renames.js requires this file, creates an instance and
+    // reads USERS, getChannelMap() and isCorrectGuild() so the deck shows the same names.
+    // Keep these three available and keep the guild id written out in isCorrectGuild().
+
+    get USERS() {
+        return USERS;
+    }
+
+    getChannelMap() {
+        return { ...CHANNELS };
+    }
+
+    getCategoryMap() {
+        return { ...CATEGORIES };
+    }
+
+    isCorrectGuild() {
+        return this.selectedGuildId() === "1216757265391161537";
     }
 
     // ── setup ─────────────────────────────────────────────────
@@ -197,6 +257,7 @@ module.exports = class RenameChannel {
             if (id !== undefined) return id;
         }
         catch {}
+        if (typeof location === "undefined") return null;
         return /^\/channels\/(\d+)\//.exec(location.pathname)?.[1] || null;
     }
 
@@ -206,6 +267,7 @@ module.exports = class RenameChannel {
             if (id !== undefined) return id;
         }
         catch {}
+        if (typeof location === "undefined") return null;
         return /^\/channels\/\d+\/(\d+)/.exec(location.pathname)?.[1] || null;
     }
 
@@ -381,25 +443,93 @@ module.exports = class RenameChannel {
 
     renameInside(container, entry, isListItem) {
         const { from, to } = entry;
-        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-        let renamed = false;
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-            const value = node.nodeValue;
-            if (from && value.trim() === from) {
-                this.setText(node, value.replace(from, to));
-                renamed = true;
-            }
-            else if (value.trim() === to) {
-                renamed = true;
-            }
+        if (from) {
+            // A name split across nodes (emoji rendered as images) is handled first, so the
+            // old emoji image is hidden instead of ending up next to the custom name.
+            const host = this.findNameHost(container, from);
+            if (host && this.renameHost(host, to)) return;
+            if (this.renameTextNodes(container, from, to)) return;
+            if (isListItem) this.reportMismatch(container, entry);
+            return;
         }
         // Without ChannelStore the original name is unknown; the list item's name element is used.
-        if (!renamed && !from && isListItem) {
+        if (isListItem) {
             const nameElement = container.querySelector('[class*="name"]');
             const walkerByClass = nameElement && document.createTreeWalker(nameElement, NodeFilter.SHOW_TEXT);
             const node = walkerByClass?.nextNode();
             if (node && node.nodeValue.trim() && node.nodeValue !== to) this.setText(node, to);
         }
+    }
+
+    // The whole name sits in one text node. Returns true when the container already shows
+    // the custom name too, so nothing else needs to run.
+    renameTextNodes(container, from, to) {
+        const loose = looseName(from);
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+        let done = false;
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const value = node.nodeValue;
+            const trimmed = value.trim();
+            if (!trimmed || trimmed === to) {
+                if (trimmed === to) done = true;
+                continue;
+            }
+            if (trimmed === from) {
+                this.setText(node, value.replace(from, to));
+                done = true;
+            }
+            else if (loose && looseName(trimmed) === loose) {
+                this.setText(node, to);
+                done = true;
+            }
+        }
+        return done;
+    }
+
+    // Finds the element that holds the original name, even when Discord split it into an
+    // emoji image plus text.
+    findNameHost(container, from) {
+        const loose = looseName(from);
+        const seen = new Set();
+        for (const image of container.querySelectorAll("img[alt]")) {
+            const alt = image.getAttribute("alt");
+            if (!alt || !from.includes(alt)) continue;
+            let host = image.parentElement;
+            for (let depth = 0; host && depth < 4 && container.contains(host); depth++) {
+                if (!seen.has(host)) {
+                    seen.add(host);
+                    const shown = displayText(host).trim();
+                    if (shown === from || (loose && looseName(shown) === loose)) return host;
+                }
+                host = host.parentElement;
+            }
+        }
+        return null;
+    }
+
+    // Puts the custom name into the first text node, blanks the rest and hides the emoji
+    // images with an attribute. Nothing is removed, so React keeps owning every node.
+    renameHost(host, to) {
+        const texts = [];
+        const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) texts.push(node);
+        if (!texts.length) return false;
+        if (texts[0].nodeValue !== to) this.setText(texts[0], to);
+        for (let i = 1; i < texts.length; i++) {
+            if (texts[i].nodeValue !== "") this.setText(texts[i], "");
+        }
+        for (const image of host.querySelectorAll("img")) {
+            if (image.getAttribute(HIDE_ATTR) !== "1") this.setAttr(image, HIDE_ATTR, "1");
+        }
+        return true;
+    }
+
+    // Logged once per channel so a name that stopped matching is easy to see in the console.
+    reportMismatch(container, entry) {
+        if (this.reported.has(entry.from)) return;
+        this.reported.add(entry.from);
+        const shown = displayText(container).trim().replace(/\s+/g, " ").slice(0, 80);
+        this.log(`Δεν ταίριαξε το όνομα "${entry.from}" → "${entry.to}" · στο DOM: "${shown}"`);
     }
 
     // Message headers: the author's avatar URL contains the user id, which also catches

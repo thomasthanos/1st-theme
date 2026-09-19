@@ -1,7 +1,7 @@
 /**
  * @name NoPause for Quests
  * @description Prevents Discord from pausing Quest videos when you alt-tab or lose focus, and lets you watch mobile-only Quest videos in the desktop client
- * @version 2.3.0
+ * @version 2.3.1
  * @author ThomasT
  * @authorId 706932839907852389
  * @source https://github.com/thomasthanos/1st-theme/blob/main/Discord_DEV/Plugins/NoPause.plugin.js
@@ -963,9 +963,20 @@ class QuestRewardDiagnostics {
     logFailure(label, action) {
         const questId = action.questId;
         console.warn(REWARD_PREFIX, `${label} for ${this.describeQuest(questId)}: ${describeApiError(action.error)}`);
-        if (this.mobileQuests.completedViaDesktop.has(questId)) {
-            console.warn(REWARD_PREFIX, "Αυτό το mobile quest ολοκληρώθηκε από τον desktop player. Κάνε Ctrl+R και ξαναδοκίμασε το claim· αν ξαναποτύχει με το ίδιο error, δοκίμασε το claim από την εφαρμογή του κινητού.");
-        }
+        if (label !== "Claim FAILED") return;
+
+        let quest = null;
+        try { quest = this.mobileQuests.QuestStore?.getQuest(questId) ?? null; } catch (err) { quest = null; }
+        if (!isMobileOnlyVideoQuest(quest)) return;
+
+        // The claim request is Discord's own; a 403 here is the server refusing the claim for a
+        // mobile-only quest, which the phone app can still do.
+        const status = Number(action.error?.status);
+        const message = status === 403 || status === 400
+            ? "Το Discord δεν δέχεται το claim αυτού του mobile quest από το desktop. Κάνε το claim από την εφαρμογή του κινητού — το quest μετράει ως ολοκληρωμένο."
+            : "Το claim του mobile quest απέτυχε. Κάνε Ctrl+R και ξαναδοκίμασε· αν ξαναποτύχει, κάνε το claim από την εφαρμογή του κινητού.";
+        console.warn(REWARD_PREFIX, message);
+        try { BdApi.UI.showToast(message, { type: "error", timeout: 10000 }); } catch (err) { /* noop */ }
     }
 }
 
