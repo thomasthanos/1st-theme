@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 7.1.1
+ * @version 7.2.0
  * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -67,19 +67,8 @@ const CHANNEL_LINK = `a[href*="/channels/${GUILD_ID}/"]`;
 const HEADER = 'h1, h2, [data-window-chrome="true"]';
 const MAX_TRACKED = 4000;
 const HIDE_ATTR = "data-prezomenoi-hidden";
-const OFFLINE_COLOR = "#C0C0C0";
-// Offline members keep Discord's class "offline__xxxxx" on their row, so no JS is needed to
-// grey their names: the rule wins over the inline role colour. Drop ".prezomenoi-og-active "
-// from the selectors to grey offline members in every server.
-const STYLES = `
-[${HIDE_ATTR}="1"] { display: none !important; }
-
-.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="username"],
-.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="nameContainer"],
-.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="name__"] {
-    color: ${OFFLINE_COLOR} !important;
-}
-`;
+// Greying out offline members lives in the OfflineGrey plugin, which does it in every server.
+const STYLES = `[${HIDE_ATTR}="1"] { display: none !important; }`;
 
 // Names on screen are not always the raw Discord name: other plugins (BetterChatNames)
 // capitalise them and drop dashes/underscores, and emoji may be images. Comparing only
