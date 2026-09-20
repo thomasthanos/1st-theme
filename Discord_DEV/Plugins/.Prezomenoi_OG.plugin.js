@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 7.1.0
+ * @version 7.1.1
  * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -134,7 +134,7 @@ module.exports = class RenameChannel {
         this.compile();
         const W = BdApi.Webpack;
         for (const [key, store] of [["guild", "SelectedGuildStore"], ["channel", "SelectedChannelStore"], ["channels", "ChannelStore"]]) {
-            try { this.stores[key] = W.getStore(store); } catch {}
+            try { this.stores[key] = W.getStore(store); } catch { }
         }
         BdApi.DOM.addStyle(NAME, STYLES);
         this.addTheme();
@@ -173,7 +173,7 @@ module.exports = class RenameChannel {
         this.diagTimer = 0;
         this.pending.clear();
         for (const off of this.unsubscribers) {
-            try { off(); } catch {}
+            try { off(); } catch { }
         }
         this.unsubscribers = [];
         document.getElementById(THEME_LINK_ID)?.remove();
@@ -268,7 +268,7 @@ module.exports = class RenameChannel {
             const id = this.stores.guild?.getGuildId?.();
             if (id !== undefined) return id;
         }
-        catch {}
+        catch { }
         if (typeof location === "undefined") return null;
         return /^\/channels\/(\d+)\//.exec(location.pathname)?.[1] || null;
     }
@@ -278,7 +278,7 @@ module.exports = class RenameChannel {
             const id = this.stores.channel?.getChannelId?.();
             if (id !== undefined) return id;
         }
-        catch {}
+        catch { }
         if (typeof location === "undefined") return null;
         return /^\/channels\/\d+\/(\d+)/.exec(location.pathname)?.[1] || null;
     }
@@ -308,7 +308,7 @@ module.exports = class RenameChannel {
         const names = new Map();
         for (const [id, to] of Object.entries({ ...CHANNELS, ...CATEGORIES })) {
             let from = null;
-            try { from = this.stores.channels?.getChannel?.(id)?.name || null; } catch {}
+            try { from = this.stores.channels?.getChannel?.(id)?.name || null; } catch { }
             names.set(id, { from, to });
         }
         this.names = names;
