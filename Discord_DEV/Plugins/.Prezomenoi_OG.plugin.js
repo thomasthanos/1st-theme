@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 7.0.2
+ * @version 7.1.0
  * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -67,7 +67,19 @@ const CHANNEL_LINK = `a[href*="/channels/${GUILD_ID}/"]`;
 const HEADER = 'h1, h2, [data-window-chrome="true"]';
 const MAX_TRACKED = 4000;
 const HIDE_ATTR = "data-prezomenoi-hidden";
-const STYLES = `[${HIDE_ATTR}="1"] { display: none !important; }`;
+const OFFLINE_COLOR = "#C0C0C0";
+// Offline members keep Discord's class "offline__xxxxx" on their row, so no JS is needed to
+// grey their names: the rule wins over the inline role colour. Drop ".prezomenoi-og-active "
+// from the selectors to grey offline members in every server.
+const STYLES = `
+[${HIDE_ATTR}="1"] { display: none !important; }
+
+.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="username"],
+.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="nameContainer"],
+.${BODY_CLASS} [data-list-id^="members"] [class*="offline"] [class*="name__"] {
+    color: ${OFFLINE_COLOR} !important;
+}
+`;
 
 // Names on screen are not always the raw Discord name: other plugins (BetterChatNames)
 // capitalise them and drop dashes/underscores, and emoji may be images. Comparing only
@@ -272,8 +284,20 @@ module.exports = class RenameChannel {
     }
 
     updateGuildState() {
+        const was = this.inGuild;
         this.inGuild = this.selectedGuildId() === GUILD_ID;
         document.body.classList.toggle(BODY_CLASS, this.inGuild);
+        // Names keep their replacement everywhere, but the colours belong to this server only.
+        if (was && !this.inGuild) this.revertColors();
+        // Back in the server: colour again whatever is already on screen.
+        if (!was && this.inGuild && this.observer) this.queueAll([document.body]);
+    }
+
+    revertColors() {
+        for (const [element, change] of this.colorChanges) {
+            if (element.isConnected && element.style.color === change.applied) element.style.color = change.original;
+        }
+        this.colorChanges.clear();
     }
 
     // Original channel names come from Discord's ChannelStore, so renames keep working
@@ -382,7 +406,7 @@ module.exports = class RenameChannel {
 
         if (next !== value) this.setText(node, next);
         const user = this.exactUsers.get(trimmed);
-        if (user) this.setColor(parent, user.color);
+        if (user && this.inGuild) this.setColor(parent, user.color);
 
         // A single text node that changed on its own (characterData) or was added alone:
         // check whether it sits in a channel item, a channel link or a header.
@@ -550,7 +574,7 @@ module.exports = class RenameChannel {
             while (node && !node.nodeValue.trim()) node = walker.nextNode();
             if (!node) continue;
             if (node.nodeValue !== user.target) this.setText(node, user.target);
-            this.setColor(node.parentElement, user.color);
+            if (this.inGuild) this.setColor(node.parentElement, user.color);
             const labelled = node.parentElement?.closest("[data-text]");
             if (labelled && host.contains(labelled) && labelled.getAttribute("data-text") !== user.target) {
                 this.setAttr(labelled, "data-text", user.target);
