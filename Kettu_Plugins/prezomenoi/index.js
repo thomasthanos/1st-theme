@@ -40,44 +40,46 @@ const CATEGORIES = {
     "1459305587413094420": "🇩🇪"
 };
 const byId = {}; for (const u of USERS) if (u.id) byId[u.id] = u;
+// Proxy view over the original record: keeps prototype/methods, overrides only given keys.
+const cache = new WeakMap();
+const view = (o, over) => {
+  let per = cache.get(o); const key = JSON.stringify(over);
+  if (per && per.k === key) return per.v;
+  const v = new Proxy(o, { get: (t, p) => (p in over ? over[p] : Reflect.get(t, p, t)) });
+  cache.set(o, { k: key, v }); return v;
+};
+const chOver = c => { if (!c || c.guild_id !== GUILD_ID) return null; const n = CHANNELS[c.id] ?? CATEGORIES[c.id]; return n ? { name: n } : null; };
+const chName = c => { const o = chOver(c); return o ? view(c, o) : c; };
+const gView = g => g && g.id === GUILD_ID ? view(g, { name: SERVER_TEXT }) : g;
+const mapObj = (r, f) => { if (!r || typeof r !== "object") return r; if (Array.isArray(r)) return r.map(f); const o = {}; for (const k in r) o[k] = f(r[k]); return o; };
+const uidOf = a => typeof a === "string" ? a : a?.id ?? a?.userId;
 const patches = [];
-const clone = (o, ch) => { const c = Object.create(Object.getPrototypeOf(o)); Object.assign(c, o, ch); return c; };
-function chName(c) {
-  if (!c || c.guild_id !== GUILD_ID) return c;
-  const n = CHANNELS[c.id] ?? CATEGORIES[c.id];
-  return n && c.name !== n ? clone(c, { name: n }) : c;
-}
-function rerender() { try { for (const s of ["GuildStore","ChannelStore","GuildMemberStore","UserStore"]) findByStoreName(s)?.emitChange?.(); } catch {} }
+const P = (obj, fn, cb) => { try { if (obj && typeof obj[fn] === "function") patches.push(after(fn, obj, cb)); } catch (e) { console.log("[prezomenoi]", fn, e); } };
+function rerender() { try { for (const s of ["GuildStore","ChannelStore","GuildChannelStore","GuildMemberStore","UserStore","SelectedChannelStore"]) findByStoreName(s)?.emitChange?.(); } catch {} }
 return {
   onLoad() {
-    try {
-      const GS = findByStoreName("GuildStore");
-      patches.push(after("getGuild", GS, ([id], g) => g && id === GUILD_ID && g.name !== SERVER_TEXT ? clone(g, { name: SERVER_TEXT }) : g));
-    } catch (e) { console.log("[prezomenoi] guild", e); }
-    try {
-      const CS = findByStoreName("ChannelStore");
-      patches.push(after("getChannel", CS, (_, c) => chName(c)));
-      if (CS.getMutableGuildChannelsForGuild) patches.push(after("getMutableGuildChannelsForGuild", CS, ([gid], r) => {
-        if (gid !== GUILD_ID || !r) return r; const o = {}; for (const k in r) o[k] = chName(r[k]); return o; }));
-    } catch (e) { console.log("[prezomenoi] channel", e); }
-    try {
-      const MS = findByStoreName("GuildMemberStore");
-      patches.push(after("getMember", MS, ([gid, uid], m) => {
-        const u = byId[uid]; if (gid !== GUILD_ID || !u || !m) return m;
-        return { ...m, nick: u.target, colorString: u.color, colorStrings: m.colorStrings ? { ...m.colorStrings, primaryColor: u.color } : m.colorStrings };
-      }));
-      const UN = findByProps("getName", "getNickname");
-      if (UN?.getName) patches.push(after("getName", UN, ([gid, , user], r) => gid === GUILD_ID && user && byId[user.id] ? byId[user.id].target : r));
-      if (UN?.getNickname) patches.push(after("getNickname", UN, ([gid, , user], r) => gid === GUILD_ID && user && byId[user.id] ? byId[user.id].target : r));
-    } catch (e) { console.log("[prezomenoi] member", e); }
-    try {
-      const IU = findByProps("getGuildIconURL");
-      if (IU) {
-        patches.push(after("getGuildIconURL", IU, (a, r) => isG(a[0]) ? ICON_URL : r));
-        for (const fn of ["getGuildIconSource", "getGuildIconSourceWithFallback"]) if (typeof IU[fn] === "function")
-          patches.push(after(fn, IU, (a, r) => isG(a[0]) ? (typeof r === "string" ? ICON_URL : { ...(r || {}), uri: ICON_URL }) : r));
-      }
-    } catch (e) { console.log("[prezomenoi] icon", e); }
+    const GS = findByStoreName("GuildStore");
+    P(GS, "getGuild", (_, g) => gView(g));
+    P(GS, "getGuilds", (_, r) => mapObj(r, gView));
+    const CS = findByStoreName("ChannelStore");
+    for (const fn of ["getChannel", "getBasicChannel"]) P(CS, fn, (_, c) => chName(c));
+    for (const fn of ["getMutableGuildChannelsForGuild", "getMutableBasicGuildChannelsForGuild", "loadAllGuildAndPrivateChannelsFromDisk"]) P(CS, fn, (_, r) => mapObj(r, chName));
+    const GCS = findByStoreName("GuildChannelStore");
+    P(GCS, "getChannels", ([gid], r) => {
+      if (gid !== GUILD_ID || !r) return r; const o = { ...r };
+      for (const k in o) if (Array.isArray(o[k])) o[k] = o[k].map(e => e?.channel ? { ...e, channel: chName(e.channel) } : e);
+      return o;
+    });
+    const CN = findByProps("computeChannelName");
+    P(CN, "computeChannelName", ([c], r) => chOver(c)?.name ?? r);
+    const MS = findByStoreName("GuildMemberStore");
+    P(MS, "getMember", ([gid, uid], m) => { const u = byId[uid]; return gid === GUILD_ID && u && m ? { ...m, nick: u.target, colorString: u.color } : m; });
+    P(MS, "getNick", ([gid, uid], r) => gid === GUILD_ID && byId[uid] ? byId[uid].target : r);
+    const nameCb = ([gid, , user], r) => gid === GUILD_ID && byId[uidOf(user)] ? byId[uidOf(user)].target : r;
+    for (const mod of [findByProps("getName", "getNickname"), findByProps("getName", "useName")]) for (const fn of ["getName", "getNickname"]) P(mod, fn, nameCb);
+    const IU = findByProps("getGuildIconURL");
+    P(IU, "getGuildIconURL", (a, r) => isG(a[0]) ? ICON_URL : r);
+    for (const fn of ["getGuildIconSource", "getGuildIconSourceWithFallback"]) P(IU, fn, (a, r) => isG(a[0]) ? (typeof r === "string" ? ICON_URL : { ...(r || {}), uri: ICON_URL }) : r);
     rerender();
   },
   onUnload() { for (const p of patches.splice(0)) try { p(); } catch {} rerender(); }
