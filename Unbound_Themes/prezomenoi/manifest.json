@@ -1,0 +1,13 @@
+{
+  "id": "prezomenoi",
+  "name": "prezomenoi",
+  "description": "Port of the prezomenoi BetterDiscord theme: midnight navy with a neon cyan (#00ffcc) accent.",
+  "authors": [
+    {
+      "name": "Thomas Thanos",
+      "id": "706932839907852389"
+    }
+  ],
+  "version": "1.0.0",
+  "main": "bundle.json"
+}
