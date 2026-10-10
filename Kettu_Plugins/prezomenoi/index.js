@@ -3,6 +3,8 @@ const { findByStoreName, findByProps } = vendetta.metro;
 const { after } = vendetta.patcher;
 const GUILD_ID = "1216757265391161537";
 const SERVER_TEXT = "Ghost Server";
+const ICON_URL = "https://i.postimg.cc/vmvDRcRr/Chat-GPT-Image-14-2025-07-08-17.png";
+const isG = a => a && (a === GUILD_ID || a.id === GUILD_ID || a.guildId === GUILD_ID || a.guild?.id === GUILD_ID);
 const USERS = [
     { id: "411178013103751190", original: ["AnimalRapist"], target: "Akrivos", color: "#1F8249" },
     { id: "681933873877352472", original: ["Karaflopekatsos", "Tony Redgrave"], target: "Mpillias", color: "#734986" },
@@ -68,6 +70,14 @@ return {
       if (UN?.getName) patches.push(after("getName", UN, ([gid, , user], r) => gid === GUILD_ID && user && byId[user.id] ? byId[user.id].target : r));
       if (UN?.getNickname) patches.push(after("getNickname", UN, ([gid, , user], r) => gid === GUILD_ID && user && byId[user.id] ? byId[user.id].target : r));
     } catch (e) { console.log("[prezomenoi] member", e); }
+    try {
+      const IU = findByProps("getGuildIconURL");
+      if (IU) {
+        patches.push(after("getGuildIconURL", IU, (a, r) => isG(a[0]) ? ICON_URL : r));
+        for (const fn of ["getGuildIconSource", "getGuildIconSourceWithFallback"]) if (typeof IU[fn] === "function")
+          patches.push(after(fn, IU, (a, r) => isG(a[0]) ? (typeof r === "string" ? ICON_URL : { ...(r || {}), uri: ICON_URL }) : r));
+      }
+    } catch (e) { console.log("[prezomenoi] icon", e); }
     rerender();
   },
   onUnload() { for (const p of patches.splice(0)) try { p(); } catch {} rerender(); }
