@@ -1,0 +1,291 @@
+{
+  "spec": 2,
+  "name": "SimplethemeV3",
+  "description": "Port of the SimplethemeV3 BetterDiscord theme: deep greys with a blue (#2780e6) accent.",
+  "authors": [
+    {
+      "name": "Thomas Thanos",
+      "id": "706932839907852389"
+    }
+  ],
+  "semanticColors": {
+    "BACKGROUND_PRIMARY": [
+      "#1e1f22"
+    ],
+    "BACKGROUND_MOBILE_PRIMARY": [
+      "#1e1f22"
+    ],
+    "CHAT_BACKGROUND": [
+      "#1e1f22"
+    ],
+    "BG_BASE_PRIMARY": [
+      "#1e1f22"
+    ],
+    "HOME_BACKGROUND": [
+      "#1e1f22"
+    ],
+    "BACKGROUND_BASE_LOW": [
+      "#1e1f22"
+    ],
+    "BACKGROUND_SECONDARY": [
+      "#202020"
+    ],
+    "BACKGROUND_MOBILE_SECONDARY": [
+      "#202020"
+    ],
+    "BG_BASE_SECONDARY": [
+      "#202020"
+    ],
+    "BACKGROUND_BASE_LOWER": [
+      "#202020"
+    ],
+    "BACKGROUND_SURFACE_HIGH": [
+      "#202020"
+    ],
+    "CARD_PRIMARY_BG": [
+      "#202020"
+    ],
+    "CARD_SECONDARY_BG": [
+      "#202020"
+    ],
+    "BACKGROUND_SECONDARY_ALT": [
+      "#111214"
+    ],
+    "BACKGROUND_TERTIARY": [
+      "#111214"
+    ],
+    "BG_BASE_TERTIARY": [
+      "#111214"
+    ],
+    "BACKGROUND_BASE_LOWEST": [
+      "#111214"
+    ],
+    "BACKGROUND_SURFACE_HIGHER": [
+      "#111214"
+    ],
+    "BACKGROUND_SURFACE_HIGHEST": [
+      "#111214"
+    ],
+    "CHANNELTEXTAREA_BACKGROUND": [
+      "#111214"
+    ],
+    "INPUT_BACKGROUND": [
+      "#111214"
+    ],
+    "BACKGROUND_MESSAGE_HOVER": [
+      "#111214"
+    ],
+    "BACKGROUND_FLOATING": [
+      "#2b2d31"
+    ],
+    "BACKGROUND_NESTED_FLOATING": [
+      "#2b2d31"
+    ],
+    "MODAL_BACKGROUND": [
+      "#2b2d31"
+    ],
+    "MODAL_FOOTER_BACKGROUND": [
+      "#2b2d31"
+    ],
+    "BG_SURFACE_OVERLAY": [
+      "#2b2d31"
+    ],
+    "BG_SURFACE_RAISED": [
+      "#2b2d31"
+    ],
+    "BACKGROUND_MOBILE_SECONDARY_ALT": [
+      "#2b2d31"
+    ],
+    "EXPRESSION_PICKER_BG": [
+      "#2b2d31"
+    ],
+    "DEPRECATED_CARD_BG": [
+      "#2b2d31"
+    ],
+    "DEPRECATED_CARD_EDITABLE_BG": [
+      "#2b2d31"
+    ],
+    "HEADER_PRIMARY": [
+      "#ffffff"
+    ],
+    "TEXT_PRIMARY": [
+      "#ffffff"
+    ],
+    "TEXT_STRONG": [
+      "#ffffff"
+    ],
+    "INTERACTIVE_ACTIVE": [
+      "#ffffff"
+    ],
+    "CHANNELS_SELECTED": [
+      "#ffffff"
+    ],
+    "TEXT_DEFAULT": [
+      "#ffffff"
+    ],
+    "TEXT_NORMAL": [
+      "#f0f0f0"
+    ],
+    "INTERACTIVE_NORMAL": [
+      "#f0f0f0"
+    ],
+    "CHANNELS_DEFAULT": [
+      "#f0f0f0"
+    ],
+    "TEXT_SECONDARY": [
+      "#f0f0f0"
+    ],
+    "HEADER_SECONDARY": [
+      "#f0f0f0"
+    ],
+    "INTERACTIVE_TEXT_DEFAULT": [
+      "#f0f0f0"
+    ],
+    "TEXT_MUTED": [
+      "#b5b5b5"
+    ],
+    "INTERACTIVE_MUTED": [
+      "#b5b5b5"
+    ],
+    "CHANNEL_ICON": [
+      "#b5b5b5"
+    ],
+    "TEXT_TERTIARY": [
+      "#b5b5b5"
+    ],
+    "TEXT_PLACEHOLDER": [
+      "#b5b5b5"
+    ],
+    "INTERACTIVE_HOVER": [
+      "#ffffff"
+    ],
+    "TEXT_LINK": [
+      "#2780e6"
+    ],
+    "TEXT_BRAND": [
+      "#2780e6"
+    ],
+    "BRAND_PRIMARY": [
+      "#2780e6"
+    ],
+    "CONTROL_BRAND_FOREGROUND": [
+      "#2780e6"
+    ],
+    "CONTROL_BRAND_FOREGROUND_NEW": [
+      "#2780e6"
+    ],
+    "MENTION_FOREGROUND": [
+      "#2780e6"
+    ],
+    "TEXT_LINK_LOW_SATURATION": [
+      "#2780e6"
+    ],
+    "BUTTON_BACKGROUND": [
+      "#2780e6"
+    ],
+    "REDESIGN_BUTTON_PRIMARY_BACKGROUND": [
+      "#2780e6"
+    ],
+    "BUTTON_PRIMARY_BACKGROUND": [
+      "#2780e6"
+    ],
+    "BACKGROUND_ACCENT": [
+      "#2780e6"
+    ],
+    "BACKGROUND_BRAND": [
+      "#2780e6"
+    ],
+    "SPINE_DEFAULT": [
+      "#2780e6"
+    ],
+    "BACKGROUND_MENTIONED_BORDER": [
+      "#2780e6"
+    ],
+    "STATUS_POSITIVE_BACKGROUND_ALT": [
+      "#2780e6"
+    ],
+    "REDESIGN_BUTTON_PRIMARY_PRESSED_BACKGROUND": [
+      "#1e63b3"
+    ],
+    "BUTTON_PRIMARY_BACKGROUND_ACTIVE": [
+      "#1e63b3"
+    ],
+    "BUTTON_PRIMARY_BACKGROUND_HOVER": [
+      "#1e63b3"
+    ],
+    "REDESIGN_BUTTON_PRIMARY_TEXT": [
+      "#ffffff"
+    ],
+    "BUTTON_PRIMARY_TEXT": [
+      "#ffffff"
+    ],
+    "TEXT_ON_BRAND": [
+      "#ffffff"
+    ],
+    "BACKGROUND_MODIFIER_SELECTED": [
+      "#2780e638"
+    ],
+    "REDESIGN_CHANNEL_NAME_BACKGROUND_SELECTED": [
+      "#2780e638"
+    ],
+    "BACKGROUND_MODIFIER_ACTIVE": [
+      "#2780e638"
+    ],
+    "BACKGROUND_MODIFIER_HOVER": [
+      "#2780e61f"
+    ],
+    "BACKGROUND_MODIFIER_ACCENT": [
+      "#2780e61f"
+    ],
+    "BACKGROUND_MENTIONED": [
+      "#2780e61a"
+    ],
+    "MENTION_BACKGROUND": [
+      "#2780e61a"
+    ],
+    "BACKGROUND_MENTIONED_HOVER": [
+      "#2780e629"
+    ],
+    "BORDER_FAINT": [
+      "#2780e640"
+    ],
+    "BORDER_SUBTLE": [
+      "#2780e640"
+    ],
+    "BORDER_STRONG": [
+      "#2780e640"
+    ],
+    "BORDER_NORMAL": [
+      "#2780e640"
+    ],
+    "CHAT_BORDER": [
+      "#2780e640"
+    ],
+    "TEXT_DANGER": [
+      "#e23b3b"
+    ],
+    "STATUS_DANGER": [
+      "#e23b3b"
+    ],
+    "INFO_DANGER_FOREGROUND": [
+      "#e23b3b"
+    ],
+    "SCROLLBAR_THIN_THUMB": [
+      "#2780e680"
+    ],
+    "SCROLLBAR_AUTO_THUMB": [
+      "#2780e680"
+    ]
+  },
+  "rawColors": {
+    "BRAND_500": "#2780e6",
+    "BRAND_530": "#2780e6",
+    "BRAND_560": "#1e63b3",
+    "BRAND_360": "#2780e6",
+    "BRAND_400": "#2780e6",
+    "systemBlueColor": "#2780e6",
+    "systemTealColor": "#2780e6",
+    "systemRedColor": "#e23b3b",
+    "RED_400": "#e23b3b"
+  }
+}
