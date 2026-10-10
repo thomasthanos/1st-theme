@@ -1,5 +1,6 @@
 (()=>{
 const { findByStoreName, findByProps } = vendetta.metro;
+const M = vendetta.metro;
 const { after } = vendetta.patcher;
 const GUILD_ID = "1216757265391161537";
 const SERVER_TEXT = "Ghost Server";
@@ -50,7 +51,27 @@ const view = (o, over) => {
 };
 const chOver = c => { if (!c || c.guild_id !== GUILD_ID) return null; const n = CHANNELS[c.id] ?? CATEGORIES[c.id]; return n ? { name: n } : null; };
 const chName = c => { const o = chOver(c); return o ? view(c, o) : c; };
-const gView = g => g && g.id === GUILD_ID ? view(g, { name: SERVER_TEXT }) : g;
+const ICON_HASH = "prezomenoi_icon";
+const ICON_RE = new RegExp("/(icons|banners|splashes)/" + GUILD_ID + "/");
+const swap = r => {
+  if (typeof r === "string") return ICON_RE.test(r) || r === ICON_HASH ? ICON_URL : r;
+  if (Array.isArray(r)) return r.map(swap);
+  if (r && typeof r === "object" && typeof r.uri === "string" && ICON_RE.test(r.uri)) return { ...r, uri: ICON_URL };
+  return r;
+};
+const gView = g => g && g.id === GUILD_ID ? view(g, {
+  name: SERVER_TEXT, icon: ICON_HASH,
+  getIconURL: () => ICON_URL, getIconSource: () => ({ uri: ICON_URL }),
+}) : g;
+// walk a rendered RN tree and replace image sources pointing at this guild's icon
+const fixTree = (n, d = 0) => {
+  if (!n || typeof n !== "object" || d > 40) return;
+  if (Array.isArray(n)) { for (const c of n) fixTree(c, d + 1); return; }
+  const p = n.props; if (!p) return;
+  for (const k of ["source", "src", "uri", "url", "icon", "iconSource"]) if (p[k] != null) { const s = swap(p[k]); if (s !== p[k]) try { p[k] = s; } catch {} }
+  if (p.guild?.id === GUILD_ID && p.guild.icon !== ICON_HASH) try { p.guild = gView(p.guild); } catch {}
+  fixTree(p.children, d + 1);
+};
 const mapObj = (r, f) => { if (!r || typeof r !== "object") return r; if (Array.isArray(r)) return r.map(f); const o = {}; for (const k in r) o[k] = f(r[k]); return o; };
 const uidOf = a => typeof a === "string" ? a : a?.id ?? a?.userId;
 const patches = [];
@@ -77,9 +98,28 @@ return {
     P(MS, "getNick", ([gid, uid], r) => gid === GUILD_ID && byId[uid] ? byId[uid].target : r);
     const nameCb = ([gid, , user], r) => gid === GUILD_ID && byId[uidOf(user)] ? byId[uidOf(user)].target : r;
     for (const mod of [findByProps("getName", "getNickname"), findByProps("getName", "useName")]) for (const fn of ["getName", "getNickname"]) P(mod, fn, nameCb);
-    const IU = findByProps("getGuildIconURL");
-    P(IU, "getGuildIconURL", (a, r) => isG(a[0]) ? ICON_URL : r);
-    for (const fn of ["getGuildIconSource", "getGuildIconSourceWithFallback"]) P(IU, fn, (a, r) => isG(a[0]) ? (typeof r === "string" ? ICON_URL : { ...(r || {}), uri: ICON_URL }) : r);
+    // (2)+(3) every icon/asset URL helper module: force by guild arg, and swap any built cdn icons/<gid>/ URL
+    const all = p => { try { return M.findByPropsAll ? M.findByPropsAll(p) : [findByProps(p)]; } catch { return []; } };
+    const mods = new Set();
+    for (const p of ["getGuildIconURL", "getGuildIconSource", "getAnimatedGuildIconURL", "getGuildBannerURL", "getAvatarURL", "makeSource"]) for (const m of all(p)) if (m) mods.add(m);
+    for (const m of mods) for (const fn of Object.keys(m)) {
+      if (typeof m[fn] !== "function" || /^[A-Z]/.test(fn) || fn.startsWith("use")) continue;
+      const forced = /guild.*icon/i.test(fn);
+      P(m, fn, (a, r) => {
+        if (forced && isG(a[0])) return typeof r === "string" || r == null ? (/Source/.test(fn) ? { uri: ICON_URL } : ICON_URL) : (typeof r === "object" ? { ...r, uri: ICON_URL } : r);
+        return swap(r);
+      });
+    }
+    // (4) GuildIcon-like React components: inject source into render output
+    for (const nm of ["GuildIcon", "GuildIconImage", "GuildIconWithBadge", "GuildsBarItem", "GuildIconV2"]) {
+      for (const how of ["findByName", "findByDisplayName"]) {
+        try {
+          const comp = M[how]?.(nm, false);
+          if (comp && typeof comp.default === "function") { P(comp, "default", (_, r) => { fixTree(r); return r; }); break; }
+          if (comp && typeof comp.type?.render === "function") { P(comp.type, "render", (_, r) => { fixTree(r); return r; }); break; }
+        } catch {}
+      }
+    }
     rerender();
   },
   onUnload() { for (const p of patches.splice(0)) try { p(); } catch {} rerender(); }
