@@ -1,0 +1,15 @@
+{
+  "name": "Prezomenoi_OG",
+  "description": "Mobile port: renames the Prezomenoi server, its channels/categories and members, and colours member names (visual only).",
+  "authors": [
+    {
+      "name": "ThomasT",
+      "id": "706932839907852389"
+    }
+  ],
+  "main": "index.js",
+  "hash": "3144e70a373a15d800291a1729e6fc9f88820bb02e6d65a4f470391682ff2f3f",
+  "vendetta": {
+    "icon": "ic_edit_24px"
+  }
+}
