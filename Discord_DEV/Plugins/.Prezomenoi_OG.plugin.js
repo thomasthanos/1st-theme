@@ -1,6 +1,6 @@
 /**
  * @name Prezomenoi_OG
- * @version 7.2.0
+ * @version 7.3.0
  * @description Μετονομάζει κανάλια, κατηγορίες και μέλη στον server των Prezomenoi (Ghost Server), χρωματίζει τα ονόματά τους και φορτώνει το θέμα του server. Οι αλλαγές είναι μόνο οπτικές και αναιρούνται όταν το απενεργοποιήσεις.
  * @author ThomasT
  * @authorId 706932839907852389
@@ -58,23 +58,38 @@ const CATEGORIES = {
     "1459305587413094420": "🇩🇪"
 };
 
+// Known raw server channel names (fallback before ChannelStore or for voice invites/mentions)
+const CHANNEL_ORIGINALS = {
+    "1216757265936154689": "ⓁⒶⓇⓄⓈⒺ",
+    "1250083136818122813": "ⓀⒶⓇⓀⒾⓃⓄⓈ",
+    "1216761517194739936": "ⒹⒾⓀⒶⓈⓉⒾⓇⒾⓄ",
+    "1216818976898941068": "ⓂⓄⓋⒾⒺⓈ"
+};
+
 // Places where the user types. Changing text there would corrupt the message editor.
 const EDITABLE = '[contenteditable="true"], [role="textbox"], textarea, input';
 const SKIP_PARENTS = new Set(["SCRIPT", "STYLE", "TEXTAREA", "INPUT", "NOSCRIPT"]);
-const ATTRIBUTES = ["aria-label", "data-text"];
+const ATTRIBUTES = ["aria-label", "data-text", "title"];
 const CHANNEL_ITEM = '[data-list-item-id^="channels___"]';
 const CHANNEL_LINK = `a[href*="/channels/${GUILD_ID}/"]`;
+const CHANNEL_MENTION = '[data-channel-id], [data-reference-id], [class*="channelMention"], [class*="mention"], [role="button"][class*="mention"]';
+const VOICE_EMBED = '[class*="voiceChannelGuildInvite"], [class*="inviteDestination"], [class*="wrapper_"][class*="invite"], [id^="message-accessories-"]';
 const HEADER = 'h1, h2, [data-window-chrome="true"]';
+const CHANNEL_ALL_TARGETS = `${CHANNEL_ITEM}, ${CHANNEL_LINK}, a[href*="/channels/"], ${CHANNEL_MENTION}, ${VOICE_EMBED}, ${HEADER}`;
 const MAX_TRACKED = 4000;
 const HIDE_ATTR = "data-prezomenoi-hidden";
 // Greying out offline members lives in the OfflineGrey plugin, which does it in every server.
 const STYLES = `[${HIDE_ATTR}="1"] { display: none !important; }`;
 
 // Names on screen are not always the raw Discord name: other plugins (BetterChatNames)
-// capitalise them and drop dashes/underscores, and emoji may be images. Comparing only
-// letters and digits, lowercased, still matches the right channel.
+// capitalise them and drop dashes/underscores, and emoji may be images. Normalising with
+// NFKD also decomposes font variations (e.g. circled letters ⒹⒾⓀⒶⓈⓉⒾⓇⒾⓄ → dikastirio).
 function looseName(text) {
-    return text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
+    return (text || "")
+        .normalize("NFKD")
+        .toLowerCase()
+        .replace(/[^\x00-\x7F\u0370-\u03FF]/g, "")
+        .replace(/[^a-z0-9\u0370-\u03FF]+/g, "");
 }
 
 // What a user actually reads inside an element: Discord turns emoji in names into
@@ -211,6 +226,21 @@ module.exports = class RenameChannel {
                 this.attrMap.set(name, user.target);
             }
         }
+        for (const [id, original] of Object.entries(CHANNEL_ORIGINALS)) {
+            const target = CHANNELS[id];
+            if (target && original) {
+                this.textMap.set(original, target);
+                this.attrMap.set(original, target);
+            }
+        }
+        if (this.namesByText) {
+            for (const [from, to] of this.namesByText) {
+                if (from && to && from !== to) {
+                    this.textMap.set(from, to);
+                    this.attrMap.set(from, to);
+                }
+            }
+        }
         this.textPattern = new RegExp(alternation(this.textMap.keys()), "g");
         this.attrPattern = new RegExp(alternation(this.attrMap.keys()), "g");
         // Cheap pre-check before looking at a text node in detail.
@@ -298,6 +328,7 @@ module.exports = class RenameChannel {
         for (const [id, to] of Object.entries({ ...CHANNELS, ...CATEGORIES })) {
             let from = null;
             try { from = this.stores.channels?.getChannel?.(id)?.name || null; } catch { }
+            if (!from && CHANNEL_ORIGINALS[id]) from = CHANNEL_ORIGINALS[id];
             names.set(id, { from, to });
         }
         this.names = names;
@@ -306,6 +337,7 @@ module.exports = class RenameChannel {
         for (const entry of names.values()) {
             if (entry.from && entry.from !== entry.to) this.namesByText.set(entry.from, entry.to);
         }
+        this.compile();
     }
 
     // ── mutation handling (batched once per frame) ────────────
@@ -400,7 +432,7 @@ module.exports = class RenameChannel {
         // A single text node that changed on its own (characterData) or was added alone:
         // check whether it sits in a channel item, a channel link or a header.
         if (withContext && parent) {
-            const context = parent.closest(`${CHANNEL_ITEM}, ${CHANNEL_LINK}, ${HEADER}`);
+            const context = parent.closest(CHANNEL_ALL_TARGETS);
             if (context) this.renameChannelsIn(context);
         }
     }
@@ -432,15 +464,31 @@ module.exports = class RenameChannel {
             if (entry) this.renameInside(item, entry, true);
         }
 
+        // Elements with explicit data-channel-id or data-reference-id (mentions, buttons, cards).
+        const idElements = scope.matches('[data-channel-id], [data-reference-id]') ? [scope] : [];
+        idElements.push(...scope.querySelectorAll('[data-channel-id], [data-reference-id]'));
+        for (const el of idElements) {
+            const id = el.getAttribute("data-channel-id") || el.getAttribute("data-reference-id");
+            const entry = id && this.names.get(id);
+            if (entry) this.renameInside(el, entry, false);
+        }
+
         // Links to a channel of this server (voice panel, mentions, embeds).
-        const links = scope.matches(CHANNEL_LINK) ? [scope] : [];
-        const linkAround = scope.closest(CHANNEL_LINK);
+        const links = scope.matches('a[href*="/channels/"]') ? [scope] : [];
+        const linkAround = scope.closest('a[href*="/channels/"]');
         if (linkAround && linkAround !== scope) links.push(linkAround);
-        links.push(...scope.querySelectorAll(CHANNEL_LINK));
+        links.push(...scope.querySelectorAll('a[href*="/channels/"]'));
         for (const link of links) {
-            const id = /\/channels\/\d+\/(\d+)/.exec(link.getAttribute("href") || "")?.[1];
+            const id = /\/channels\/(?:\d+|@me)\/(\d+)/.exec(link.getAttribute("href") || "")?.[1];
             const entry = id && this.names.get(id);
             if (entry) this.renameInside(link, entry, false);
+        }
+
+        // Channel mentions and Voice / Invite Cards / Accessories.
+        const mentionOrEmbeds = scope.matches(`${CHANNEL_MENTION}, ${VOICE_EMBED}`) ? [scope] : [];
+        mentionOrEmbeds.push(...scope.querySelectorAll(`${CHANNEL_MENTION}, ${VOICE_EMBED}`));
+        for (const container of mentionOrEmbeds) {
+            this.renameMentionOrEmbed(container);
         }
 
         // Headers show the selected channel's name.
@@ -452,6 +500,28 @@ module.exports = class RenameChannel {
         if (headerAround && headerAround !== scope) headers.push(headerAround);
         headers.push(...scope.querySelectorAll(HEADER));
         for (const header of headers) this.renameInside(header, entry, false);
+    }
+
+    renameMentionOrEmbed(container) {
+        const id = container.getAttribute("data-channel-id") || container.getAttribute("data-reference-id");
+        if (id && this.names.has(id)) {
+            this.renameInside(container, this.names.get(id), false);
+            return;
+        }
+        const shown = displayText(container).trim();
+        const shownLoose = looseName(shown);
+        for (const entry of this.names.values()) {
+            if (shown === entry.to) return;
+            if (entry.from) {
+                if (shown.includes(entry.from) || (shownLoose && shownLoose.includes(looseName(entry.from)))) {
+                    this.renameInside(container, entry, false);
+                    return;
+                }
+            } else if (shownLoose && looseName(entry.to) && shownLoose.includes(looseName(entry.to))) {
+                this.renameInside(container, entry, false);
+                return;
+            }
+        }
     }
 
     renameInside(container, entry, isListItem) {
@@ -471,13 +541,15 @@ module.exports = class RenameChannel {
             const walkerByClass = nameElement && document.createTreeWalker(nameElement, NodeFilter.SHOW_TEXT);
             const node = walkerByClass?.nextNode();
             if (node && node.nodeValue.trim() && node.nodeValue !== to) this.setText(node, to);
+        } else {
+            this.renameTextNodes(container, null, to);
         }
     }
 
     // The whole name sits in one text node. Returns true when the container already shows
     // the custom name too, so nothing else needs to run.
     renameTextNodes(container, from, to) {
-        const loose = looseName(from);
+        const loose = from ? looseName(from) : looseName(to);
         const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
         let done = false;
         for (let node = walker.nextNode(); node; node = walker.nextNode()) {
@@ -487,8 +559,8 @@ module.exports = class RenameChannel {
                 if (trimmed === to) done = true;
                 continue;
             }
-            if (trimmed === from) {
-                this.setText(node, value.replace(from, to));
+            if (from && value.includes(from)) {
+                this.setText(node, value.split(from).join(to));
                 done = true;
             }
             else if (loose && looseName(trimmed) === loose) {
