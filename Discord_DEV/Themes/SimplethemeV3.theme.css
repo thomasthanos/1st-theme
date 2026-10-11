@@ -98,6 +98,12 @@
  * 1. Guild Sidebar Customization
  * =================================================== */
 
+/* 1.0 Space Above Discord Logo (Shift Server List 10px Down) */
+[class*="tutorialContainer"],
+div:has(> div > [data-list-item-id="guildsnav___home"]) {
+  margin-top: 10px !important;
+}
+
 /* 1.1 Bell Styling */
 /* 1.1.1 Bell Container - Περιθώριο */
 [class="_650eb104245d257b-listItem frame_aa90f4"] {
