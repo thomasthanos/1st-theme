@@ -48,7 +48,7 @@ const TASK_MOBILE_VIDEO = "WATCH_VIDEO_ON_MOBILE";
 // Stable anchors στον κώδικα του Discord (strings που δεν είναι minified).
 const ANCHOR_QUEST_UTILS = ["_getTaskDetailsForType"];
 const ANCHOR_ASSET_RESOLVER = ["video_player_video_low_res"];
-const ANCHOR_QUEST_ACTIONS = ["QUEST_VIDEO_ENROLLMENT_RETRY_ATTEMPTED", "openModalLazy"];
+const ANCHOR_QUEST_ACTIONS = ["QUEST_VIDEO_ENROLLMENT_RETRY_ATTEMPTED"];
 const ANCHOR_PLAYER_FOCUS_HOOK = ["focusedChanged", "isFocused()"];
 const questVideoModalKey = questId => `VIDEO-QUEST-${questId}`;
 const SESSION_LOG_INTERVAL_MS = 15000;
@@ -204,11 +204,10 @@ function probeQuestPredicates(exportsObject) {
     const found = { mobileOnly: [], desktopVideo: [] };
     for (const key of Object.keys(exportsObject)) {
         const fn = unwrapPatched(safeGet(exportsObject, key));
-        if (typeof fn !== "function" || fn.length !== 1) continue;
+        if (typeof fn !== "function" || fn.length > 1) continue;
         const source = functionSource(fn);
-        if (!source || source.length > 400 || !PREDICATE_SHAPE.test(source)) continue;
+        if (!source || source.length > 500) continue;
         if (ASSIGNMENT.test(source.replace(/=>/g, " "))) continue;
-        if (!source.includes("taskConfigV2") && !COMBINATOR_SHAPE.test(source)) continue;
         const result = {};
         for (const [name, quest] of Object.entries(samples)) {
             try { result[name] = fn(quest); } catch (err) { result[name] = undefined; }
@@ -494,22 +493,29 @@ class MobileQuestDesktopPlayback {
 
         const videoOpeners = functions.filter(([, fn]) => {
             const source = functionSource(fn);
-            return source.includes("videoSessionId") && source.includes("openModalLazy");
+            return source.includes("videoSessionId") && (source.includes("openModalLazy") || source.includes("autoplay") || source.includes("openStartClockTime"));
         });
         const openVideo = videoOpeners.length === 1 ? videoOpeners[0] : null;
         const openVideoSource = openVideo ? functionSource(openVideo[1]) : "";
 
         // Το openVideoQuestModal του Discord κάνει: if (isMobileOnly(quest)) return void openQrModal(quest)
         const bounceName = /return\s+void\s+([\w$]+)\(\s*[\w$]+\s*\)/.exec(openVideoSource)?.[1] ?? null;
-        let qrOpeners = functions.filter(([, fn]) => fn.length === 1 && QR_OPENER_SHAPE.test(functionSource(fn)) && functionSource(fn).includes("openModalLazy"));
-        if (qrOpeners.length > 1 && bounceName) qrOpeners = qrOpeners.filter(([, fn]) => fn.name === bounceName);
-        const openQr = qrOpeners.length === 1 && (!bounceName || qrOpeners[0][1].name === bounceName) ? qrOpeners[0] : null;
+        let qrOpeners = functions.filter(([, fn]) => {
+            const src = functionSource(fn);
+            const fnName = /function\s+([\w$]+)/.exec(src)?.[1];
+            if (bounceName && (fn.name === bounceName || fnName === bounceName)) return true;
+            return fn.length === 1 && QR_OPENER_SHAPE.test(src);
+        });
+        if (qrOpeners.length > 1 && bounceName) qrOpeners = qrOpeners.filter(([, fn]) => fn.name === bounceName || functionSource(fn).startsWith(`function ${bounceName}(`));
+        const openQr = qrOpeners.length === 1 ? qrOpeners[0] : null;
 
-        let loaders = functions.filter(([, fn]) => fn.length === 0 && LAZY_LOADER_SHAPE.test(functionSource(fn)));
-        if (loaders.length > 1) {
+        let loaders = functions.filter(([, fn]) => {
+            const src = functionSource(fn);
+            const fnName = /function\s+([\w$]+)/.exec(src)?.[1];
             const awaited = /await\s*\(?\s*([\w$]+)\(\s*\)/.exec(openVideoSource)?.[1];
-            loaders = loaders.filter(([, fn]) => fn.name === awaited);
-        }
+            if (awaited && (fn.name === awaited || fnName === awaited)) return true;
+            return fn.length === 0 && LAZY_LOADER_SHAPE.test(src);
+        });
         const loader = loaders.length === 1 ? loaders[0] : null;
 
         this.questActions = exportsObject;

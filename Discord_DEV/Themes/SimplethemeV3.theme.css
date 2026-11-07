@@ -742,7 +742,7 @@ body {
   /* member list */
   ,
 
-  .callContainer_hbKzX7
+  [class*="callContainer_"], .wrapper_7NOr2f
 
   /* stage */
     {
@@ -1067,7 +1067,7 @@ body {
 }
 
 /*! server channel ui*/
-.containerDefault_Wx6SnQ.selected-37j_iU .modeSelected_TNyK-N .link_TNyK-N::before,
+.containerDefault_Wx6SnQ.selected_Wx6SnQ .modeSelected_TNyK-N .link_TNyK-N::before,
 .modeSelected_TNyK-N .link_TNyK-N::before,
 .modeSelected_TNyK-N:hover .link_TNyK-N::before {
   content: "";
@@ -1230,7 +1230,7 @@ body {
   height: 40px;
 }
 
-.container-q97qHp {
+.membersGroupName_86es0b, .container_kRH1UI, .headerContainer_HxSvbL {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   text-overflow: ellipsis;
@@ -1447,12 +1447,12 @@ body {
 }
 
 /* Αφαίρεση default placeholder */
-.theme-dark .placeholder_q99V_- {
+.theme-dark .placeholder_SHcSVi {
   visibility: hidden !important;
 }
 
 /* Custom placeholder (minimal but visible) */
-.theme-dark .placeholder_q99V_-::before {
+.theme-dark .placeholder_SHcSVi::before {
   content: "Life is so much easier when you just take a time to chill";
   color: rgba(255, 255, 255, 0.2);
   font-family: "Poppins", sans-serif;
@@ -1692,7 +1692,7 @@ body {
   border: 1px solid hsla(40, 40%, 25%, 0.4) !important;
 }
 
-.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .placeholder_q99V_- {
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .placeholder_SP2x0M {
   color: hsla(40, 30%, 55%, 0.5) !important;
 }
 
@@ -1766,7 +1766,7 @@ body {
   border-radius: 16px !important;
 }
 
-.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .title_RCbKta .defaultColor_MMUIw6 {
+.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .header_LDGylj .defaultColor_MMUIw6 {
   color: hsla(40, 55%, 60%, 1) !important;
   font-weight: 600 !important;
 }
@@ -1892,7 +1892,7 @@ body {
   border-radius: 16px !important;
 }
 
-.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .title_RCbKta .defaultColor_MMUIw6 {
+.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .header_LDGylj .defaultColor_MMUIw6 {
   color: hsla(40, 55%, 60%, 1) !important;
   font-weight: 600 !important;
 }

@@ -18,7 +18,7 @@ const DEFAULTS = {
 };
 // Discord's member list: every offline member's row keeps the class "offline__xxxxx".
 const MEMBER_LIST = '[data-list-id^="members"]';
-const NAME_PARTS = ['[class*="username"]', '[class*="nameContainer"]', '[class*="name__"]'];
+const NAME_PARTS = ['[class*="username"]', '[class*="nameContainer"]', '[class*="name_"]', '[class*="name__"]'];
 
 function toHex(value) {
     if (typeof value === "number" && Number.isFinite(value)) {
@@ -48,6 +48,7 @@ ${names} {
     color: ${color} !important;
 }
 
+${MEMBER_LIST} [class*="member_"][class*="offline"],
 ${MEMBER_LIST} [class*="member__"][class*="offline"] {
     opacity: ${opacity} !important;
 }
