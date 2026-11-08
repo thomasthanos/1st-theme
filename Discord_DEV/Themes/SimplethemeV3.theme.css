@@ -11,8 +11,8 @@
  *?1. Guild Sidebar Customization
  *   - 1.1 Bell Styling
  *   - 1.2 Folder Styling
- *   - 1.3 Separator Glow
- *   - 1.4 Expanded Folder Background
+ *   - 1.3 Expanded Folder Background
+ *   - 1.4 Separator Glow
  *   - 1.5 User Area Layout Fix
  *   -     Voice Details & Popouts (Material Style)
  *   -     Activities Launcher & Modals
@@ -78,7 +78,6 @@
   --font-display: var(--main-font);
   --font-code: var(--code-font);
   --focus-primary: var(--focus-color);
-  --main-color: #2780e6;
   --hover-color: #1e63b3;
   --main-font: "gg sans", Whitney, "Helvetica Neue", Helvetica, Arial,
     sans-serif;
@@ -119,8 +118,8 @@ div:has(> div > [data-list-item-id="guildsnav___home"]) {
 [class*="childWrapper_"].button_aa90f4, .button_aa90f4 {
   padding: 0;
   font-size: 0px;
-  width: 36px;
-  height: 36px;
+  width: 36px !important;
+  height: 36px !important;
   background-image: none;
   background-color: #4f545c;
   color: transparent;
@@ -165,12 +164,6 @@ div:has(> div > [data-list-item-id="guildsnav___home"]) {
 /* 1.1.6 Bell Icon Hover */
 [class*="childWrapper_"].button_aa90f4:hover::before, .button_aa90f4:hover::before {
   transform: rotate(15deg);
-}
-
-/* 1.1.7 Bell Button Fixed Dimensions */
-div[class*="childWrapper_"].button_aa90f4, div.button_aa90f4 {
-  width: 36px !important;
-  height: 36px !important;
 }
 
 /* 1.2 Folder Styling */
@@ -278,14 +271,6 @@ nav.guilds_pog62O {
   pointer-events: none !important;
 }
 
-/* Disable hover roll animation completely */
-.rtcConnectionStatusConnected_4LJE6I.hoverRoll_Dq3ch1,
-.rtcConnectionStatusConnected_4LJE6I.hoverRoll_Dq3ch1:hover {
-  transform: none !important;
-  transition: none !important;
-  animation: none !important;
-}
-
 /* Hide default text content */
 .rtcConnectionStatusConnected_4LJE6I .default_Dq3ch1 > * {
   font-size: 0 !important;
@@ -317,7 +302,6 @@ nav.guilds_pog62O {
 }
 
 /* Voice Panel Containment & Layout Fix */
-.connection_9U6LUN,
 [class*="connection_"] {
   display: flex !important;
   flex-direction: row !important;
@@ -337,14 +321,12 @@ nav.guilds_pog62O {
   align-items: center !important;
 }
 
-.rtcConnectionStatusWrapper_4LJE6I,
 [class*="rtcConnectionStatusWrapper_"] {
   min-width: 0 !important;
   overflow: hidden !important;
   width: 100% !important;
 }
 
-.rtcConnectionStatus_4LJE6I,
 [class*="rtcConnectionStatus_"] {
   min-width: 0 !important;
   overflow: hidden !important;
@@ -353,7 +335,6 @@ nav.guilds_pog62O {
   width: 100% !important;
 }
 
-.labelWrapper_4LJE6I,
 [class*="labelWrapper_"] {
   min-width: 0 !important;
   overflow: hidden !important;
@@ -377,7 +358,6 @@ nav.guilds_pog62O {
 }
 
 /* Voice Buttons Container - Dedicated spacing, no shrinking, no overlap */
-.voiceButtonsContainer_9U6LUN,
 [class*="voiceButtonsContainer_"] {
   flex: 0 0 auto !important;
   flex-shrink: 0 !important;
@@ -390,7 +370,6 @@ nav.guilds_pog62O {
   width: auto !important;
 }
 
-.voiceButtonsContainer_9U6LUN button,
 [class*="voiceButtonsContainer_"] button {
   flex: 0 0 32px !important;
   width: 32px !important;
@@ -505,19 +484,6 @@ path[fill="var(--text-positive)"] {
   font-weight: 400;
   color: #888 !important;
   margin-top: 12px !important;
-}
-
-/* Σύνδεσμοι μέσα στο popout */
-.anchor_n_L45- {
-  color: #4c8eda !important;
-  font-weight: 500;
-  text-decoration: none !important;
-  transition: color 0.2s ease;
-}
-
-.anchor_n_L45-:hover {
-  color: #82b4f8 !important;
-  text-decoration: underline !important;
 }
 
 /* Soundboard Popout Styling (Material Inspired) */
@@ -685,7 +651,7 @@ div:has(> a[data-list-item-id*="messageRequests"]) {
   visibility: hidden !important;
 }
 
-/* 4.1 Remove Buttons (Universal - Button or Div[role="button"]) */
+/* 2.3 Remove Buttons (Universal - Button or Div[role="button"]) */
 button[aria-label="Στείλτε ένα δώρο"],
 button[aria-label="Άνοιγμα επιλογέα αυτοκόλλητων"],
 button[aria-label="Εφαρμογές"],
@@ -723,12 +689,6 @@ div[role="button"][aria-label="Επιλογές εξόδου"] {
   padding: 0 !important;
 }
 
-/* Αφαίρεση header "Μέλη" και non-member blocks */
-.membersGroup_86es0b:has(> [class*="headerContainer_"]),
-.membersGroup_86es0b~div:not(.member_86es0b) {
-  display: none !important;
-}
-
 /*? voice ui */
 .content_YUoOxm {
   display: -webkit-box;
@@ -745,10 +705,6 @@ div[role="button"][aria-label="Επιλογές εξόδου"] {
   margin-bottom: 1px;
 }
 
-.voiceUser_YUoOxm .avatarSpeakingOutline_ieJ4Sq,
-.voiceUser_YUoOxm .avatar_YUoOxm[style*="var(--status-speaking)"],
-.voiceUser_YUoOxm .avatar_YUoOxm[style*="speaking"],
-.voiceUser_YUoOxm [class*="avatarSpeaking"],
 [class*="voiceUser_"] [class*="avatar_"][style*="speaking"],
 [class*="voiceUser_"] [class*="avatarSpeaking"] {
   box-shadow: inset 0 0 0 2px var(--main-color) !important;
@@ -769,14 +725,11 @@ div[role="button"][aria-label="Επιλογές εξόδου"] {
 }
 
 .voiceUser_YUoOxm .avatarSpeakingOutline_ieJ4Sq:after {
+  content: "";
+  position: absolute;
   top: -2px;
   bottom: -2px;
   width: 150px;
-}
-
-.voiceUser_YUoOxm .avatarSpeakingOutline_ieJ4Sq:after {
-  content: "";
-  position: absolute;
   height: 1.7em;
   background: linear-gradient(to right, var(--main-color) 10%, transparent);
   opacity: 0.5;
@@ -802,7 +755,8 @@ body {
   /* sizes */
   --gap: 5px;
   /* spacing between panels */
-  font-family: 'Comic Neue', sans-serif !important;
+  /* height & padding του chatbar (flipped chatbar) */
+  --chatbar-padding: 8px;
 }
 
 /* Apply font everywhere */
@@ -995,7 +949,6 @@ body {
 
   /* improve unread divider */
   .divider_4TfzT5 {
-    border-width: var(--divider-thickness);
     border-radius: var(--divider-thickness);
   }
 
@@ -1040,12 +993,6 @@ body {
   syntax: "on | off";
   inherits: false;
   initial-value: on;
-}
-
-body {
-  /* height of the chatbar */
-  --chatbar-padding: 8px;
-  /* padding of the chatbar */
 }
 
 @container body style(--flipped-chatbar: on) {
@@ -1241,15 +1188,11 @@ body {
   --badge-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.35); /* Set to 'none' to disable shadow */
 }
 
-.mentionsBadge_iclnS3,
 [class*="mentionsBadge_"],
-.lowerBadge_hqZPsU,
 [class*="lowerBadge_"] {
   overflow: visible !important;
 }
 
-.numberBadge_lMvXrQ,
-.numberBadge__40d6f,
 [class*="numberBadge_"] {
   background: linear-gradient(135deg, #ff334d 0%, #d41429 50%, #8f0015 100%) !important;
   color: #ffffff !important;
@@ -1271,8 +1214,6 @@ body {
   transition: filter 0.15s ease !important;
 }
 
-.numberBadge_lMvXrQ:hover,
-.numberBadge__40d6f:hover,
 [class*="numberBadge_"]:hover {
   filter: brightness(1.15) !important;
 }
@@ -1519,16 +1460,18 @@ body {
   font-style: italic;
 }
 
-/* 11.8 Link underline */
+/* 11.8 Link underline (global — καλύπτει και τα links στα popouts) */
 .anchor_n_L45- {
   text-decoration: none !important;
   border-bottom: 1px dashed #3b49df;
   color: #3b49df !important;
+  font-weight: 500;
   transition: all 0.25s ease;
 }
 
 .anchor_n_L45-:hover {
   color: #5f6df8 !important;
+  text-decoration: underline !important;
   border-color: #5f6df8;
 }
 
@@ -1582,17 +1525,13 @@ body {
   border-radius: 50px !important;
 }
 
-.background_1i8KgA {
-  border-radius: 20px;
-}
-
 .background_1i8KgA:before {
   border-radius: 20px !important;
   transition: 350ms ease-in-out !important;
   box-shadow: 0px 0px 25px black inset;
 }
 
-.border_7NOr2f.speaking_ieJ4Sq, .border_7NOr2f[class*="speaking_"] {
+.border_7NOr2f[class*="speaking_"] {
   /* speaking μιλαω*/
   -webkit-box-shadow: inset 0 0 0 2px var(--main-color),
     inset 0 0 0 3px var(--black-500);
@@ -1639,8 +1578,6 @@ body {
   margin-left: 14px !important;
 }
 
-.divider_4TfzT5 .content_4TfzT5,
-.divider_SY_P2T .content_4TfzT5,
 .content_4TfzT5 {
   background: rgba(14, 16, 22, 0.88) !important;
   backdrop-filter: blur(8px) !important;
@@ -1699,8 +1636,6 @@ body {
 /* ========================================= */
 /* 5.6 Chat Textarea & Input Bar Redesign    */
 /* ========================================= */
-.channelTextArea_z_gUBg,
-.channelTextArea_2x8-Qn,
 [class*="channelTextArea_"] {
   background: rgba(16, 18, 25, 0.85) !important;
   backdrop-filter: blur(12px) !important;
@@ -1713,23 +1648,18 @@ body {
   transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
 }
 
-.channelTextArea_z_gUBg:hover,
-.channelTextArea_2x8-Qn:hover,
 [class*="channelTextArea_"]:hover {
   border-color: rgba(0, 194, 228, 0.5) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 194, 228, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 .form_z_gUBg:has(.channelTextArea_2x8-Qn:focus-within) .channelTextArea_z_gUBg,
-.channelTextArea_z_gUBg:focus-within,
-.channelTextArea_2x8-Qn:focus-within,
 [class*="channelTextArea_"]:focus-within {
   background: rgba(14, 16, 22, 0.94) !important;
   border-color: rgba(0, 194, 228, 0.8) !important;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65), 0 0 18px rgba(0, 194, 228, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
-.scrollableContainer_2x8-Qn,
 [class*="scrollableContainer_"] {
   background: transparent !important;
   border: none !important;
@@ -1738,7 +1668,6 @@ body {
   height: auto !important;
 }
 
-[class*="channelTextArea_"] .inner_2x8-Qn,
 [class*="channelTextArea_"] [class*="inner_"] {
   background: transparent !important;
   min-height: 46px !important;
@@ -1748,7 +1677,6 @@ body {
   align-items: center !important;
 }
 
-[class*="channelTextArea_"] .textArea_2x8-Qn,
 [class*="channelTextArea_"] [class*="textArea_"],
 [class*="channelTextArea_"] [class*="slateContainer_"] {
   min-height: 46px !important;
@@ -1757,9 +1685,7 @@ body {
   align-items: center !important;
 }
 
-[class*="channelTextArea_"] .slateTextArea_q99V_-,
 [class*="channelTextArea_"] [class*="slateTextArea_"],
-[class*="channelTextArea_"] .editor_SHcSVi,
 [class*="channelTextArea_"] [class*="editor_"] {
   min-height: 46px !important;
   padding: 12px 0 !important;
@@ -1767,8 +1693,6 @@ body {
 }
 
 /* Textarea Custom Placeholder */
-[class*="channelTextArea_"] .placeholder_SHcSVi,
-[class*="channelTextArea_"] .placeholder_SP2x0M,
 [class*="channelTextArea_"] [class*="placeholder_"] {
   visibility: hidden !important;
   padding: 12px 0 !important;
@@ -1777,8 +1701,6 @@ body {
   box-sizing: border-box !important;
 }
 
-[class*="channelTextArea_"] .placeholder_SHcSVi::before,
-[class*="channelTextArea_"] .placeholder_SP2x0M::before,
 [class*="channelTextArea_"] [class*="placeholder_"]::before {
   content: "Life is so much easier when you just take a time to chill" !important;
   color: rgba(255, 255, 255, 0.42) !important;
@@ -1798,7 +1720,6 @@ body {
 }
 
 /* Attach Button (+) Sleek, Compact & Circular */
-[class*="channelTextArea_"] .attachWrapper_7TM4SO,
 [class*="channelTextArea_"] [class*="attachWrapper_"] {
   padding: 0 4px 0 0 !important;
   height: 46px !important;
@@ -1807,7 +1728,6 @@ body {
   justify-content: center !important;
 }
 
-[class*="channelTextArea_"] .attachButton_7TM4SO,
 [class*="channelTextArea_"] [class*="attachButton_"] {
   margin: 0 !important;
   width: 28px !important;
@@ -1820,7 +1740,6 @@ body {
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease, background 0.2s ease, filter 0.2s ease !important;
 }
 
-[class*="channelTextArea_"] .attachButton_7TM4SO .buttonWrapper_hfM7yP,
 [class*="channelTextArea_"] [class*="attachButton_"] [class*="buttonWrapper_"] {
   width: 28px !important;
   height: 28px !important;
@@ -1831,13 +1750,11 @@ body {
   justify-content: center !important;
 }
 
-[class*="channelTextArea_"] .attachButton_7TM4SO svg,
 [class*="channelTextArea_"] [class*="attachButton_"] svg {
   width: 18px !important;
   height: 18px !important;
 }
 
-[class*="channelTextArea_"] .attachButton_7TM4SO:hover,
 [class*="channelTextArea_"] [class*="attachButton_"]:hover {
   background: rgba(0, 194, 228, 0.15) !important;
   color: #00e5ff !important;
@@ -1846,25 +1763,16 @@ body {
 }
 
 /* 5.6.3 Hide Unwanted Textarea Action Wrappers (Gift, Sticker, Apps Launcher) */
-.channelTextArea_2x8-Qn .container_ejC3ZL,
 [class*="channelTextArea_"] .container_ejC3ZL,
 [class*="channelTextArea_"] [class*="container_"]:has([aria-label*="gift" i]),
 [class*="channelTextArea_"] [class*="container_"]:has([aria-label*="δώρο" i]),
-[class*="channelTextArea_"] .buttonContainer_2x8-Qn:has(.stickerButton_2x8-Qn),
 [class*="channelTextArea_"] [class*="buttonContainer_"]:has([class*="stickerButton_"]),
 [class*="channelTextArea_"] [class*="buttonContainer_"]:has([aria-label*="sticker" i]),
 [class*="channelTextArea_"] [class*="buttonContainer_"]:has([aria-label*="αυτοκόλλητ" i]),
-[class*="channelTextArea_"] .buttonContainer_s8hOwn,
 [class*="channelTextArea_"] [class*="buttonContainer_s8hOwn"],
 [class*="channelTextArea_"] [class*="app-launcher-entrypoint"],
 [class*="channelTextArea_"] [class*="buttonContainer_"]:has([aria-label*="Apps" i]),
 [class*="channelTextArea_"] [class*="buttonContainer_"]:has([aria-label*="Εφαρμογές" i]),
-[class*="channelTextArea_"] [aria-label="Send a gift"],
-[class*="channelTextArea_"] [aria-label="Στείλτε ένα δώρο"],
-[class*="channelTextArea_"] [aria-label="Open sticker picker"],
-[class*="channelTextArea_"] [aria-label="Άνοιγμα επιλογέα αυτοκόλλητων"],
-[class*="channelTextArea_"] [aria-label="Apps"],
-[class*="channelTextArea_"] [aria-label="Εφαρμογές"],
 [class*="channelTextArea_"] [aria-label*="gift" i],
 [class*="channelTextArea_"] [aria-label*="δώρο" i],
 [class*="channelTextArea_"] [aria-label*="sticker" i],
@@ -1872,9 +1780,7 @@ body {
 [class*="channelTextArea_"] [aria-label*="Apps" i],
 [class*="channelTextArea_"] [aria-label*="Εφαρμογές" i],
 [class*="channelTextArea_"] .stickerButton_2x8-Qn,
-[class*="channelTextArea_"] .hiddenAppLauncherAnchor_2x8-Qn,
 [class*="channelTextArea_"] [class*="hiddenAppLauncherAnchor_"],
-[class*="channelTextArea_"] .hiddenVisually_FX8kaC,
 [class*="channelTextArea_"] [class*="hiddenVisually_"] {
   display: none !important;
   visibility: hidden !important;
@@ -1887,7 +1793,6 @@ body {
 }
 
 /* 5.6.4 Action Buttons Container (GIF & Emoji) Sleek & Balanced */
-[class*="channelTextArea_"] .buttons_2x8-Qn,
 [class*="channelTextArea_"] [class*="buttons_"] {
   height: 46px !important;
   min-height: 46px !important;
@@ -1900,7 +1805,6 @@ body {
   width: auto !important;
 }
 
-[class*="channelTextArea_"] .buttons_2x8-Qn [role="button"],
 [class*="channelTextArea_"] [class*="buttons_"] [role="button"] {
   width: 28px !important;
   height: 28px !important;
@@ -1917,13 +1821,11 @@ body {
   box-sizing: border-box !important;
 }
 
-[class*="channelTextArea_"] .buttons_2x8-Qn [role="button"] svg,
 [class*="channelTextArea_"] [class*="buttons_"] [role="button"] svg {
   width: 18px !important;
   height: 18px !important;
 }
 
-[class*="channelTextArea_"] .buttons_2x8-Qn [role="button"]:hover,
 [class*="channelTextArea_"] [class*="buttons_"] [role="button"]:hover {
   background: rgba(0, 194, 228, 0.15) !important;
   color: #00c2e4 !important;
@@ -2336,15 +2238,6 @@ body {
   overflow: hidden !important;
 }
 
-.user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .inner_P1YEjQ {
-  background: linear-gradient(180deg,
-      hsla(35, 50%, 22%, 1) 0%,
-      hsla(120, 25%, 15%, 1) 25%,
-      hsla(40, 30%, 10%, 1) 55%,
-      hsla(30, 20%, 7%, 1) 100%) !important;
-  border-radius: 8px !important;
-}
-
 .user-profile-popout:not(.has-animated-banner):not(.custom-theme-background) .footer_6bgemo {
   background: hsla(30, 20%, 7%, 1) !important;
   padding: 8px !important;
@@ -2457,16 +2350,6 @@ body {
   background-position: center !important;
 }
 
-.user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_P1YEjQ {
-  background: linear-gradient(180deg,
-      hsla(35, 50%, 22%, 1) 0%,
-      hsla(120, 25%, 15%, 1) 25%,
-      hsla(40, 30%, 10%, 1) 55%,
-      hsla(30, 20%, 7%, 1) 100%) !important;
-  border-radius: 8px !important;
-  position: relative !important;
-}
-
 /* Faded GIF background - simulate backgroundImage__9c3be του Nitro */
 .user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_P1YEjQ::before {
   content: "" !important;
@@ -2494,8 +2377,9 @@ body {
   background: hsla(35, 45%, 10%, 0.55) !important;
 }
 
-/* Custom status - modal */
+/* Custom status + βάση profile - modal (ενιαίος κανόνας) */
 .user-profile-modal-v2:not(.has-animated-banner):not(.custom-theme-background) .inner_P1YEjQ {
+  position: relative !important;
   background: hsla(35, 40%, 12%, 0.9) !important;
   border-radius: 8px !important;
 }
